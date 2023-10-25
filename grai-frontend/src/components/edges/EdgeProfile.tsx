@@ -41,7 +41,7 @@ const EdgeProfile: React.FC<EdgeProfileProps> = ({ edge }) => {
                 {edge.metadata && (
                   <JsonView
                     data={edge.metadata}
-                    shouldInitiallyExpand={level => level < 1}
+                    shouldExpandNode={level => level < 1}
                     style={{ ...defaultStyles, container: "" }}
                   />
                 )}

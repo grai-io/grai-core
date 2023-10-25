@@ -38,7 +38,7 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
           {table.metadata && (
             <JsonView
               data={table.metadata}
-              shouldInitiallyExpand={level => level < 1}
+              shouldExpandNode={level => level < 1}
               style={{ ...defaultStyles, container: "" }}
             />
           )}
