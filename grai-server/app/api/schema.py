@@ -7,6 +7,7 @@ from strawberry_django.optimizer import DjangoOptimizerExtension
 from api.queries import Query
 from auth.mutations import Mutation as AuthMutation
 from connections.mutations import Mutation as ConnectionMutation
+from grAI.mutations import Mutation as grAIMutation
 from installations.mutations import Mutation as InstallationMutation
 from lineage.mutations import Mutation as LineageMutation
 from workspaces.mutations import Mutation as WorkspaceMutation
@@ -18,6 +19,7 @@ mutations = (
     ConnectionMutation,
     NotificationMutation,
     LineageMutation,
+    grAIMutation,
 )
 Mutation = merge_types("Mutation", mutations)
 
