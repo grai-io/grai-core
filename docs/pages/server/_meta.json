@@ -5,5 +5,8 @@
     "title": "Rest API",
     "href": "https://api.grai.io/api/v1/schema/redoc/"
   },
-  "graphql-api": "GraphQL API"
+  "graphql-api": {
+    "title": "GraphQL API",
+    "href": "https://api.grai.io/graphql/"
+  }
 }
