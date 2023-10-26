@@ -14,6 +14,7 @@ from connections.adapters.looker import LookerAdapter
 from connections.adapters.metabase import MetabaseAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
+from connections.adapters.open_lineage import OpenLineageAdapter
 from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
@@ -68,6 +69,8 @@ def get_adapter(slug: str) -> Type[BaseAdapter]:
         return MetabaseAdapter
     elif slug == Connector.LOOKER:
         return LookerAdapter
+    elif slug == Connector.OPEN_LINEAGE:
+        return OpenLineageAdapter
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

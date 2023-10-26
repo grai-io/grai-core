@@ -25,6 +25,7 @@ const icons: Icons = {
   "grai-source-metabase": "/icons/data-sources/metabase.png",
   "grai-source-fivetran": "/icons/data-sources/fivetran.png",
   "grai-source-looker": "/icons/data-sources/looker.png",
+  "grai-source-openlineage": "/icons/data-sources/openlineage.png",
 }
 
 const heights = {

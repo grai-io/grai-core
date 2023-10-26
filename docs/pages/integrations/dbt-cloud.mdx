@@ -3,7 +3,6 @@ title: dbt Cloud
 description: Grai integration for dbt Cloud to automatically extract metadata.
 ---
 
-import { Callout } from "nextra-theme-docs";
 import { DbtLogoIcon } from "../../components/Integrations";
 import Image from "next/image";
 import InlineLogo from "../../components/InlineLogo";
@@ -34,13 +33,11 @@ The dbt Cloud integration synchronizes your dbt metadata into the lineage graph.
 
 Follow [https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens](https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens) to generate an api key.
 
-
 ## Python Library
 
 The dbt integration can be run as a standalone python library to extract data lineage from the dbt cloud api.
 
 The library is available via pip
-
 
 ```shell copy
 pip install grai_source_dbt_cloud

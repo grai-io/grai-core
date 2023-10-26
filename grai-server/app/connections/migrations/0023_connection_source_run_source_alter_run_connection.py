@@ -24,7 +24,7 @@ def create_sources(apps, schema_editor):
 def add_source_to_run(apps, schema_editor):
     # We can't import the Person model directly as it may be a newer
     # version than this migration expects. We use the historical version.
-    from connections.models import Run
+    Run = apps.get_model("connections", "Run")
 
     for run in Run.objects.all():
         run.source_id = run.connection.source_id

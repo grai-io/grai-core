@@ -286,7 +286,42 @@ def dbt_cloud(request):
     return Response({"status": "ok"})
 
 
+@api_view(["POST"])
+def open_lineage(request, connection, secret: str):
+    # To use with airflow, set config.openlineage.transport to '{"type": "http", "url": "http://localhost:8000", "endpoint": "api/v1/openlineage/<Connection UUID>/<api_secret>/"}'
+
+    body = json.loads(request.body)
+
+    try:
+        connection = Connection.objects.get(
+            connector__slug=Connector.OPEN_LINEAGE,
+            id=connection,
+        )
+    except Connection.DoesNotExist:
+        return Response({"status": "Connection not found"})
+
+    if not connection.is_active:
+        return Response({"status": "Connection not active"})
+
+    if connection.secrets.get("api_secret") != secret:
+        return Response({"status": "Invalid secret"})
+
+    run = Run.objects.create(
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        input=body,
+        action=Run.UPDATE,
+        source=connection.source,
+    )
+
+    process_run.delay(run.id)
+
+    return Response({"status": "ok"})
+
+
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
     path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
+    path("openlineage/<uuid:connection>/<str:secret>/", open_lineage),
 ]

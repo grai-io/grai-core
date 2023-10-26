@@ -3,7 +3,6 @@ title: Fivetran
 description: Grai integration for fivetran to automatically extract connection metadata.
 ---
 
-import { Callout } from "nextra-theme-docs";
 import { FivetranLogoIcon } from "../../components/Integrations";
 import Image from "next/image";
 import InlineLogo from "../../components/InlineLogo";
@@ -23,17 +22,17 @@ The Fivetran integration synchronizes your Fivetran connection metadata into the
 
 ### Fields
 
-| Field           | Value                                                              | Example  |
-| --------------- | ------------------------------------------------------------------ | -------- |
-| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
-| Name            | Name for connection                                                | Fivetran |
-| Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
-| api_key         | Fivetran api key, see [api key](#apikey)                           |          |
-| namespaces      | Optional                                                           |          |
-| endpoint        | Optional endpoint if self-hosting fivetran                         |          |
-| limit           | Limit the number of rows returned, optional                        | 10000    |
-| parallelization | Run integration in parallel, optional                              | 10       |
-| api_secret      | Fivetran api secret, see [api key](#apikey)                        |          |
+| Field           | Value                                                              | Example   |
+| --------------- | ------------------------------------------------------------------ | --------- |
+| source          | The name of the source, see [sources](/concepts/sources)           | my-source |
+| Name            | Name for connection                                                | Fivetran  |
+| Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default   |
+| api_key         | Fivetran api key, see [api key](#apikey)                           |           |
+| namespaces      | Optional                                                           |           |
+| endpoint        | Optional endpoint if self-hosting fivetran                         |           |
+| limit           | Limit the number of rows returned, optional                        | 10000     |
+| parallelization | Run integration in parallel, optional                              | 10        |
+| api_secret      | Fivetran api secret, see [api key](#apikey)                        |           |
 
 ### ApiKey
 
@@ -44,7 +43,6 @@ Follow [https://fivetran.com/docs/rest-api/getting-started](https://fivetran.com
 The Fivetran integration can be run as a standalone python library to extract data lineage from the Fivetran api.
 
 The library is available via pip
-
 
 ```shell copy
 pip install grai_source_fivetran
@@ -77,10 +75,8 @@ In practice you usually don't want to do this because it will result in overlapp
 For example, a fivetran connection copying data from a source table `my_table` to a destination table `my_table` will
 result in two nodes with the same id.
 
-
 To avoid this, you can pass a `namespaces` parameter to the `FivetranIntegration` constructor which will map Fivetran
 connection id's to source and destination grai namespaces.
-
 
 ```python copy
     namespaces = {<fivetran_connection_id>: {

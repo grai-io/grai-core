@@ -1,0 +1,50 @@
+---
+title: "Airflow"
+description: Grai integration for Airflow to automatically access metadata.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { AirflowLogoIcon } from "../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../components/InlineLogo";
+
+<InlineLogo logo={<AirflowLogoIcon />} title="Airflow" />
+
+The Airflow integration consumes OpenLineage metadata from Airflow.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/airflow.png"
+  height={600}
+  width={1200}
+  alt="Airflow Integration"
+/>
+
+### Fields
+
+| Field      | Value                                                               | Example      |
+| ---------- | ------------------------------------------------------------------- | ------------ |
+| source     | The name of the source, see [sources](/concepts/sources)            | my-source    |
+| Name       | Name for connection                                                 | Airflow      |
+| Namespace  | Namespace for the connection, see [namespaces](/concepts/namespace) | default      |
+| api_secret | Input an api_secret which will be used to verify each message       | super_secret |
+| namespaces | Optional                                                            |              |
+
+### Webhook
+
+Grai will open an endpoint at `/api/v1/openlineage/<connection_id>/<api_secret>/` which can be used to receive Airflow OpenLineage events.
+
+See the [OpenLineage Airflow docs](https://openlineage.io/docs/integrations/airflow/) for how to configure your client to send OpenLineage events.
+
+An example config:
+
+```
+transport:
+  url: "https://api.grai.io",
+  endpoint: "/api/v1/openlineage/<connection_id>/<api_secret>/"
+```
+
+## Python Library
+
+The Airflow integration uses the OpenLineage integration behind the scenes to send OpenLineage events to Grai, see [OpenLineage](openlineage).
