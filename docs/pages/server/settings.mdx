@@ -78,6 +78,14 @@ If there are any attributes you need greater control over PR's are welcome.
 | AWS_SES_REGION_NAME     | No       | None                                           | AWS region required for amazon SES                                                                       |
 | AWS_SES_REGION_ENDPOINT | No       | email.us-west-2.amazonaws.com                  | The email address your emails should be sent from                                                        |
 
+### AI Configuration
+
+| environment variable | required | default value | description                                                                 |
+| -------------------- | -------- | ------------- | --------------------------------------------------------------------------- |
+| OPENAI_API_KEY       | No       | None          | Your openai api key                                                         |
+| OPENAI_ORG_ID        | No       | None          | Your openai organization id                                                 |
+| OPENAI_PREFERRED_MODEL | No    | gpt-3.5-turbo  | The preferred model to use for openai api requests. This is configurable manage cost controls but newer models provide better results |
+
 ### Celery Configuration
 
 | environment variable | required | default value            | description                |
