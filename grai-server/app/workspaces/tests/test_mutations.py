@@ -2,10 +2,10 @@ import uuid
 
 import pytest
 from asgiref.sync import sync_to_async
+from conftest import generate_connector, generate_username
 from django.contrib.auth import get_user_model
 
 from api.schema import schema
-from conftest import generate_connector, generate_username
 from connections.models import Connector
 from lineage.models import Edge, Node
 from workspaces.models import WorkspaceAPIKey

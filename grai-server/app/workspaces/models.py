@@ -32,6 +32,8 @@ class Workspace(TenantModel):
         on_delete=models.CASCADE,
     )
     search_enabled = models.BooleanField(default=True)
+    ai_enabled = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

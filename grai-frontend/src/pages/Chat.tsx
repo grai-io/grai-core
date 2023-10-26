@@ -2,7 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box, Grid, Typography } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import WebsocketChat from "components/chat/WebsocketChat"
+import ChatWrapper from "components/chat/ChatWrapper"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
@@ -44,7 +44,7 @@ const Chat: React.FC = () => {
       <Typography variant="h6">GrAI Workspace Chat</Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <WebsocketChat workspace={workspace} />
+          <ChatWrapper workspace={workspace} />
         </Grid>
       </Grid>
     </Box>
