@@ -1,5 +1,5 @@
-from grai_source_metabase.base import MetabaseIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_metabase.base import MetabaseIntegration
 
 from .base import IntegrationAdapter
 

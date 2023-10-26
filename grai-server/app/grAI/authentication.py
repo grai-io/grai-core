@@ -1,10 +1,11 @@
-from channels.middleware import BaseMiddleware
-from channels.db import database_sync_to_async
-from urllib.parse import urlparse
 import re
 from typing import Optional
-from workspaces.models import Workspace, Membership
+from urllib.parse import urlparse
+
+from channels.db import database_sync_to_async
+from channels.middleware import BaseMiddleware
 from users.models import User
+from workspaces.models import Membership, Workspace
 
 
 class InvalidPathError(Exception):

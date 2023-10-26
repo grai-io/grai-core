@@ -41,8 +41,13 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({
   }, [lastMessage, setChats])
 
   const handleInput = (message: string) => {
-    sendJsonMessage({ message, chat_id: chatId })
-    setChats([...chats, { message, sender: true }])
+    const msg = {
+      type: "chat.message",
+      message,
+      chat_id: chatId,
+    };
+    sendJsonMessage(msg);
+    setChats([...chats, { message, sender: true }]);
   }
 
   return <ChatWindow chats={chats} onInput={handleInput} />

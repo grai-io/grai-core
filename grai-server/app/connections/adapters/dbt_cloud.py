@@ -1,5 +1,6 @@
 from grai_schemas.v1.source import SourceV1
 from grai_source_dbt_cloud.base import DbtCloudIntegration
+
 from .base import IntegrationAdapter
 
 

@@ -1,7 +1,7 @@
 import json
 
-from grai_source_looker.base import LookerIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_looker.base import LookerIntegration
 
 from .base import IntegrationAdapter
 

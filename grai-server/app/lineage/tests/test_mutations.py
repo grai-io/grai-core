@@ -1,12 +1,12 @@
 import pytest
-
-from api.schema import schema
 from conftest import (
     generate_connection_name,
     generate_filter,
     generate_source,
     generate_workspace,
 )
+
+from api.schema import schema
 from lineage.models import Filter, Source
 
 ##### FILTER #####

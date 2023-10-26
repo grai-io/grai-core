@@ -1,5 +1,5 @@
-from grai_source_snowflake.base import SnowflakeIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_snowflake.base import SnowflakeIntegration
 
 from .base import IntegrationAdapter
 

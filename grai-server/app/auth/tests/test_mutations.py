@@ -2,12 +2,12 @@ import uuid
 
 import pytest
 from asgiref.sync import sync_to_async
+from conftest import generate_username
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from api.schema import schema
-from conftest import generate_username
 from auth.validation import verification_generator
 
 

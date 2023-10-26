@@ -3,6 +3,7 @@ import os
 import pytest
 from django.core.files.uploadedfile import UploadedFile
 from strawberry.types import Info
+
 from connections.models import Connector
 from connections.mutations import Mutation
 from lineage.models import Node

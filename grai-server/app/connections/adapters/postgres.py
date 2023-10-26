@@ -1,5 +1,5 @@
-from grai_source_postgres.base import PostgresIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_postgres.base import PostgresIntegration
 
 from .base import IntegrationAdapter
 

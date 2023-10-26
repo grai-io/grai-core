@@ -1,7 +1,8 @@
+from typing import TYPE_CHECKING
+
 from grai_schemas.v1.source import SourceV1
 
 from .base import IntegrationAdapter
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from grai_source_mssql.base import MsSQLIntegration

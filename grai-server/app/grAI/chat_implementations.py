@@ -1,13 +1,15 @@
-from pydantic import BaseModel
-from abc import ABC, abstractmethod
-from typing import Callable
-from grai_schemas.serializers import GraiYamlSerializer
-import uuid
-from functools import partial
-import openai
 import json
+import uuid
+from abc import ABC, abstractmethod
+from functools import partial
+from typing import Callable
+
+import openai
 from django.conf import settings
 from django.core.cache import cache
+from grai_schemas.serializers import GraiYamlSerializer
+from pydantic import BaseModel
+
 from grAI.models import Message
 
 

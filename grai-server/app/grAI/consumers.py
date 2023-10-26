@@ -1,17 +1,20 @@
 # chat/consumers.py
 import json
 import uuid
-
-from django.core.cache import cache
-from channels.generic.websocket import AsyncConsumer, WebsocketConsumer
-from asgiref.sync import async_to_sync
-from users.models import User
-from grAI.chat_implementations import get_chat_conversation, BaseConversation
 from functools import cached_property, partial
 from typing import Callable
-from grAI.models import UserChat, Message
-from workspaces.models import Membership
+
+from asgiref.sync import async_to_sync
 from django.conf import settings
+from django.core.cache import cache
+from pydantic import ValidationError
+
+from channels.generic.websocket import AsyncConsumer, WebsocketConsumer
+from grAI.chat_implementations import BaseConversation, get_chat_conversation
+from grAI.models import Message, MessageRoles, UserChat
+from grAI.websocket_payloads import ChatErrorMessages, ChatEvent
+from users.models import User
+from workspaces.models import Membership
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -20,34 +23,9 @@ class ChatConsumer(WebsocketConsumer):
     """
 
     def __init__(self, *args, **kwargs):
-        self._user_chat = None
-        self.conversations: dict[uuid.UUID, BaseConversation] = {}
+        self.conversations: dict[str, BaseConversation] = {}
+        self.active_chats: set = set()
         super().__init__(*args, **kwargs)
-
-    @property
-    def user_chat(self) -> UserChat:
-        if self._user_chat is None:
-            self.user_chat = uuid.uuid4()
-
-        return self._user_chat
-
-    @user_chat.setter
-    def user_chat(self, value: UserChat | uuid.UUID):
-        if isinstance(value, UserChat):
-            chat_obj = value
-        elif isinstance(self._user_chat, UserChat) and value == self._user_chat.id:
-            return
-        else:
-            try:
-                chat_obj = UserChat.objects.filter(pk=value).get()
-            except:
-                chat_obj = UserChat(membership=self.membership)
-                chat_obj.save()
-
-        if chat_obj.membership != self.membership:
-            raise ValueError(f"User does not have permission to view chat session `{chat_obj.id}` ")
-
-        self._user_chat = chat_obj
 
     @cached_property
     def send_function(self) -> Callable:
@@ -77,43 +55,50 @@ class ChatConsumer(WebsocketConsumer):
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
 
-    def save(self, message: str, role: str, visible: bool):
-        new_message = Message(chat=self.user_chat, message=message, role=role, visible=visible)
-        new_message.save()
+    def receive(self, text_data):
+        data: dict = json.loads(text_data)
+        socket_message_type = data.get("type", None)
 
-    # Receive message from WebSocket
-    def receive(self, text_data: str | None = None, bytes_data: bytes | None = None):
-        if text_data is None:
-            raise ValueError("Text data must be provided to this websocket")
+        match socket_message_type:
+            case "chat.message":
+                self.chat_message(data)
+            case None:
+                raise ValueError("Message type not specified")
+            case _:
+                raise ValueError(f"Unknown message type `{socket_message_type}`")
 
-        text_data = json.loads(text_data)
-        message = text_data["message"]
-        self.user_chat = uuid.UUID(text_data["chat_id"]) if text_data["chat_id"] != "" else uuid.uuid4()
+    def chat_message(self, event: dict):
+        try:
+            payload = ChatEvent(**event)
+        except ValidationError as e:
+            response = f"Invalid payload:\n{e}"
+            self.send(text_data=json.dumps({"error": response}))
+            return
 
-        self.save(message=message, role="user", visible=True)
+        # Insure the conversation exists
+        if payload.chat_id not in self.active_chats:
+            chat, created = UserChat.objects.get_or_create(membership=self.membership, id=payload.chat_id)
+            self.active_chats.add(chat.id)
 
         if not settings.HAS_OPENAI:
-            response = (
-                "OpenAI is currently disabled. In order to use AI components please enable ChatGPT on this instance of "
-                "Grai"
-            )
-            agent = "system"
+            response = ChatErrorMessages.MISSING_OPENAI.value
+            agent = MessageRoles.SYSTEM.value
         elif not self.membership.workspace.ai_enabled:
-            response = (
-                "AI enabled chat has been disabled for your workspace. Please contact an administrator if you wish to "
-                "enable these features."
-            )
-            agent = "system"
+            response = ChatErrorMessages.WORKSPACE_AI_NOT_ENABLED.value
+            agent = MessageRoles.SYSTEM.value
         else:
-            if self.user_chat.id not in self.conversations:
-                self.conversations[self.user_chat.id] = get_chat_conversation(self.user_chat.id)
+            if payload.chat_id not in self.conversations:
+                self.conversations[payload.chat_id] = get_chat_conversation(payload.chat_id)
 
-            response = self.conversations[self.user_chat.id].request(message)
-            agent = "assistant"
+            response = self.conversations[payload.chat_id].request(payload.message)
+            agent = MessageRoles.AGENT.value
 
-        self.send_function({"type": "chat.message", "message": response, "chat_id": str(self.user_chat.id)})
-        self.save(message=response, role=agent, visible=True)
+        response_payload = ChatEvent(message=response, chat_id=payload.chat_id)
 
-    # Receive message from room group
-    def chat_message(self, event):
-        self.send(text_data=json.dumps(event))
+        inbound_message = Message(
+            chat_id=payload.chat_id, message=payload.message, role=MessageRoles.USER.value, visible=True
+        )
+        response_message = Message(chat_id=payload.chat_id, message=response, role=agent, visible=True)
+        Message.objects.bulk_create([inbound_message, response_message])
+
+        self.send(text_data=response_payload.json())
