@@ -1,8 +1,6 @@
 import uuid
 
 import pytest
-
-from api.schema import schema
 from conftest import (
     generate_connection,
     generate_connection_name,
@@ -10,6 +8,8 @@ from conftest import (
     generate_source,
     generate_workspace,
 )
+
+from api.schema import schema
 from connections.models import Connection
 
 

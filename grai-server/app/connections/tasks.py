@@ -1,5 +1,7 @@
 import traceback
+from enum import Enum
 from typing import Type
+
 from django.utils import timezone
 
 from celery import shared_task
@@ -20,7 +22,6 @@ from installations.github import Github
 from notifications.notifications import send_notification
 
 from .models import Connection, Connector, Run
-from enum import Enum
 
 
 @shared_task

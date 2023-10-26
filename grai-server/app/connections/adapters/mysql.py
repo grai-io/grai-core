@@ -1,5 +1,5 @@
-from grai_source_mysql.base import MySQLIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_mysql.base import MySQLIntegration
 
 from .base import IntegrationAdapter
 

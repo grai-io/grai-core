@@ -85,9 +85,14 @@ async def test_alert(test_workspace):
 
 
 @pytest_asyncio.fixture
-async def test_context(test_organisation, test_workspace, test_user):
+async def test_membership(test_user, test_workspace):
     membership = await Membership.objects.acreate(user=test_user, workspace=test_workspace, role="admin")
 
+    return membership
+
+
+@pytest_asyncio.fixture
+async def test_context(test_organisation, test_workspace, test_user, test_membership):
     request = HttpRequest
     request.user = test_user
 
@@ -99,7 +104,7 @@ async def test_context(test_organisation, test_workspace, test_user):
     context.request.session = engine.SessionStore(session_key)
     context.request.META = {}
 
-    return context, test_organisation, test_workspace, test_user, membership
+    return context, test_organisation, test_workspace, test_user, test_membership
 
 
 @pytest_asyncio.fixture

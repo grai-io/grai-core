@@ -14,10 +14,17 @@ interface Workspace {
 
 type WebsocketChatProps = {
   workspace: Workspace
+  initialChats?: Chat[]
+  initialChatId?: string
 }
 
-const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace }) => {
-  const [chats, setChats] = useState<Chat[]>([])
+const WebsocketChat: React.FC<WebsocketChatProps> = ({
+  workspace,
+  initialChats,
+  initialChatId,
+}) => {
+  const [chats, setChats] = useState<Chat[]>(initialChats ?? [])
+  const chatId = initialChatId ?? ""
 
   const socketUrl = `${socketURL}/ws/chat/${workspace.id}/`
 
@@ -34,8 +41,13 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace }) => {
   }, [lastMessage, setChats])
 
   const handleInput = (message: string) => {
-    sendJsonMessage({ message })
-    setChats([...chats, { message, sender: true }])
+    const msg = {
+      type: "chat.message",
+      message,
+      chat_id: chatId,
+    };
+    sendJsonMessage(msg);
+    setChats([...chats, { message, sender: true }]);
   }
 
   return <ChatWindow chats={chats} onInput={handleInput} />

@@ -1,10 +1,11 @@
-from channels.middleware import BaseMiddleware
-from channels.db import database_sync_to_async
-from urllib.parse import urlparse
 import re
 from typing import Optional
-from workspaces.models import Workspace, Membership
+from urllib.parse import urlparse
+
+from channels.db import database_sync_to_async
+from channels.middleware import BaseMiddleware
 from users.models import User
+from workspaces.models import Membership, Workspace
 
 
 class InvalidPathError(Exception):
@@ -25,12 +26,13 @@ class WorkspacePathAuthMiddleware(BaseMiddleware):
         if workspace_id is None:
             raise InvalidPathError("You must specify a workspace in the path.")
 
-        has_access = await self.user_has_workspace_access(user, workspace_id)
-        if not has_access:
+        membership = await self.get_membership(user, workspace_id)
+        if membership is None:
             raise PermissionDeniedError("You do not have permission to access this resource.")
 
         scope.setdefault("metadata", {})
         scope["metadata"]["workspace_id"] = workspace_id
+        scope["metadata"]["membership"] = membership
         return await super().__call__(scope, receive, send)
 
     @staticmethod
@@ -39,5 +41,6 @@ class WorkspacePathAuthMiddleware(BaseMiddleware):
         return workspace.group(1) if workspace is not None else None
 
     @database_sync_to_async
-    def user_has_workspace_access(self, user: User, workspace: str) -> bool:
-        return Membership.objects.filter(user=user.id, workspace=workspace, is_active=True).exists()
+    def get_membership(self, user: User, workspace: str) -> Membership | None:
+        membership = Membership.objects.filter(user=user.id, workspace=workspace, is_active=True).all()
+        return membership[0] if len(membership) > 0 else None

@@ -3,6 +3,7 @@ import uuid
 import pytest
 from django_multitenant.utils import set_current_tenant
 from notifications.models import Alert
+
 from api.schema import schema
 
 

@@ -95,6 +95,7 @@ def get_nodes_cli(
         namespace:  The namespace of the node to retrieve. By default it will not search and specific namespace.
         print:  Print the search response to the console. Defaults to True.
         to_file: Path to write the search response to. Does not write by default.
+        **kwargs: Additional kwargs to pass to the search.
 
     Returns:
 
@@ -162,8 +163,10 @@ def get_workspaces(
 
     """
     kwargs = parse_extra_args(ctx.args)
+
     if name is not None:
         kwargs["name"] = name
+
     return perform_type_query("Workspace", print=print, to_file=to_file, **kwargs)
 
 

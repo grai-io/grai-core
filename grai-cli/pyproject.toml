@@ -25,7 +25,6 @@ posthog = "^2.2.0"
 rich = "^12.6.0"
 grai-schemas = "^0.2.8"
 goodconf = {extras = ["yaml"], version = "^3.0.1"}
-email-validator = "^2.0.0.post2"
 
 [tool.isort]
 profile = "black"
