@@ -1,8 +1,8 @@
 import hashlib
 import hmac
 import json
-import uuid
 import logging
+import uuid
 
 from django.urls import path
 from django_multitenant.utils import get_current_tenant

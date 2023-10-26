@@ -4,14 +4,14 @@ import pytest
 from django.db.models import Q
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, mock
 
+from connections.adapters.schemas import model_to_schema
 from connections.task_helpers import (
     build_item_query_filter,
+    get_edge_nodes_from_database,
     get_node,
     process_updates,
     update,
-    get_edge_nodes_from_database,
 )
-from connections.adapters.schemas import model_to_schema
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 

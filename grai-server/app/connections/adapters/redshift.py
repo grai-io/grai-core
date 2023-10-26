@@ -1,5 +1,5 @@
-from grai_source_redshift.base import RedshiftIntegration
 from grai_schemas.v1.source import SourceV1
+from grai_source_redshift.base import RedshiftIntegration
 
 from .base import IntegrationAdapter
 

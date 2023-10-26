@@ -1,7 +1,7 @@
-from typing import List, Tuple
 from abc import ABC, abstractmethod
 from functools import cached_property
 from itertools import chain
+from typing import List, Tuple
 
 import sentry_sdk
 from django.db.models import Max

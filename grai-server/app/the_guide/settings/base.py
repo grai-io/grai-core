@@ -3,6 +3,7 @@ import subprocess
 import warnings
 from pathlib import Path
 
+import openai
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -316,7 +317,7 @@ EMAIL_FROM = config("EMAIL_FROM", None)
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)
 AWS_SES_REGION_NAME = config("AWS_SES_REGION", None)
-AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
+AWS_SES_REGION_ENDPOINT = config("AWS_SES_REGION_ENDPOINT", "email.us-west-2.amazonaws.com")
 
 # Celery settings
 
@@ -346,8 +347,6 @@ AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
 GITHUB_APP_ID = config("GITHUB_APP_ID", None)
 GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)
 
-SERVER_URL = config("SERVER_URL", f"https://{SERVER_HOST}")
-
 REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", REDIS_HOST)
 REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", REDIS_PORT)
 
@@ -364,3 +363,37 @@ CACHES = {
 OTP_TOTP_ISSUER = "Grai Cloud"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# OpenAI
+
+OPENAI_API_KEY = config("OPENAI_API_KEY", None)
+OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+
+openai.organization = OPENAI_ORG_ID
+openai.api_key = OPENAI_API_KEY
+
+try:
+    models = [item["id"] for item in openai.Model.list()["data"]]
+except openai.error.AuthenticationError as e:
+    HAS_OPENAI = False
+else:
+    if len(models) == 0:
+        message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
+        warnings.warn(message)
+
+        HAS_OPENAI = False
+        OPENAI_PREFERRED_MODEL = ""
+    elif OPENAI_PREFERRED_MODEL not in models:
+        default_model = models[0]
+        message = (
+            f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
+            f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
+            f"In the mean time we've defaulted to {default_model}."
+        )
+        warnings.warn(message)
+
+        HAS_OPENAI = True
+        OPENAI_PREFERRED_MODEL = default_model
+    else:
+        HAS_OPENAI = True
