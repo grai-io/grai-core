@@ -81,16 +81,20 @@ class WorkspaceAdmin(admin.ModelAdmin):
         "id",
         "name",
         "organisation",
+        "sample_data",
         "node_count",
         "connection_count",
         "search_enabled",
+        "ai_enabled",
         "created_at",
     )
 
     list_filter = (
         ("created_at", DateFieldListFilter),
         ("organisation", admin.RelatedOnlyFieldListFilter),
+        "sample_data",
         "search_enabled",
+        "ai_enabled",
         "name",
     )
 

@@ -102,7 +102,7 @@ class Mutation:
                 )
 
             try:
-                workspace = WorkspaceModel.objects.create(organisation=organisation, name=name)
+                workspace = WorkspaceModel.objects.create(organisation=organisation, name=name, sample_data=sample_data)
             except IntegrityError as exc:
                 handle_unique_error(exc, "Workspace name already exists, choose another one")
 

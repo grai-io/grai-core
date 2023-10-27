@@ -545,6 +545,8 @@ class Workspace:
     id: strawberry.auto
     name: strawberry.auto
 
+    sample_data: strawberry.auto
+
     created_at: strawberry.auto
     updated_at: strawberry.auto
 
