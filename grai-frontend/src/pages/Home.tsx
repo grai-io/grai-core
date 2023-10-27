@@ -78,9 +78,7 @@ const Home: React.FC = () => {
 
   if (!workspace) return <NotFound />
 
-  const handleClose = () => {
-    setSearch(false)
-  }
+  const handleClose = () => setSearch(false)
 
   return (
     <>
