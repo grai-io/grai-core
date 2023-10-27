@@ -4475,6 +4475,22 @@
             "deprecationReason": null
           },
           {
+            "name": "status",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "icon",
             "description": null,
             "args": [],
@@ -4500,22 +4516,6 @@
           },
           {
             "name": "events",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "coming_soon",
             "description": null,
             "args": [],
             "type": {

@@ -35,6 +35,18 @@ class Connector(models.Model):
         (OPEN_LINEAGE, "openlineage"),
     ]
 
+    COMING_SOON = "coming_soon"
+    ALPHA = "alpha"
+    BETA = "beta"
+    GENERAL_RELEASE = "general_release"
+
+    CONNECTOR_STATUSES = [
+        (COMING_SOON, "coming_soon"),
+        (ALPHA, "alpha"),
+        (BETA, "beta"),
+        (GENERAL_RELEASE, "general_release"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255, choices=CONNECTOR_SLUGS, blank=True, null=True)
@@ -43,7 +55,7 @@ class Connector(models.Model):
     icon = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=255, blank=True, null=True)
     events = models.BooleanField(default=False)
-    coming_soon = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, choices=CONNECTOR_STATUSES, default=GENERAL_RELEASE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

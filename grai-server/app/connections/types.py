@@ -19,9 +19,9 @@ class ConnectorOrder:
     id: strawberry.auto
     name: strawberry.auto
     is_active: strawberry.auto
+    status: strawberry.auto
     category: strawberry.auto
     events: strawberry.auto
-    coming_soon: strawberry.auto
 
 
 @strawberry.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
@@ -31,7 +31,7 @@ class Connector:
     slug: strawberry.auto
     metadata: JSON
     is_active: strawberry.auto
+    status: strawberry.auto
     icon: Optional[str]
     category: Optional[str]
     events: strawberry.auto
-    coming_soon: strawberry.auto

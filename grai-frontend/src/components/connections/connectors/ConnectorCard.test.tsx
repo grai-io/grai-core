@@ -26,7 +26,7 @@ test("coming soon", async () => {
         id: "1",
         name: "connector 1",
         metadata: null,
-        coming_soon: true,
+        status: "coming_soon",
       }}
       onSelect={() => {}}
     />,
