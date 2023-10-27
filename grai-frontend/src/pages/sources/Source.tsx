@@ -9,7 +9,7 @@ import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
 import SourceLineage from "components/sources/SourceLineage"
 import SourceMenu from "components/sources/SourceMenu"
-import SourceTables from "components/sources/SourceTables"
+import SourceNodes from "components/sources/SourceNodes"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetSource, GetSourceVariables } from "./__generated__/GetSource"
@@ -77,9 +77,9 @@ const Source: React.FC = () => {
       noWrapper: true,
     },
     {
-      value: "tables",
-      label: "Tables",
-      component: <SourceTables source={source} workspaceId={workspace.id} />,
+      value: "nodes",
+      label: "Nodes",
+      component: <SourceNodes source={source} workspaceId={workspace.id} />,
     },
     {
       value: "lineage",

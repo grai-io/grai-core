@@ -4,13 +4,13 @@ import { Typography } from "@mui/material"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import {
-  GetSourceTables,
-  GetSourceTablesVariables,
-} from "./__generated__/GetSourceTables"
-import SourceTablesTable from "./SourceTablesTable"
+  GetSourceNodes,
+  GetSourceNodesVariables,
+} from "./__generated__/GetSourceNodes"
+import SourceNodesTable from "./SourceNodesTable"
 
 export const GET_SOURCE_TABLES = gql`
-  query GetSourceTables(
+  query GetSourceNodes(
     $workspaceId: ID!
     $sourceId: ID!
     $offset: Int
@@ -21,7 +21,7 @@ export const GET_SOURCE_TABLES = gql`
       source(id: $sourceId) {
         id
         nodes(
-          filters: { node_type: "Table" }
+          # filters: { node_type: "Table" }
           pagination: { limit: 20, offset: $offset }
           search: $search
         ) {
@@ -30,6 +30,24 @@ export const GET_SOURCE_TABLES = gql`
             namespace
             name
             display_name
+            is_active
+            metadata
+            data_sources {
+              data {
+                id
+                name
+                connections {
+                  data {
+                    id
+                    connector {
+                      id
+                      name
+                      slug
+                    }
+                  }
+                }
+              }
+            }
           }
           meta {
             filtered
@@ -44,18 +62,18 @@ interface Source {
   id: string
 }
 
-type SourceTablesProps = {
+type SourceNodesProps = {
   source: Source
   workspaceId: string
 }
 
-const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
+const SourceNodes: React.FC<SourceNodesProps> = ({ source, workspaceId }) => {
   const [search, setSearch] = useState<string | null>(null)
   const [page, setPage] = useState<number>(0)
 
   const { loading, error, data, refetch } = useQuery<
-    GetSourceTables,
-    GetSourceTablesVariables
+    GetSourceNodes,
+    GetSourceNodesVariables
   >(GET_SOURCE_TABLES, {
     variables: {
       workspaceId,
@@ -78,13 +96,11 @@ const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
 
   if (error) return <GraphError error={error} />
 
-  const tables = data?.workspace?.source?.nodes.data ?? []
+  const nodes = data?.workspace?.source?.nodes.data ?? []
 
-  if (tables.length === 0 && !search && !loading) {
+  if (nodes.length === 0 && !search && !loading) {
     return (
-      <Typography sx={{ textAlign: "center", p: 5 }}>
-        No tables found
-      </Typography>
+      <Typography sx={{ textAlign: "center", p: 5 }}>No nodes found</Typography>
     )
   }
 
@@ -95,8 +111,8 @@ const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
         onSearch={handleSearch}
         onRefresh={handleRefresh}
       />
-      <SourceTablesTable
-        tables={tables}
+      <SourceNodesTable
+        nodes={nodes}
         total={data?.workspace?.source?.nodes.meta.filtered ?? 0}
         page={page}
         onPageChange={setPage}
@@ -106,4 +122,4 @@ const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
   )
 }
 
-export default SourceTables
+export default SourceNodes
