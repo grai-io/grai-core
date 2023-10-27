@@ -76,36 +76,36 @@ test("tour", async () => {
   })
 })
 
-test("search", async () => {
-  const user = userEvent.setup()
+// test("search", async () => {
+//   const user = userEvent.setup()
 
-  render(<Home />, {
-    withRouter: true,
-  })
+//   render(<Home />, {
+//     withRouter: true,
+//   })
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
-    ).toBeTruthy()
-  })
+//   await waitFor(() => {
+//     expect(
+//       screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
+//     ).toBeTruthy()
+//   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toBeTruthy()
-  })
+//   await waitFor(() => {
+//     expect(screen.getByRole("textbox")).toBeTruthy()
+//   })
 
-  fireEvent.mouseDown(screen.getByRole("textbox"))
+//   fireEvent.mouseDown(screen.getByRole("textbox"))
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toBeInTheDocument()
-  })
+//   await waitFor(() => {
+//     expect(screen.getByRole("textbox")).toBeInTheDocument()
+//   })
 
-  await act(async () => await user.type(screen.getByRole("textbox"), "test"))
+//   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /close/i })),
-  )
-})
+//   await act(
+//     async () =>
+//       await user.click(screen.getByRole("button", { name: /close/i })),
+//   )
+// })
 
 test("error", async () => {
   const mocks = [

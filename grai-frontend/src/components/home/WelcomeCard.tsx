@@ -93,7 +93,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
         Welcome to Grai
       </Typography>
 
-      <TextField
+      {/* <TextField
         placeholder="Search data assets"
         onMouseDown={() => setSearch(true)}
         disabled
@@ -114,7 +114,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
             </InputAdornment>
           ),
         }}
-      />
+      /> */}
     </Box>
   </Card>
 )
