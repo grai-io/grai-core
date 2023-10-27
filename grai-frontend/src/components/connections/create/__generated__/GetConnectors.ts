@@ -14,7 +14,7 @@ export interface GetConnectors_connectors {
   metadata: any;
   icon: string | null;
   category: string | null;
-  coming_soon: boolean;
+  status: string;
 }
 
 export interface GetConnectors {

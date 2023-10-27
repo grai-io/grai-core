@@ -15,7 +15,7 @@ export interface Connector {
   id: string
   name: string
   icon?: string | null | ReactNode
-  coming_soon?: boolean
+  status?: string
   metadata: any
   to?: string
 }
@@ -67,7 +67,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
           </List>
         </CardActionArea>
       </Card>
-      {connector.coming_soon && (
+      {connector.status !== "general_release" && (
         <Box
           sx={{
             position: "relative",
@@ -91,7 +91,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
               textTransform: "uppercase",
             }}
           >
-            Coming soon
+            {connector.status?.replace("_", " ")}
           </Typography>
         </Box>
       )}

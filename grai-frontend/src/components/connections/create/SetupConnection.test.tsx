@@ -29,7 +29,7 @@ test("renders", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
@@ -48,14 +48,14 @@ test("submit", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i }))
+      await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 })
 
@@ -79,7 +79,7 @@ test("submit update", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
@@ -88,13 +88,13 @@ test("submit update", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /source/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i }))
+      await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 })
 
@@ -139,14 +139,14 @@ test("submit update error", async () => {
     {
       mocks,
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i }))
+      await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 
   await waitFor(() => {
@@ -174,7 +174,7 @@ test("renders file", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
@@ -200,7 +200,7 @@ test("renders file yaml", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test YAML Connector")).toBeInTheDocument()
@@ -228,7 +228,7 @@ test("upload file", async () => {
     />,
     {
       routes: ["/:organisationName/:workspaceName/runs/:runId"],
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
@@ -249,21 +249,21 @@ test("upload file", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /namespace/i }),
-        "test"
-      )
+        "test",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /source/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /finish/i }))
+      await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
   await waitFor(() => expect(screen.getByText("New Page")))
@@ -289,7 +289,7 @@ test("upload wrong file", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
@@ -305,7 +305,7 @@ test("upload wrong file", async () => {
   })
   fireEvent.drop(inputEl)
   expect(
-    await screen.findByText("File type must be application/json,.json")
+    await screen.findByText("File type must be application/json,.json"),
   ).toBeInTheDocument()
 })
 
@@ -351,7 +351,7 @@ test("upload file error", async () => {
       connection={null}
       setConnection={() => {}}
     />,
-    { withRouter: true, mocks }
+    { withRouter: true, mocks },
   )
 
   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
@@ -370,13 +370,13 @@ test("upload file error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /namespace/i }),
-        "test"
-      )
+        "test",
+      ),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /finish/i }))
+      await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
   await waitFor(() => {
@@ -393,14 +393,14 @@ test("renders coming soon", async () => {
         id: "1",
         name: "Test",
         metadata: {},
-        coming_soon: true,
+        status: "coming_soon",
       }}
       connection={null}
       setConnection={() => {}}
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Test Integration")).toBeInTheDocument()

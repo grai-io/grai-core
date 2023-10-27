@@ -17,7 +17,7 @@ export const GET_CONNECTORS = gql`
       metadata
       icon
       category
-      coming_soon
+      status
     }
   }
 `

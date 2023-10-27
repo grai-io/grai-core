@@ -24,7 +24,7 @@ test("renders other", async () => {
               id: "1",
               name: "PostgreSQL",
               category: null,
-              coming_soon: false,
+              status: "general_release",
               icon: "",
               metadata: {
                 fields: [
@@ -58,7 +58,7 @@ test("renders other", async () => {
               id: "2",
               name: "Data Tool",
               category: "data tools",
-              coming_soon: true,
+              status: "coming_soon",
               icon: "",
               metadata: {},
             },

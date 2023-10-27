@@ -288,7 +288,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
           .then(() => opts.forwardStep())
           .catch(() => {})
 
-  if (connector.coming_soon)
+  if (connector.status === "coming_soon")
     return <ConnectorComingSoon connector={connector} opts={opts} />
 
   if (connector.metadata?.file?.name)
