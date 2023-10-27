@@ -27,7 +27,7 @@ test("renders", async () => {
                 filtered: 2,
               },
             },
-            connections: {
+            sources: {
               meta: {
                 total: 1,
               },

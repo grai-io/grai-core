@@ -27,14 +27,14 @@ export interface GetCountsHome_workspace_nodes {
   meta: GetCountsHome_workspace_nodes_meta;
 }
 
-export interface GetCountsHome_workspace_connections_meta {
+export interface GetCountsHome_workspace_sources_meta {
   __typename: "PaginationResult";
   total: number;
 }
 
-export interface GetCountsHome_workspace_connections {
-  __typename: "ConnectionPagination";
-  meta: GetCountsHome_workspace_connections_meta;
+export interface GetCountsHome_workspace_sources {
+  __typename: "SourcePagination";
+  meta: GetCountsHome_workspace_sources_meta;
 }
 
 export interface GetCountsHome_workspace {
@@ -42,7 +42,7 @@ export interface GetCountsHome_workspace {
   id: any;
   runs: GetCountsHome_workspace_runs;
   nodes: GetCountsHome_workspace_nodes;
-  connections: GetCountsHome_workspace_connections;
+  sources: GetCountsHome_workspace_sources;
 }
 
 export interface GetCountsHome {
