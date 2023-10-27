@@ -11,24 +11,30 @@ import { useNavigate } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
+import DataSourcesStack, { Source } from "components/tables/DataSourcesStack"
 import TableCell from "components/tables/TableCell"
+import TagsStack from "components/tables/TagsStack"
 
-interface SourceTable {
+interface SourceNode {
   id: string
-  display_name: string
   namespace: string
+  name: string
+  display_name: string
+  is_active: boolean
+  metadata: any
+  data_sources: { data: Source[] }
 }
 
-type SourceTablesTableProps = {
-  tables: SourceTable[]
+type SourceNodesTableProps = {
+  nodes: SourceNode[]
   loading?: boolean
   total: number
   page: number
   onPageChange: (page: number) => void
 }
 
-const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
-  tables,
+const SourceNodesTable: React.FC<SourceNodesTableProps> = ({
+  nodes,
   loading,
   total,
   page,
@@ -43,18 +49,32 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
+          <TableCell>Node Type</TableCell>
+          <TableCell>Data Sources</TableCell>
+          <TableCell>Active</TableCell>
+          <TableCell>Tags</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {tables.map(table => (
+        {nodes.map(node => (
           <TableRow
-            key={table.id}
+            key={node.id}
+            onClick={() => navigate(`${routePrefix}/nodes/${node.id}`)}
             hover
-            onClick={() => navigate(`${routePrefix}/nodes/${table.id}`)}
-            sx={{ cursor: "pointer" }}
+            sx={{
+              cursor: "pointer",
+            }}
           >
-            <TableCell>{table.display_name}</TableCell>
-            <TableCell>{table.namespace}</TableCell>
+            <TableCell>{node.display_name ?? node.name}</TableCell>
+            <TableCell>{node.namespace}</TableCell>
+            <TableCell>{node.metadata?.grai?.node_type}</TableCell>
+            <TableCell sx={{ py: 0, pl: 1 }}>
+              <DataSourcesStack data_sources={node.data_sources} />
+            </TableCell>
+            <TableCell>{node.is_active ? "Yes" : "No"}</TableCell>
+            <TableCell sx={{ py: 0 }}>
+              <TagsStack tags={node.metadata?.grai?.tags} />
+            </TableCell>
           </TableRow>
         ))}
         {loading && (
@@ -64,10 +84,10 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
             </TableCell>
           </TableRow>
         )}
-        {!loading && tables.length === 0 && (
+        {!loading && nodes.length === 0 && (
           <TableRow>
             <TableCell colSpan={99} sx={{ py: 10, textAlign: "center" }}>
-              <Typography>No tables found</Typography>
+              <Typography>No nodes found</Typography>
             </TableCell>
           </TableRow>
         )}
@@ -78,11 +98,11 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
           rowsPerPage={20}
           page={page}
           onPageChange={onPageChange}
-          type="tables"
+          type="nodes"
         />
       </TableFooter>
     </Table>
   )
 }
 
-export default SourceTablesTable
+export default SourceNodesTable

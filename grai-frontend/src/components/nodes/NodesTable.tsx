@@ -1,8 +1,6 @@
 import React from "react"
 import {
   Box,
-  Chip,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +16,7 @@ import { Order } from "pages/nodes/Nodes"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
 import DataSourcesStack, { Source } from "components/tables/DataSourcesStack"
+import TagsStack from "components/tables/TagsStack"
 
 type TableHeadCellProps = {
   property: string
@@ -124,11 +123,7 @@ const NodesTable: React.FC<NodesTableProps> = ({
             </TableCell>
             <TableCell>{node.is_active ? "Yes" : "No"}</TableCell>
             <TableCell sx={{ py: 0 }}>
-              <Stack direction="row" spacing={1}>
-                {node.metadata?.grai?.tags?.map((tag: string) => (
-                  <Chip label={tag} key={tag} />
-                ))}
-              </Stack>
+              <TagsStack tags={node.metadata?.grai?.tags} />
             </TableCell>
           </TableRow>
         ))}

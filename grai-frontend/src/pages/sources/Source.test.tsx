@@ -2,7 +2,7 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import { GET_SOURCE_TABLES } from "components/sources/SourceTables"
+import { GET_SOURCE_TABLES } from "components/sources/SourceNodes"
 import { UPDATE_SOURCE } from "components/sources/UpdateSource"
 import Source, { GET_SOURCE } from "./Source"
 
@@ -165,7 +165,7 @@ test("submit error", async () => {
   })
 })
 
-test("renders tables", async () => {
+test("renders nodes", async () => {
   const user = userEvent.setup()
 
   render(<Source />, {
@@ -177,11 +177,11 @@ test("renders tables", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /tables/i })).toBeTruthy()
+    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
+    async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
@@ -216,7 +216,7 @@ const searchMock = (search: string | null = null) => ({
   },
 })
 
-test("empty tables", async () => {
+test("empty nodes", async () => {
   const mocks = [sourceMock, searchMock()]
 
   const user = userEvent.setup()
@@ -231,19 +231,19 @@ test("empty tables", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /tables/i })).toBeTruthy()
+    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
+    async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })
 
-test("search tables", async () => {
+test("search nodes", async () => {
   const mocks = [sourceMock, searchMock(), searchMock("S"), searchMock("Se")]
 
   const user = userEvent.setup()
@@ -258,11 +258,11 @@ test("search tables", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /tables/i })).toBeTruthy()
+    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
+    async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
@@ -271,11 +271,11 @@ test("search tables", async () => {
   await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })
 
-test("tables error", async () => {
+test("nodes error", async () => {
   const user = userEvent.setup()
 
   const mocks = [
@@ -302,11 +302,11 @@ test("tables error", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /tables/i })).toBeTruthy()
+    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
+    async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
   await waitFor(() => {
@@ -314,19 +314,19 @@ test("tables error", async () => {
   })
 })
 
-test("tables click row", async () => {
+test("nodes click row", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<Source />, {
-    routes: ["/:organisationName/:workspaceName/nodes/:tableId"],
+    routes: ["/:organisationName/:workspaceName/nodes/:nodeId"],
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /tables/i })).toBeTruthy()
+    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
+    async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
   await act(
