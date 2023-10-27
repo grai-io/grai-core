@@ -31,6 +31,7 @@ class Workspace(TenantModel):
         related_name="workspaces",
         on_delete=models.CASCADE,
     )
+    sample_data = models.BooleanField(default=False)
     search_enabled = models.BooleanField(default=True)
     ai_enabled = models.BooleanField(default=True)
 
