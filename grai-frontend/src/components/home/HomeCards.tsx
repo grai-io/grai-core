@@ -2,7 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import { Connections } from "components/icons"
+import { ConnectionsLarge } from "components/icons"
 import GraphError from "components/utils/GraphError"
 import {
   GetCountsHome,
@@ -77,7 +77,7 @@ const HomeCards: React.FC = () => {
         <HomeCard
           text="Add Connection"
           color="#8338EC"
-          icon={<Connections />}
+          icon={<ConnectionsLarge />}
           to="connections/create"
           className="add-connection"
         />
