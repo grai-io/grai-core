@@ -1,6 +1,6 @@
 import React from "react"
 
-const Connections2: React.FC = () => (
+const ConnectionsLarge: React.FC = () => (
   <svg
     width="40"
     height="40"
@@ -32,4 +32,4 @@ const Connections2: React.FC = () => (
   </svg>
 )
 
-export default Connections2
+export default ConnectionsLarge

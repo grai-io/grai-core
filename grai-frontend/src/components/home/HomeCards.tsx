@@ -2,7 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import { Connections2 } from "components/icons"
+import { ConnectionsLarge } from "components/icons"
 import GraphError from "components/utils/GraphError"
 import {
   GetCountsHome,
@@ -24,7 +24,7 @@ export const GET_COUNTS = gql`
           filtered
         }
       }
-      connections {
+      sources {
         meta {
           total
         }
@@ -59,10 +59,10 @@ const HomeCards: React.FC = () => {
       </Grid>
       <Grid item md={3}>
         <HomeCard
-          count={data?.workspace.connections.meta.total}
-          text="Connections"
+          count={data?.workspace.sources.meta.total}
+          text="Sources"
           color="#8338EC"
-          to="connections"
+          to="sources"
         />
       </Grid>
       <Grid item md={3}>
@@ -77,7 +77,7 @@ const HomeCards: React.FC = () => {
         <HomeCard
           text="Add Connection"
           color="#8338EC"
-          icon={<Connections2 />}
+          icon={<ConnectionsLarge />}
           to="connections/create"
           className="add-connection"
         />
