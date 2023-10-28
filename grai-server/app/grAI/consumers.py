@@ -88,7 +88,7 @@ class ChatConsumer(WebsocketConsumer):
             agent = MessageRoles.SYSTEM.value
         else:
             if payload.chat_id not in self.conversations:
-                self.conversations[payload.chat_id] = get_chat_conversation(payload.chat_id)
+                self.conversations[payload.chat_id] = get_chat_conversation(payload.chat_id, workspace=self.workspace)
 
             response = self.conversations[payload.chat_id].request(payload.message)
             agent = MessageRoles.AGENT.value

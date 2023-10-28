@@ -216,3 +216,9 @@ def edge_model_to_edge_v1_schema(model: Edge, schema_type: Literal["EdgeV1"]) ->
     model_dict["destination"] = NodeNamedID(**model.destination.__dict__)
     model_dict["destination"] = {"id": model_dict.pop("destination_id")}
     return EdgeV1.from_spec(model_dict)
+
+
+@model_to_schema.register
+def sequence_model_to_sequence_v1_schema(models: list | tuple, schema_type: str) -> list | tuple:
+    iter = (model_to_schema(model, schema_type) for model in models)
+    return type(models)(iter)
