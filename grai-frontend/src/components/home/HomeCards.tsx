@@ -14,7 +14,7 @@ export const GET_COUNTS = gql`
   query GetCountsHome($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      runs(filters: { action: TESTS }) {
+      runs(filters: { action: TESTS }, order: { created_at: DESC }) {
         meta {
           filtered
         }

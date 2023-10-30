@@ -6,6 +6,7 @@ import { addMocksToSchema, IMocks } from "@graphql-tools/mock"
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import { buildClientSchema, printSchema } from "graphql/utilities"
 import introspectionResult from "./schema.json"
+import { typePolicies } from "client"
 
 type AutoMockedProviderProps = {
   children: ReactNode
@@ -22,14 +23,23 @@ const AutoMockedProvider: React.FC<AutoMockedProviderProps> = ({
 }) => {
   if (mocks)
     return (
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider
+        mocks={mocks}
+        addTypename={false}
+        cache={
+          new InMemoryCache({
+            addTypename: false,
+            typePolicies,
+          })
+        }
+      >
         {children}
       </MockedProvider>
     )
 
   // 1) Convert JSON schema into Schema Definition Language
   const schemaSDL = printSchema(
-    buildClientSchema({ __schema: introspectionResult.__schema as any })
+    buildClientSchema({ __schema: introspectionResult.__schema as any }),
   )
 
   // 2) Make schema "executable"
