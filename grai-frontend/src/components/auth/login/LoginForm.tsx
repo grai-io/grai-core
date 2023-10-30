@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Box, InputLabel, Link, TextField, styled } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
@@ -9,7 +10,6 @@ import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
 import { DeviceRequest } from "./LoginWrapper"
 import useAuth from "../useAuth"
-import hubspot from "hubspot"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {

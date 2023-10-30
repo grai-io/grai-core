@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
@@ -18,7 +19,6 @@ import {
 } from "./__generated__/LoginWithToken"
 import { Device } from "./LoginWrapper"
 import useAuth from "../useAuth"
-import hubspot from "hubspot"
 
 export const LOGIN = gql`
   mutation LoginWithToken(

@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { InputLabel, TextField, styled } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Register, RegisterVariables } from "./__generated__/Register"
 import useAuth from "../useAuth"
-import hubspot from "hubspot"
 
 export const REGISTER = gql`
   mutation Register($username: String!, $name: String!, $password: String!) {
