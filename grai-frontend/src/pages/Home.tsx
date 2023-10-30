@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import { ShepherdTourContext } from "react-shepherd"
-import useLocalState from "helpers/useLocalState"
+// import { ShepherdTourContext } from "react-shepherd"
+// import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
@@ -44,12 +44,12 @@ export const GET_WORKSPACE = gql`
 
 const Home: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
-  const tour = useContext(ShepherdTourContext)
+  // const tour = useContext(ShepherdTourContext)
   const [search, setSearch] = useState(false)
-  const [tourHidden, setTourHidden] = useLocalState(
-    "getting-started-tour",
-    false,
-  )
+  // const [tourHidden, setTourHidden] = useLocalState(
+  //   "getting-started-tour",
+  //   false,
+  // )
 
   const { loading, error, data } = useQuery<
     GetWorkspaceHome,
@@ -61,15 +61,15 @@ const Home: React.FC = () => {
     },
   })
 
-  useEffect(() => {
-    if (!tour || tourHidden) return
+  // useEffect(() => {
+  //   if (!tour || tourHidden) return
 
-    tour.on("cancel", () => {
-      setTourHidden(true)
-    })
+  //   tour.on("cancel", () => {
+  //     setTourHidden(true)
+  //   })
 
-    tour.start()
-  }, [tour, tourHidden, setTourHidden])
+  //   tour.start()
+  // }, [tour, tourHidden, setTourHidden])
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
