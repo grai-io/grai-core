@@ -50,6 +50,7 @@ class Mutation:
         schedules: Optional[JSON] = None,
         is_active: bool = True,
         temp: bool = False,
+        validated: bool = False,
     ) -> Connection:
         def _create_connection(
             info: Info,
@@ -64,6 +65,7 @@ class Mutation:
             schedules: Optional[JSON],
             is_active: bool,
             temp: bool,
+            validated: bool,
         ) -> Connection:
             workspace = get_workspace(info, workspaceId)
             sourceId = resolve_sourceId(workspace, sourceId, sourceName)
@@ -79,6 +81,7 @@ class Mutation:
                 schedules=schedules,
                 is_active=is_active,
                 temp=temp,
+                validated=validated,
             )
 
             return connection
@@ -96,6 +99,7 @@ class Mutation:
             schedules,
             is_active,
             temp,
+            validated,
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -112,6 +116,7 @@ class Mutation:
         schedules: Optional[JSON] = None,
         is_active: Optional[bool] = None,
         temp: Optional[bool] = None,
+        validated: Optional[bool] = None,
     ) -> Connection:
         def _update_connection(
             info: Info,
@@ -125,6 +130,7 @@ class Mutation:
             schedules: Optional[JSON],
             is_active: Optional[bool],
             temp: Optional[bool],
+            validated: Optional[bool],
         ) -> Connection:
             user = get_user(info)
 
@@ -157,6 +163,8 @@ class Mutation:
                 connection.is_active = is_active
             if temp is not None:
                 connection.temp = temp
+            if validated is not None:
+                connection.validated = validated
             connection.save()
 
             return connection
@@ -173,6 +181,7 @@ class Mutation:
             schedules,
             is_active,
             temp,
+            validated,
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
