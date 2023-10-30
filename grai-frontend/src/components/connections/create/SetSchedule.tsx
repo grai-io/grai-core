@@ -32,7 +32,7 @@ export const UPDATE_CONNECTION = gql`
       id: $id
       schedules: $schedules
       is_active: $is_active
-      temp: false
+      validated: true
     ) {
       id
       schedules

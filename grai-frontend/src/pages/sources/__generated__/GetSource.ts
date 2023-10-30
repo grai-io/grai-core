@@ -24,6 +24,7 @@ export interface GetSource_workspace_source_connections_data {
   __typename: "Connection";
   id: any;
   name: string;
+  validated: boolean;
   connector: GetSource_workspace_source_connections_data_connector;
   last_run: GetSource_workspace_source_connections_data_last_run | null;
 }

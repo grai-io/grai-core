@@ -44,7 +44,6 @@ export const CREATE_CONNECTION = gql`
       name: $name
       metadata: $metadata
       secrets: $secrets
-      temp: true
     ) {
       id
       connector {

@@ -16,7 +16,7 @@ interface Workspace {
 }
 
 type AddSourceButtonProps = {
-  workspace: Workspace
+  workspace: Workspace | undefined
 }
 
 const AddSourceButton: React.FC<AddSourceButtonProps> = ({ workspace }) => {
@@ -34,7 +34,7 @@ const AddSourceButton: React.FC<AddSourceButtonProps> = ({ workspace }) => {
     },
   }
 
-  if (workspace.sample_data) {
+  if (workspace?.sample_data) {
     const handleClick = () => setShow(true)
 
     return (
@@ -59,6 +59,7 @@ const AddSourceButton: React.FC<AddSourceButtonProps> = ({ workspace }) => {
       component={Link}
       to={`${routePrefix}/connections/create`}
       {...defaultProps}
+      disabled={!workspace}
     >
       Add Source
     </Button>

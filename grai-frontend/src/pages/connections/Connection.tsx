@@ -22,6 +22,7 @@ import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
+import SetupIncomplete from "components/sources/SetupIncomplete"
 
 export const GET_CONNECTION = gql`
   query GetConnection(
@@ -35,6 +36,7 @@ export const GET_CONNECTION = gql`
         id
         namespace
         name
+        validated
         connector {
           id
           name
@@ -162,6 +164,7 @@ const Connection: React.FC = () => {
         title={connection.name}
         status={
           <>
+            {!connection.validated && <SetupIncomplete />}
             {connection.last_run && (
               <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
             )}

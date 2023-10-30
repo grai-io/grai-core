@@ -6,6 +6,7 @@ import ConnectionMenu from "components/connections/ConnectionMenu"
 import ConnectorIcon from "components/connectors/ConnectorIcon"
 import RunStatus from "components/runs/RunStatus"
 import TableCell from "components/tables/TableCell"
+import SetupIncomplete from "./SetupIncomplete"
 
 interface Connector {
   id: string
@@ -23,6 +24,7 @@ export interface Connection {
   name: string
   connector: Connector
   last_run: Run | null
+  validated: boolean
 }
 
 type SourceConnectionsTableProps = {
@@ -61,6 +63,7 @@ const SourceConnectionsTable: React.FC<SourceConnectionsTableProps> = ({
             </TableCell>
             <TableCell>{connection.name}</TableCell>
             <TableCell sx={{ p: 0 }}>
+              {!connection.validated && <SetupIncomplete />}
               {connection.last_run && <RunStatus run={connection.last_run} />}
             </TableCell>
             <TableCell sx={{ p: 0 }} stopPropagation>

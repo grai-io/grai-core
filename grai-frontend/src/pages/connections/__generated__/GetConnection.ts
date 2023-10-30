@@ -80,6 +80,7 @@ export interface GetConnection_workspace_connection {
   id: any;
   namespace: string;
   name: string;
+  validated: boolean;
   connector: GetConnection_workspace_connection_connector;
   metadata: any;
   schedules: any | null;

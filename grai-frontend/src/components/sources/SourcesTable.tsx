@@ -17,6 +17,7 @@ import RunStatus from "components/runs/RunStatus"
 import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
 import SourcesMenu from "./SourcesMenu"
+import SetupIncomplete from "./SetupIncomplete"
 
 interface Connector {
   id: string
@@ -35,6 +36,7 @@ interface Connection {
   name: string
   connector: Connector
   last_run: Run | null
+  validated: boolean
 }
 
 interface Source {
@@ -124,6 +126,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
                     <Typography variant="body2" sx={{ ml: 1, flexGrow: 1 }}>
                       {connection.name}
                     </Typography>
+                    {!connection.validated && <SetupIncomplete size="small" />}
                     {connection.last_run && (
                       <RunStatus
                         run={connection.last_run}

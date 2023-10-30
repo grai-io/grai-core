@@ -30,6 +30,7 @@ export const GET_SOURCE = gql`
           data {
             id
             name
+            validated
             connector {
               id
               name
