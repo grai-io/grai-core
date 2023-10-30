@@ -7,6 +7,11 @@
 // GraphQL query operation: GetSources
 // ====================================================
 
+export interface GetSources_workspace_organisation {
+  __typename: "Organisation";
+  id: any;
+}
+
 export interface GetSources_workspace_sources_data_nodes_meta {
   __typename: "PaginationResult";
   total: number;
@@ -77,6 +82,8 @@ export interface GetSources_workspace_sources {
 export interface GetSources_workspace {
   __typename: "Workspace";
   id: any;
+  sample_data: boolean;
+  organisation: GetSources_workspace_organisation;
   sources: GetSources_workspace_sources;
 }
 

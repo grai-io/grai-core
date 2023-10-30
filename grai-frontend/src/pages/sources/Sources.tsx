@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Add } from "@mui/icons-material"
-import { Button } from "@mui/material"
-import { Link } from "react-router-dom"
+import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
+import AddSourceButton from "components/sources/add_source/AddSourceButton"
 import SourcesTable from "components/sources/SourcesTable"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
@@ -15,6 +14,10 @@ export const GET_SOURCES = gql`
   query GetSources($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
+      sample_data
+      organisation {
+        id
+      }
       sources {
         data {
           id
@@ -56,7 +59,7 @@ export const GET_SOURCES = gql`
 
 const Sources: React.FC = () => {
   const [search, setSearch] = useState<string>()
-  const { organisationName, workspaceName, routePrefix } = useWorkspace()
+  const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data, refetch } = useQuery<
     GetSources,
@@ -72,7 +75,11 @@ const Sources: React.FC = () => {
 
   if (error) return <GraphError error={error} />
 
-  const sources = data?.workspace.sources.data ?? []
+  const workspace = data?.workspace
+
+  if (!workspace) return <NotFound />
+
+  const sources = workspace.sources.data
 
   const filteredSources = search
     ? sources.filter(source =>
@@ -84,22 +91,7 @@ const Sources: React.FC = () => {
     <>
       <PageHeader
         title="Sources"
-        buttons={
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            component={Link}
-            to={`${routePrefix}/connections/create`}
-            sx={{
-              backgroundColor: "#FC6016",
-              boxShadow: "0px 4px 6px rgba(252, 96, 22, 0.2)",
-              borderRadius: "8px",
-              height: "40px",
-            }}
-          >
-            Add Source
-          </Button>
-        }
+        buttons={<AddSourceButton workspace={workspace} />}
       />
       <PageContent>
         <TableHeader
@@ -111,7 +103,7 @@ const Sources: React.FC = () => {
           sources={filteredSources}
           workspaceId={data?.workspace.id}
           loading={loading}
-          total={data?.workspace.sources.meta.total ?? 0}
+          total={workspace.sources.meta.total}
         />
       </PageContent>
     </>
