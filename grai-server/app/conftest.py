@@ -156,6 +156,7 @@ async def generate_connection(
     connector: Connector = None,
     source: Source = None,
     temp: bool = False,
+    validated: bool = False,
 ):
     connector = connector if connector else await generate_connector()
 
@@ -170,6 +171,7 @@ async def generate_connection(
         metadata={},
         secrets={},
         temp=temp,
+        validated=validated,
     )
 
 

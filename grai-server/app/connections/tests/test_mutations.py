@@ -418,7 +418,7 @@ async def test_update_connection_no_membership(test_context):
 @pytest.mark.django_db
 async def test_update_connection_temp(test_context):
     context, organisation, workspace, user, membership = test_context
-    connection = await generate_connection(workspace, temp=True)
+    connection = await generate_connection(workspace, temp=False)
 
     mutation = """
         mutation UpdateConnection($id: ID!, $temp: Boolean) {
@@ -443,7 +443,44 @@ async def test_update_connection_temp(test_context):
         "id": str(connection.id),
         "temp": True,
     }
+
+    await connection.arefresh_from_db()
+
     assert connection.temp is True
+
+
+@pytest.mark.django_db
+async def test_update_connection_validated(test_context):
+    context, organisation, workspace, user, membership = test_context
+    connection = await generate_connection(workspace, validated=False)
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $validated: Boolean) {
+            updateConnection(id: $id, validated: $validated) {
+                id
+                validated
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "validated": True,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateConnection"] == {
+        "id": str(connection.id),
+        "validated": True,
+    }
+
+    await connection.arefresh_from_db()
+
+    assert connection.validated is True
 
 
 @pytest.mark.django_db
