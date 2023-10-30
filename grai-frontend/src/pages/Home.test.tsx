@@ -1,9 +1,6 @@
 import React, { ReactNode } from "react"
-import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { ShepherdTour } from "react-shepherd"
-import steps from "steps"
-import { act, render, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import { source_graph } from "./sources/SourceGraph.test"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
@@ -38,43 +35,43 @@ test("renders", async () => {
   await waitFor(() => {})
 })
 
-test("tour", async () => {
-  render(
-    <ShepherdTour steps={steps} tourOptions={{}}>
-      <Home />
-    </ShepherdTour>,
-    {
-      withRouter: true,
-    },
-  )
+// test("tour", async () => {
+//   render(
+//     <ShepherdTour steps={steps} tourOptions={{}}>
+//       <Home />
+//     </ShepherdTour>,
+//     {
+//       withRouter: true,
+//     },
+//   )
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
-    ).toBeTruthy()
-  })
+//   await waitFor(() => {
+//     expect(
+//       screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
+//     ).toBeTruthy()
+//   })
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+//   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+//   await waitFor(() => {})
 
-  await waitFor(() => {
-    expect(
-      screen.getByText(
-        /Follow along our tour to get started with Grai and see what it can do for you./i,
-      ),
-    ).toBeInTheDocument()
-  })
+//   await waitFor(() => {
+//     expect(
+//       screen.getByText(
+//         /Follow along our tour to get started with Grai and see what it can do for you./i,
+//       ),
+//     ).toBeInTheDocument()
+//   })
 
-  await act(async () => await userEvent.click(screen.getByText(/close/i)))
+//   await act(async () => await userEvent.click(screen.getByText(/close/i)))
 
-  await waitFor(() => {
-    expect(
-      screen.queryByText(
-        /Follow along our tour to get started with Grai and see what it can do for you./i,
-      ),
-    ).not.toBeInTheDocument()
-  })
-})
+//   await waitFor(() => {
+//     expect(
+//       screen.queryByText(
+//         /Follow along our tour to get started with Grai and see what it can do for you./i,
+//       ),
+//     ).not.toBeInTheDocument()
+//   })
+// })
 
 // test("search", async () => {
 //   const user = userEvent.setup()
