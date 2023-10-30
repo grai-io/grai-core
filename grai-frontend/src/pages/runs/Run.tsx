@@ -26,6 +26,7 @@ export const GET_RUN = gql`
         connection {
           id
           name
+          validated
           connector {
             id
             name

@@ -6,12 +6,13 @@ import ConnectionsMenu from "./ConnectionsMenu"
 const connection = {
   id: "1",
   name: "Test Connection",
+  validated: true,
   runs: { data: [] },
   last_run: null,
   last_successful_run: null,
   connector: {
     events: true,
-  }
+  },
 }
 
 test("renders", async () => {

@@ -25,6 +25,7 @@ export const GET_CONNECTIONS = gql`
           namespace
           name
           is_active
+          validated
           connector {
             id
             name
