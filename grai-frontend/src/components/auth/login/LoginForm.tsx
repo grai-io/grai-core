@@ -9,6 +9,7 @@ import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
 import { DeviceRequest } from "./LoginWrapper"
 import useAuth from "../useAuth"
+import hubspot from "hubspot"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -62,6 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onDeviceRequest }) => {
 
         if (res.__typename === "User") {
           posthog.identify(res.id, { email: res.username })
+          hubspot.push(["identify", { email: res.username }])
           setLoggedIn(true)
           return
         }

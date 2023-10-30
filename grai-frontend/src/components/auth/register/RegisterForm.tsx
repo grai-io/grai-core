@@ -7,6 +7,7 @@ import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Register, RegisterVariables } from "./__generated__/Register"
 import useAuth from "../useAuth"
+import hubspot from "hubspot"
 
 export const REGISTER = gql`
   mutation Register($username: String!, $name: String!, $password: String!) {
@@ -49,7 +50,11 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = async () =>
     register({ variables: values })
       .then(data => data.data?.register)
-      .then(user => user && posthog.identify(user.id, { email: user.username }))
+      .then(user => {
+        if (!user) return
+        posthog.identify(user.id, { email: user.username })
+        hubspot.push(["identify", { email: user.username }])
+      })
       .then(() => setLoggedIn(true))
       .catch(() => {})
 
