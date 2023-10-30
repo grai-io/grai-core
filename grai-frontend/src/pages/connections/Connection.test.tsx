@@ -37,6 +37,7 @@ test("refresh", async () => {
               id: "1",
               name: "Connection 1",
               namespace: "default",
+              validated: true,
               connector: {
                 id: "1",
                 name: "c1",
@@ -188,6 +189,7 @@ test("refresh no last_sucessful_run", async () => {
               id: "1",
               name: "Connection 1",
               namespace: "default",
+              validated: true,
               connector: {
                 id: "1",
                 name: "c1",
@@ -327,6 +329,7 @@ test("delete", async () => {
               id: "1",
               namespace: "default",
               name: "Connection 1",
+              validated: true,
               connector: {
                 id: "1",
                 name: "c1",
@@ -403,12 +406,12 @@ test("delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {

@@ -79,6 +79,7 @@ export interface GetConnections_workspace_connections_data {
   namespace: string;
   name: string;
   is_active: boolean;
+  validated: boolean;
   connector: GetConnections_workspace_connections_data_connector;
   runs: GetConnections_workspace_connections_data_runs;
   last_run: GetConnections_workspace_connections_data_last_run | null;

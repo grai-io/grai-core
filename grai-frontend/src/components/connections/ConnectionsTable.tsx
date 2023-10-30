@@ -26,6 +26,7 @@ interface Connection extends BaseConnection {
   namespace: string
   connector: Connector
   is_active: boolean
+  validated: boolean
 }
 
 type ConnectionsTableProps = {

@@ -77,6 +77,7 @@ export interface GetRun_workspace_run_connection {
   __typename: "Connection";
   id: any;
   name: string;
+  validated: boolean;
   connector: GetRun_workspace_run_connection_connector;
   runs: GetRun_workspace_run_connection_runs;
   last_run: GetRun_workspace_run_connection_last_run | null;

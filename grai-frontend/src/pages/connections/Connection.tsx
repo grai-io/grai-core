@@ -16,6 +16,7 @@ import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
 import PageTabs from "components/layout/PageTabs"
 import RunStatus from "components/runs/RunStatus"
+import SetupIncomplete from "components/sources/SetupIncomplete"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
@@ -35,6 +36,7 @@ export const GET_CONNECTION = gql`
         id
         namespace
         name
+        validated
         connector {
           id
           name
@@ -162,6 +164,7 @@ const Connection: React.FC = () => {
         title={connection.name}
         status={
           <>
+            {!connection.validated && <SetupIncomplete />}
             {connection.last_run && (
               <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
             )}

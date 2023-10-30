@@ -49,6 +49,7 @@ export interface GetSources_workspace_sources_data_connections_data {
   __typename: "Connection";
   id: any;
   name: string;
+  validated: boolean;
   connector: GetSources_workspace_sources_data_connections_data_connector;
   last_run: GetSources_workspace_sources_data_connections_data_last_run | null;
 }

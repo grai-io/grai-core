@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -37,6 +36,7 @@ export const GET_SOURCES = gql`
             data {
               id
               name
+              validated
               connector {
                 id
                 name
@@ -76,10 +76,7 @@ const Sources: React.FC = () => {
   if (error) return <GraphError error={error} />
 
   const workspace = data?.workspace
-
-  if (!workspace) return <NotFound />
-
-  const sources = workspace.sources.data
+  const sources = workspace?.sources.data ?? []
 
   const filteredSources = search
     ? sources.filter(source =>
@@ -103,7 +100,7 @@ const Sources: React.FC = () => {
           sources={filteredSources}
           workspaceId={data?.workspace.id}
           loading={loading}
-          total={workspace.sources.meta.total}
+          total={workspace?.sources.meta.total ?? 0}
         />
       </PageContent>
     </>
