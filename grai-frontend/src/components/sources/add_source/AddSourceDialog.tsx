@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Button,
   Dialog,
@@ -6,9 +7,8 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 type AddSourceDialogProps = {
   open: boolean

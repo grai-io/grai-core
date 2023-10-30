@@ -32,7 +32,7 @@ test("click standard", async () => {
 
   await act(async () => await user.click(screen.getByRole("link")))
 
-  await waitFor(() => expect(screen.getByText("New Page")).toBeInTheDocument())
+  await screen.findByText("New Page")
 })
 
 test("click sample", async () => {
@@ -50,11 +50,7 @@ test("click sample", async () => {
 
   await act(async () => await user.click(screen.getByRole("button")))
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("You are currently in a demo workspace."),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("You are currently in a demo workspace.")
 
   expect(screen.getByRole("link", { name: /add source/i })).toBeInTheDocument()
 
@@ -63,7 +59,7 @@ test("click sample", async () => {
       await user.click(screen.getByRole("link", { name: /add source/i })),
   )
 
-  await waitFor(() => expect(screen.getByText("New Page")).toBeInTheDocument())
+  await screen.findByText("New Page")
 })
 
 test("click sample workspace", async () => {
@@ -81,11 +77,7 @@ test("click sample workspace", async () => {
 
   await act(async () => await user.click(screen.getByRole("button")))
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("You are currently in a demo workspace."),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("You are currently in a demo workspace.")
 
   expect(
     screen.getByRole("link", { name: /add workspace/i }),
@@ -96,7 +88,7 @@ test("click sample workspace", async () => {
       await user.click(screen.getByRole("link", { name: /add workspace/i })),
   )
 
-  await waitFor(() => expect(screen.getByText("New Page")).toBeInTheDocument())
+  await screen.findByText("New Page")
 })
 
 test("cancel", async () => {
@@ -114,11 +106,7 @@ test("cancel", async () => {
 
   await act(async () => await user.click(screen.getByRole("button")))
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("You are currently in a demo workspace."),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("You are currently in a demo workspace.")
 
   expect(screen.getByRole("link", { name: /add source/i })).toBeInTheDocument()
 

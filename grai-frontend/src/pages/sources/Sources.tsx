@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
+import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
+import AddSourceButton from "components/sources/add_source/AddSourceButton"
 import SourcesTable from "components/sources/SourcesTable"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetSources, GetSourcesVariables } from "./__generated__/GetSources"
-import AddSourceButton from "components/sources/add_source/AddSourceButton"
-import NotFound from "pages/NotFound"
 
 export const GET_SOURCES = gql`
   query GetSources($organisationName: String!, $workspaceName: String!) {
