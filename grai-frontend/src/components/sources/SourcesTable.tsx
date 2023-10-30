@@ -16,8 +16,8 @@ import Loading from "components/layout/Loading"
 import RunStatus from "components/runs/RunStatus"
 import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
-import SourcesMenu from "./SourcesMenu"
 import SetupIncomplete from "./SetupIncomplete"
+import SourcesMenu from "./SourcesMenu"
 
 interface Connector {
   id: string

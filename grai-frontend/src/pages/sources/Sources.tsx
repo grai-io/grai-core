@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"

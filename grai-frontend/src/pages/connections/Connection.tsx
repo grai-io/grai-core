@@ -16,13 +16,13 @@ import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
 import PageTabs from "components/layout/PageTabs"
 import RunStatus from "components/runs/RunStatus"
+import SetupIncomplete from "components/sources/SetupIncomplete"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
-import SetupIncomplete from "components/sources/SetupIncomplete"
 
 export const GET_CONNECTION = gql`
   query GetConnection(
