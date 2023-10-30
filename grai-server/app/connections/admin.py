@@ -46,6 +46,7 @@ class ConnectionAdmin(admin.ModelAdmin):
         "namespace",
         "is_active",
         "temp",
+        "validated",
         "created_by",
         "created_at",
     )
@@ -59,6 +60,7 @@ class ConnectionAdmin(admin.ModelAdmin):
         "namespace",
         "is_active",
         "temp",
+        "validated",
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
