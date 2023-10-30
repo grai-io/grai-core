@@ -7,6 +7,7 @@ import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
+import SampleDataDialog from "components/home/SampleDataDialog"
 import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
 import Loading from "components/layout/Loading"
@@ -17,7 +18,6 @@ import {
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
 import NotFound from "./NotFound"
-import SampleDataDialog from "components/home/SampleDataDialog"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {

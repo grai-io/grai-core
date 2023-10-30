@@ -4,12 +4,12 @@ import { GraphQLError } from "graphql"
 import { ShepherdTour } from "react-shepherd"
 import steps from "steps"
 import { act, render, screen, waitFor } from "testing"
-import Home, { GET_WORKSPACE } from "./Home"
 // import { source_graph } from "./sources/SourceGraph.test"
-import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 import { GET_COUNTS } from "components/home/HomeCards"
 import { GET_REPORTS } from "components/home/ReportsCard"
 import { GET_WORKSPACE_SOURCE_GRAPH } from "components/home/SourceGraph"
+import Home, { GET_WORKSPACE } from "./Home"
+import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 
 window.scrollTo = jest.fn()
 

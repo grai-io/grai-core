@@ -4,9 +4,9 @@ import { SchemaLink } from "@apollo/client/link/schema"
 import { MockedProvider, MockedResponse } from "@apollo/client/testing"
 import { addMocksToSchema, IMocks } from "@graphql-tools/mock"
 import { makeExecutableSchema } from "@graphql-tools/schema"
+import { typePolicies } from "client"
 import { buildClientSchema, printSchema } from "graphql/utilities"
 import introspectionResult from "./schema.json"
-import { typePolicies } from "client"
 
 type AutoMockedProviderProps = {
   children: ReactNode

@@ -1,3 +1,4 @@
+import React from "react"
 import {
   AccountCircle,
   DataUsage,
@@ -16,7 +17,6 @@ import {
   Typography,
 } from "@mui/material"
 import DialogTitle from "components/dialogs/DialogTitle"
-import React from "react"
 
 type SampleDataDialogProps = {
   open: boolean
