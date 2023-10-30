@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { ApolloClient, from, InMemoryCache } from "@apollo/client"
+import { ApolloClient, from, InMemoryCache, TypePolicies } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 import DebounceLink from "apollo-link-debounce"
 import { createUploadLink } from "apollo-upload-client"
@@ -12,7 +12,26 @@ declare global {
 
 const DEFAULT_DEBOUNCE_TIMEOUT = 100
 
-export const cache = new InMemoryCache()
+export const typePolicies: TypePolicies = {
+  Query: {
+    fields: {
+      workspace: {
+        merge: true,
+      },
+    },
+  },
+  Workspace: {
+    fields: {
+      runs: {
+        merge: true,
+      },
+    },
+  },
+}
+
+export const cache = new InMemoryCache({
+  typePolicies,
+})
 
 export const baseURL =
   window._env_?.REACT_APP_SERVER_URL ??

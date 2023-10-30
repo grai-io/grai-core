@@ -1,27 +1,152 @@
-import React, { ReactNode } from "react"
+import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
+import { GET_COUNTS } from "components/home/HomeCards"
+import { GET_REPORTS } from "components/home/ReportsCard"
+import { GET_WORKSPACE_SOURCE_GRAPH } from "components/home/SourceGraph"
 import Home, { GET_WORKSPACE } from "./Home"
-import { source_graph } from "./sources/SourceGraph.test"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 
 window.scrollTo = jest.fn()
 
-jest.mock("react-instantsearch-hooks-web", () => ({
-  InstantSearch: ({ children }: { children: ReactNode }) => children,
-  useHits: () => ({ hits: [] }),
-  useSearchBox: () => ({
-    query: "",
-    refine: jest.fn(),
-    clear: jest.fn(),
-  }),
-  useInstantSearch: () => ({
-    error: undefined,
-  }),
-}))
+// jest.mock("react-instantsearch-hooks-web", () => ({
+//   InstantSearch: ({ children }: { children: ReactNode }) => children,
+//   useHits: () => ({ hits: [] }),
+//   useSearchBox: () => ({
+//     query: "",
+//     refine: jest.fn(),
+//     clear: jest.fn(),
+//   }),
+//   useInstantSearch: () => ({
+//     error: undefined,
+//   }),
+// }))
+
+const countsMock = {
+  request: {
+    query: GET_COUNTS,
+    variables: {
+      organisationName: "",
+      workspaceName: "",
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        runs: {
+          meta: {
+            filtered: 1,
+          },
+        },
+        nodes: {
+          meta: {
+            filtered: 1,
+          },
+        },
+        sources: {
+          meta: {
+            total: 1,
+          },
+        },
+      },
+    },
+  },
+}
+
+const reportsMock = {
+  request: {
+    query: GET_REPORTS,
+    variables: {
+      organisationName: "",
+      workspaceName: "",
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        runs: {
+          data: [],
+        },
+      },
+    },
+  },
+}
+
+const sourceGraphMock = {
+  request: {
+    query: GET_WORKSPACE_SOURCE_GRAPH,
+    variables: {
+      workspaceId: "1",
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        source_graph: [
+          {
+            id: "1",
+            name: "test source graph",
+            icon: "test icon",
+            targets: [],
+          },
+        ],
+      },
+    },
+  },
+}
 
 test("renders", async () => {
+  const workspaceMock = {
+    request: {
+      query: GET_WORKSPACE,
+      variables: {
+        organisationName: "",
+        workspaceName: "",
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          name: "test workspace",
+          sample_data: false,
+          runs: {
+            meta: {
+              filtered: 1,
+            },
+          },
+          nodes: {
+            meta: {
+              filtered: 1,
+            },
+          },
+          sources: {
+            meta: {
+              total: 1,
+            },
+          },
+        },
+      },
+    },
+  }
+
+  const mocks = [
+    workspaceMock,
+    workspaceMock,
+    countsMock,
+    countsMock,
+    reportsMock,
+    reportsMock,
+    sourceGraphMock,
+    sourceGraphMock,
+  ]
+
   render(<Home />, {
+    mocks,
     withRouter: true,
   })
 
@@ -31,8 +156,9 @@ test("renders", async () => {
     ).toBeTruthy()
   })
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+  await waitFor(() => {
+    expect(screen.getByText("test source graph")).toBeInTheDocument()
+  })
 })
 
 // test("tour", async () => {
@@ -218,7 +344,7 @@ test("no reports", async () => {
           workspace: {
             id: "1",
             name: "test workspace",
-            source_graph,
+            sample_data: false,
             runs: {
               meta: {
                 filtered: 0,
@@ -229,7 +355,7 @@ test("no reports", async () => {
                 filtered: 0,
               },
             },
-            connections: {
+            sources: {
               meta: {
                 total: 0,
               },
@@ -238,6 +364,8 @@ test("no reports", async () => {
         },
       },
     },
+    reportsMock,
+    sourceGraphMock,
   ]
 
   render(<Home />, { mocks, withRouter: true })
@@ -252,5 +380,73 @@ test("no reports", async () => {
     expect(
       screen.getByRole("heading", { name: /Getting started with Grai/i }),
     ).toBeTruthy()
+  })
+})
+
+test("sample data", async () => {
+  const user = userEvent.setup()
+
+  const workspaceMock = {
+    request: {
+      query: GET_WORKSPACE,
+      variables: {
+        organisationName: "",
+        workspaceName: "",
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          name: "test workspace",
+          sample_data: true,
+          runs: {
+            meta: {
+              filtered: 1,
+            },
+          },
+          nodes: {
+            meta: {
+              filtered: 1,
+            },
+          },
+          sources: {
+            meta: {
+              total: 1,
+            },
+          },
+        },
+      },
+    },
+  }
+
+  const mocks = [
+    workspaceMock,
+    workspaceMock,
+    sourceGraphMock,
+    sourceGraphMock,
+    reportsMock,
+    reportsMock,
+    countsMock,
+    countsMock,
+  ]
+
+  render(<Home />, { mocks, withRouter: true })
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Welcome to your new workspace"),
+    ).toBeInTheDocument()
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Get started/i })),
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.queryByText("Welcome to your new workspace"),
+    ).not.toBeInTheDocument()
   })
 })
