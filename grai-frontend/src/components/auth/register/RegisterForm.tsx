@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { InputLabel, TextField, styled } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
@@ -49,7 +50,11 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = async () =>
     register({ variables: values })
       .then(data => data.data?.register)
-      .then(user => user && posthog.identify(user.id, { email: user.username }))
+      .then(user => {
+        if (!user) return
+        posthog.identify(user.id, { email: user.username })
+        hubspot.push(["identify", { email: user.username }])
+      })
       .then(() => setLoggedIn(true))
       .catch(() => {})
 
