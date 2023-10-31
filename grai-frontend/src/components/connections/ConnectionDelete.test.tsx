@@ -52,6 +52,58 @@ test("delete", async () => {
   )
 })
 
+test("delete one run", async () => {
+  const user = userEvent.setup()
+
+  const connection = {
+    id: "1",
+    name: "Test Connection",
+    runs: {
+      meta: {
+        total: 1,
+      },
+    },
+  }
+
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i })),
+  )
+})
+
+test("delete two runs", async () => {
+  const user = userEvent.setup()
+
+  const connection = {
+    id: "1",
+    name: "Test Connection",
+    runs: {
+      meta: {
+        total: 2,
+      },
+    },
+  }
+
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i })),
+  )
+})
+
 test("error", async () => {
   const user = userEvent.setup()
 
