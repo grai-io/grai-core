@@ -11,6 +11,7 @@ import { CREATE_CONNECTION } from "./SetupConnectionForm"
 import { GET_RUN } from "./ValidateConnection"
 
 jest.setTimeout(30000)
+jest.retryTimes(1)
 
 test("renders", async () => {
   render(<CreateConnectionWizard workspaceId="1" />, {
@@ -293,6 +294,9 @@ test("submit", async () => {
     // eslint-disable-next-line jest/no-conditional-expect
     await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
   }
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
 
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled()

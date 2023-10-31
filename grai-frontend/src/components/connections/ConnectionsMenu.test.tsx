@@ -7,7 +7,12 @@ const connection = {
   id: "1",
   name: "Test Connection",
   validated: true,
-  runs: { data: [] },
+  runs: {
+    data: [],
+    meta: {
+      total: 0,
+    },
+  },
   last_run: null,
   last_successful_run: null,
   connector: {

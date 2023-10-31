@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { Delete } from "@mui/icons-material"
-import { MenuItem, ListItemIcon, ListItemText } from "@mui/material"
+import { MenuItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import { useConfirm } from "material-ui-confirm"
 import { useSnackbar } from "notistack"
 import {
@@ -20,6 +20,11 @@ export const DELETE_CONNECTION = gql`
 export interface Connection {
   id: string
   name: string
+  runs: {
+    meta: {
+      total: number
+    }
+  }
 }
 
 type ConnectionDeleteProps = {
@@ -68,7 +73,19 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
     onClose()
     confirm({
       title: "Delete Connection",
-      description: `Are you sure you wish to delete the ${connection.name} connection?`,
+      description: (
+        <>
+          <Typography component="span" sx={{ display: "block", mb: 2 }}>
+            Are you sure you wish to delete the {connection.name} connection?
+          </Typography>
+          {connection.runs.meta.total > 0 && (
+            <Typography component="span">
+              Deleting this source will also delete {connection.runs.meta.total}{" "}
+              run{connection.runs.meta.total > 1 ? "s" : ""}.
+            </Typography>
+          )}
+        </>
+      ),
       confirmationText: "Delete",
     })
       .then(() => deleteConnection())

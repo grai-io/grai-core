@@ -40,6 +40,16 @@ export const GET_SOURCE = gql`
               id
               status
             }
+            runs {
+              meta {
+                total
+              }
+            }
+          }
+        }
+        runs {
+          meta {
+            total
           }
         }
       }

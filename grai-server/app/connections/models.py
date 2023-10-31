@@ -82,7 +82,7 @@ class Connection(TenantModel):
     source = models.ForeignKey(
         "lineage.source",
         related_name="connections",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
     metadata = models.JSONField(default=dict)
     secrets = models.JSONField(default=dict, blank=True, null=True)
@@ -176,12 +176,12 @@ class Run(TenantModel):
     source = models.ForeignKey(
         "lineage.Source",
         related_name="runs",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
     connection = models.ForeignKey(
         "Connection",
         related_name="runs",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
     )
