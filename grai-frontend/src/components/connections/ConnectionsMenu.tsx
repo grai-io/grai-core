@@ -9,8 +9,12 @@ import {
 } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import { Link } from "react-router-dom"
-import ConnectionDelete from "./ConnectionDelete"
-import ConnectionRun, { Connection } from "./ConnectionRun"
+import ConnectionDelete, {
+  Connection as ConnectionDeleteType,
+} from "./ConnectionDelete"
+import ConnectionRun, { Connection as ConnectionRunType } from "./ConnectionRun"
+
+export type Connection = ConnectionRunType & ConnectionDeleteType
 
 type ConnectionsMenuProps = {
   connection: Connection

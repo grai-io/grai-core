@@ -20,6 +20,16 @@ export interface GetSource_workspace_source_connections_data_last_run {
   status: string;
 }
 
+export interface GetSource_workspace_source_connections_data_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetSource_workspace_source_connections_data_runs {
+  __typename: "RunPagination";
+  meta: GetSource_workspace_source_connections_data_runs_meta;
+}
+
 export interface GetSource_workspace_source_connections_data {
   __typename: "Connection";
   id: any;
@@ -27,6 +37,7 @@ export interface GetSource_workspace_source_connections_data {
   validated: boolean;
   connector: GetSource_workspace_source_connections_data_connector;
   last_run: GetSource_workspace_source_connections_data_last_run | null;
+  runs: GetSource_workspace_source_connections_data_runs;
 }
 
 export interface GetSource_workspace_source_connections {

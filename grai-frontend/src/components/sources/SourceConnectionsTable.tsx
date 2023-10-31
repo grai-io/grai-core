@@ -25,6 +25,11 @@ export interface Connection {
   connector: Connector
   last_run: Run | null
   validated: boolean
+  runs: {
+    meta: {
+      total: number
+    }
+  }
 }
 
 type SourceConnectionsTableProps = {

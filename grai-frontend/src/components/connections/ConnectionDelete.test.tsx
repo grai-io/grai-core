@@ -7,6 +7,11 @@ import ConnectionDelete, { DELETE_CONNECTION } from "./ConnectionDelete"
 const connection = {
   id: "1",
   name: "Test Connection",
+  runs: {
+    meta: {
+      total: 0,
+    },
+  },
 }
 
 test("renders", async () => {
@@ -16,7 +21,7 @@ test("renders", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
@@ -27,7 +32,7 @@ test("renders no name", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
@@ -38,12 +43,12 @@ test("delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
@@ -68,17 +73,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete connection ApolloError: Error!")
+      screen.getByText("Failed to delete connection ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

@@ -89,6 +89,9 @@ export const GET_CONNECTION = gql`
             }
             metadata
           }
+          meta {
+            total
+          }
         }
       }
     }

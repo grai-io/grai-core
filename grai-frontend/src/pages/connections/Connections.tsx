@@ -31,7 +31,7 @@ export const GET_CONNECTIONS = gql`
             name
             events
           }
-          runs(order: { created_at: DESC }) {
+          runs(order: { created_at: DESC }, filters: { action: UPDATE }) {
             data {
               id
               status
@@ -44,6 +44,9 @@ export const GET_CONNECTIONS = gql`
                 last_name
               }
               metadata
+            }
+            meta {
+              total
             }
           }
           last_run {

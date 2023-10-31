@@ -32,7 +32,7 @@ export const GET_RUN = gql`
             name
             events
           }
-          runs(order: { created_at: DESC }) {
+          runs(order: { created_at: DESC }, filters: { action: UPDATE }) {
             data {
               id
               status
