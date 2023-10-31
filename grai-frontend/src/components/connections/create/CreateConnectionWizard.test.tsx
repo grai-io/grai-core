@@ -295,6 +295,9 @@ test("submit", async () => {
     await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
   }
 
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
+
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled()
   })
