@@ -7,6 +7,11 @@
 // GraphQL query operation: GetWorkspacePageLayout
 // ====================================================
 
+export interface GetWorkspacePageLayout_workspace_organisation {
+  __typename: "Organisation";
+  id: any;
+}
+
 export interface GetWorkspacePageLayout_workspace_runs_meta {
   __typename: "PaginationResult";
   filtered: number;
@@ -41,6 +46,8 @@ export interface GetWorkspacePageLayout_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
+  sample_data: boolean;
+  organisation: GetWorkspacePageLayout_workspace_organisation;
   runs: GetWorkspacePageLayout_workspace_runs;
   nodes: GetWorkspacePageLayout_workspace_nodes;
   connections: GetWorkspacePageLayout_workspace_connections;

@@ -10,6 +10,7 @@ import {
 import AppDrawer from "./AppDrawer"
 import GettingStarted from "./GettingStarted"
 import Loading from "./Loading"
+import SampleData from "./SampleData"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspacePageLayout(
@@ -19,6 +20,10 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      sample_data
+      organisation {
+        id
+      }
       runs(filters: { action: TESTS }) {
         meta {
           filtered
@@ -70,9 +75,12 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const hasConnections =
     !data || (data?.workspace.connections.meta.total ?? 0) > 0
 
+  const sampleData = data?.workspace.sample_data
+
   return (
     <>
       {!hasConnections && <GettingStarted />}
+      {sampleData && <SampleData workspace={data.workspace} />}
       <Box sx={{ display: "flex" }}>
         <AppDrawer profile={data?.profile} />
         <Box sx={{ width: "100%" }}>
@@ -84,7 +92,10 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                 flexGrow: 1,
                 backgroundColor: "#F8F8F8",
                 height: "100%",
-                minHeight: hasConnections ? "100vh" : "calc(100vh - 64px)",
+                minHeight:
+                  hasConnections && !sampleData
+                    ? "100vh"
+                    : "calc(100vh - 64px)",
               }}
             >
               {children}

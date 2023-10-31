@@ -39,6 +39,7 @@ test("renders errors", async () => {
               connection: {
                 id: "1",
                 name: "Connection 1",
+                validated: true,
                 connector: {
                   id: "1",
                   name: "connector 1",
