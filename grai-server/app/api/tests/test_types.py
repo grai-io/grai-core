@@ -3634,3 +3634,38 @@ async def test_source_connections_filter_validated_true(test_context, test_sourc
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["source"]["id"] == str(test_source.id)
     assert len(result.data["workspace"]["source"]["connections"]["data"]) == 0
+
+
+@pytest.mark.django_db
+async def test_source_runs(test_context, test_source, test_connection):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $sourceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                source(id: $sourceId) {
+                    id
+                    runs {
+                        data {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "sourceId": str(test_source.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["source"]["id"] == str(test_source.id)
+    assert len(result.data["workspace"]["source"]["runs"]["data"]) == 0

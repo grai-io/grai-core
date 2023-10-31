@@ -340,6 +340,15 @@ class Source:
 
         return Pagination[Connection](queryset=queryset, pagination=pagination)
 
+    @strawberry.field
+    def runs(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(connection__source=self)
+
+        return Pagination[Run](queryset=queryset, pagination=pagination)
+
 
 @strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Column(Node):
