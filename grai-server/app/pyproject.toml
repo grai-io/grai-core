@@ -73,6 +73,8 @@ asgi-cors-strawberry = "^0.2.0"
 overrides = "^7.4.0"
 wsproto = "^1.2.0"
 openai = "^0.28.1"
+tiktoken = "^0.5.1"
+pgvector = "^0.2.3"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

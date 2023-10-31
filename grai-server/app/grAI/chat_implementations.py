@@ -16,11 +16,36 @@ from functools import reduce
 import operator
 import logging
 from connections.adapters.schemas import model_to_schema
+import tiktoken
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 MAX_RETURN_LIMIT = 20
+
+
+class BaseMessage(ABC):
+    role: str
+
+    def __init__(self, content, model):
+        self.content = content
+        self.encoding = tiktoken.encoding_for_model(model)
+        self.token_length = len(self.encoding)
+
+    def representation(self):
+        return {"role": self.role, "content": self.content}
+
+
+class UserMessage(BaseMessage):
+    role = "user"
+
+
+class SystemMessage(BaseMessage):
+    role = "system"
+
+
+class AIMessage(BaseMessage):
+    role = "assistant"
 
 
 class API(ABC):
@@ -52,31 +77,21 @@ class API(ABC):
         return {"name": self.id, "description": self.description, "parameters": self.schema_model.schema()}
 
 
-class NodeLookupSchema(BaseModel):
-    name: str | None = Field(description="The name of the node to lookup", default=None)
-    name__contains: str | None = Field(
-        description="The name of the node to lookup perform a fuzzy search on", default=None
-    )
-    namespace: str | None = Field(description="The namespace of the node to lookup", default=None)
-    namespace__contains: str | None = Field(
-        description="The namespace of the node to lookup perform a fuzzy search on", default=None
-    )
-    is_active: bool | None = Field(description="Whether or not the node is active", default=True)
+class NodeIdentifier(BaseModel):
+    name: str = Field(description="The name of the node to query for")
+    namespace: str = Field(description="The namespace of the node to query for")
 
 
-class MultiNodeLookup(BaseModel):
-    nodes: list[NodeLookupSchema] = Field(description="List of queries to perform")
+class NodeLookup(BaseModel):
+    nodes: list[NodeIdentifier] = Field(description="A list of nodes to lookup")
 
 
 class NodeLookupAPI(API):
     id = "node_lookup"
-    description = f"""
-    This function Supports looking up nodes from a data lineage graph. For example, a query with name=Test but no
-    namespace value will return all nodes explicitly named "Test" regardless of namespace. If you're unable to find a
-    named result you should use fuzzy search capabilities.
-    The `__contains` suffix indicates that the field should be searched using a fuzzy search.
-    """
-    schema_model = MultiNodeLookup
+    description = (
+        "A function to lookup metadata about one or more nodes. Results will be returned in the order requested."
+    )
+    schema_model = NodeLookup
 
     def __init__(self, workspace: str | uuid.UUID):
         self.workspace = workspace
@@ -95,15 +110,29 @@ class NodeLookupAPI(API):
         return model_to_schema(result_set[: self.query_limit], "NodeV1"), message
 
 
+class FuzzyMatchQuery(BaseModel):
+    string: str = Field(description="The fuzzy string used to search amongst node names")
+
+
+class FuzzyMatchNodesAPI(API):
+    id = "node_fuzzy_lookup"
+    description = "Performs a fuzzy search for nodes matching a name regardless of namespace"
+    schema_model = FuzzyMatchQuery
+
+    def __init__(self, workspace: str | uuid.UUID):
+        self.workspace = workspace
+        self.query_limit = MAX_RETURN_LIMIT
+
+    def call(self, string: str) -> (list, str | None):
+        result_set = (
+            Node.objects.filter(workspace=self.workspace).filter(name__contains=string).order_by("-created_at").all()
+        )
+        return [{"name": node.name, "namespace": node.namespace} for node in result_set], ""
+
+
 class EdgeLookupSchema(BaseModel):
     name: str | None = Field(description="The name of the edge to lookup", default=None)
-    name__contains: str | None = Field(
-        description="The name of the edge to lookup perform a fuzzy search on", default=None
-    )
     namespace: str | None = Field(description="The namespace of the edge to lookup", default=None)
-    namespace__contains: str | None = Field(
-        description="The namespace of the edge to lookup perform a fuzzy search on", default=None
-    )
     is_active: bool | None = Field(description="Whether or not the edge is active", default=True)
     source: uuid.UUID | None = Field(description="The primary key of the source node on an edge", default=None)
     destination: uuid.UUID | None = Field(
@@ -122,9 +151,7 @@ class EdgeLookupAPI(API):
     description = """
     This function Supports looking up edges from a data lineage graph. For example, a query with name=Test but no
     namespace value will return all edges explicitly named "Test" regardless of namespace.
-    The `__contains` suffix indicates that the field should be searched using a fuzzy search. If you're unable to find a
-    named result you should use fuzzy search capabilities. Edges are uniquely
-    identified both by their (name, namespace), and by the (source, destination) nodes they connect.
+    Edges are uniquely identified both by their (name, namespace), and by the (source, destination) nodes they connect.
     """
     schema_model = MultiEdgeLookup
 
@@ -143,6 +170,32 @@ class EdgeLookupAPI(API):
         else:
             message = None
         return model_to_schema(result_set[: self.query_limit], "EdgeV1"), message
+
+
+class EdgeFuzzyLookupSchema(BaseModel):
+    name__contains: str | None = Field(
+        description="The name of the edge to lookup perform a fuzzy search on", default=None
+    )
+    namespace__contains: str | None = Field(
+        description="The namespace of the edge to lookup perform a fuzzy search on", default=None
+    )
+    is_active: bool | None = Field(description="Whether or not the edge is active", default=True)
+
+
+class MultiFuzzyEdgeLookup(BaseModel):
+    edges: list[EdgeLookupSchema] = Field(
+        description="List of edges to lookup. Edges can be uniquely identified by a (name, namespace) tuple, or by a (source, destination) tuple of the nodes the edge connects"
+    )
+
+
+class EdgeFuzzyLookupAPI(EdgeLookupAPI):
+    id = "edge_fuzzy_lookup"
+    description = """
+    This function Supports looking up edges from a data lineage graph. For example, a query with name__contains=test
+    but no namespace value will return all edges whose names contain the substring "test" regardless of namespace.
+    Edges are uniquely identified both by their (name, namespace), and by the (source, destination) nodes they connect.
+    """
+    schema_model = MultiFuzzyEdgeLookup
 
 
 class NodeEdgeSerializer:
@@ -191,6 +244,7 @@ class BaseConversation:
             functions = []
 
         self.model_type = model_type
+        self.encoding = tiktoken.encoding_for_model(self.model_type)
         self.chat_id = chat_id
         self.cache_id = f"grAI:chat_id:{chat_id}"
         self.system_context = prompt
@@ -234,6 +288,10 @@ class BaseConversation:
         summary_message = {"role": "assistant", "content": response.choices[0].message.content}
         return summary_message
 
+    def token_length(self, messages: list):
+        length = [len(self.encoding.encode(message)) for message in messages]
+        return sum(length), length
+
     @property
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
@@ -252,8 +310,10 @@ class BaseConversation:
         logging.info(f"Responding to request for: {self.chat_id}")
         messages = [self.prompt_message, *self.cached_messages, {"role": "user", "content": user_input}]
 
+        result = None
         stop = False
         while not stop:
+            tokens, lengths = self.token_length(messages)
             try:
                 response = self.model(messages=messages)
             except openai.InvalidRequestError:
@@ -262,7 +322,13 @@ class BaseConversation:
                 messages = [self.prompt_message, summary, messages[-1]]
                 response = self.model(messages=messages)
 
-            result = response.choices[0]
+            if result:
+                for choice in response.choices:
+                    if result != choice:
+                        result = choice
+                        break
+            else:
+                result = response.choices[0]
 
             if stop := result.finish_reason == "stop":
                 messages.append({"role": "assistant", "content": result.message.content})
@@ -297,7 +363,11 @@ def get_chat_conversation(
     You can help users discover new data or identify and correct issues such as broken data pipelines,
     and BI dashboards.
     """
-    functions = [NodeLookupAPI(workspace=workspace), EdgeLookupAPI(workspace=workspace)]
+    functions = [
+        NodeLookupAPI(workspace=workspace),
+        EdgeLookupAPI(workspace=workspace),
+        FuzzyMatchNodesAPI(workspace=workspace),
+    ]
 
     conversation = BaseConversation(
         prompt=chat_prompt, model_type=model_type, functions=functions, chat_id=str(chat_id)
