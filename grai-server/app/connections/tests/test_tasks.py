@@ -718,14 +718,17 @@ class TestTests:
 @pytest.mark.django_db
 class TestValidateTests:
     def test_validate_dbt(self, test_workspace, test_dbt_connector, test_source):
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_dbt_connector,
+            workspace=test_workspace,
+            source=test_source,
+        )
+
+        assert connection.validated is False
+
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
-            connection = Connection.objects.create(
-                name=str(uuid.uuid4()),
-                connector=test_dbt_connector,
-                workspace=test_workspace,
-                source=test_source,
-            )
             run = Run.objects.create(
                 connection=connection,
                 workspace=test_workspace,
@@ -735,6 +738,10 @@ class TestValidateTests:
             RunFile.objects.create(run=run, file=file)
 
         process_run(str(run.id))
+
+        connection.refresh_from_db()
+
+        assert connection.validated is True
 
 
 @pytest.mark.django_db

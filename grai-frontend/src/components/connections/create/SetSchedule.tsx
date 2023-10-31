@@ -28,12 +28,7 @@ export const UPDATE_CONNECTION = gql`
     $schedules: JSON
     $is_active: Boolean!
   ) {
-    updateConnection(
-      id: $id
-      schedules: $schedules
-      is_active: $is_active
-      validated: true
-    ) {
+    updateConnection(id: $id, schedules: $schedules, is_active: $is_active) {
       id
       schedules
       is_active

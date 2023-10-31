@@ -30,7 +30,7 @@ test("renders queued", async () => {
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(async () => {
@@ -59,6 +59,10 @@ test("renders success", async () => {
             id: "1",
             status: "success",
             metadata: {},
+            connection: {
+              id: "1",
+              validated: false,
+            },
           },
         },
       },
@@ -77,7 +81,7 @@ test("renders success", async () => {
     {
       mocks,
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(async () => {
@@ -103,6 +107,10 @@ test("renders error", async () => {
               id: "1",
               status: "error",
               metadata: { error: "Error message" },
+              connection: {
+                id: "1",
+                validated: false,
+              },
             },
           },
         },
@@ -120,7 +128,7 @@ test("renders error", async () => {
     {
       mocks,
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(async () => {
@@ -158,7 +166,7 @@ test("error", async () => {
     {
       mocks,
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
