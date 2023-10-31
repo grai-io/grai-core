@@ -7,11 +7,18 @@
 // GraphQL query operation: GetRunValidation
 // ====================================================
 
+export interface GetRunValidation_workspace_run_connection {
+  __typename: "Connection";
+  id: any;
+  validated: boolean;
+}
+
 export interface GetRunValidation_workspace_run {
   __typename: "Run";
   id: any;
   status: string;
   metadata: any;
+  connection: GetRunValidation_workspace_run_connection;
 }
 
 export interface GetRunValidation_workspace {

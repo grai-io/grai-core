@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
-import SetupConnection, { UPDATE_CONNECTION } from "./SetupConnection"
+import SetupConnection from "./SetupConnection"
+import { UPDATE_CONNECTION } from "./SetupConnectionForm"
 
 const opts = {
   activeStep: 0,
