@@ -16,7 +16,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.beat_schedule = {
     "lineage:Node:bulk_update_embeddings": {
         "task": "lineage.tasks.bulk_update_embeddings",
-        "schedule": timedelta(minutes=1),
+        "schedule": timedelta(minutes=5),
     },
 }
 
