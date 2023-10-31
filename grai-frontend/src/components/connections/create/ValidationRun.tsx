@@ -29,6 +29,10 @@ export const GET_RUN = gql`
         id
         status
         metadata
+        connection {
+          id
+          validated
+        }
       }
     }
   }

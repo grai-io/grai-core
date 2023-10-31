@@ -231,6 +231,10 @@ test("submit", async () => {
             id: "1",
             status: "success",
             metadata: {},
+            connection: {
+              id: "1",
+              validated: true,
+            },
           },
         },
       },
