@@ -6,9 +6,9 @@ import { act, render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
 import CreateConnectionWizard from "./CreateConnectionWizard"
 import { UPDATE_CONNECTION } from "./SetSchedule"
-import { CREATE_CONNECTION } from "./SetupConnection"
-import { CREATE_RUN } from "./TestConnection"
-import { GET_RUN } from "./ValidationRun"
+import { CREATE_RUN } from "./SetupConnection"
+import { CREATE_CONNECTION } from "./SetupConnectionForm"
+import { GET_RUN } from "./ValidateConnection"
 
 jest.setTimeout(30000)
 
@@ -287,12 +287,6 @@ test("submit", async () => {
 
   await submit(user, container)
 
-  await waitFor(() => {
-    expect(screen.queryByText("Connect to PostgreSQL")).toBeFalsy()
-  })
-
-  expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
-
   const progressbar = screen.queryByRole("progressbar")
 
   if (progressbar) {
@@ -308,10 +302,6 @@ test("submit", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
-
-  await waitFor(() => {
-    expect(screen.queryByText("Test connection to PostgreSQL")).toBeFalsy()
-  })
 
   expect(
     screen.getByText("Set a schedule for this connection"),
