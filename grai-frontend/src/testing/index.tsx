@@ -24,10 +24,33 @@ const mockResolvers = {
   JSON: () => ({}),
   UUID: () => casual.uuid,
   ID: () => casual.uuid,
+  Alert: () => ({
+    id: casual.uuid,
+  }),
+  WorkspaceAPIKey: () => ({
+    id: casual.uuid,
+  }),
+  BaseTable: () => ({
+    id: casual.uuid,
+  }),
+  Column: () => ({
+    id: casual.uuid,
+  }),
   Connection: () => ({
+    id: casual.uuid,
     name: "Connection 1",
   }),
+  Connector: () => ({
+    id: casual.uuid,
+  }),
+  Edge: () => ({
+    id: casual.uuid,
+  }),
+  Event: () => ({
+    id: casual.uuid,
+  }),
   Node: () => ({
+    id: casual.uuid,
     metadata: {
       grai: {
         node_type: "Table",
@@ -35,24 +58,54 @@ const mockResolvers = {
     },
   }),
   Repository: () => ({
+    id: casual.uuid,
     repo: casual.word,
   }),
   PullRequest: () => ({
+    id: casual.uuid,
     reference: casual.integer(1, 100),
   }),
   Branch: () => ({
+    id: casual.uuid,
     reference: casual.integer(1, 100),
   }),
   Commit: () => ({
+    id: casual.uuid,
     reference: casual.integer(1, 100),
   }),
   Filter: () => ({
+    id: casual.uuid,
     metadata: [],
+  }),
+  GraphColumn: () => ({
+    id: casual.uuid,
+  }),
+  GraphTable: () => ({
+    id: casual.uuid,
+  }),
+  Membership: () => ({
+    id: casual.uuid,
+  }),
+  Organisation: () => ({
+    id: casual.uuid,
+  }),
+  Run: () => ({
+    id: casual.uuid,
+  }),
+  Source: () => ({
+    id: casual.uuid,
   }),
   StrDataWrapper: () => ({
     data: ["tag1", "tag2"],
   }),
+  Table: () => ({
+    id: casual.uuid,
+  }),
+  User: () => ({
+    id: casual.uuid,
+  }),
   Workspace: () => ({
+    id: casual.uuid,
     source_graph: [],
   }),
 }
