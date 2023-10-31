@@ -34,12 +34,23 @@ export interface GetSource_workspace_source_connections {
   data: GetSource_workspace_source_connections_data[];
 }
 
+export interface GetSource_workspace_source_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetSource_workspace_source_runs {
+  __typename: "RunPagination";
+  meta: GetSource_workspace_source_runs_meta;
+}
+
 export interface GetSource_workspace_source {
   __typename: "Source";
   id: any;
   name: string;
   priority: number;
   connections: GetSource_workspace_source_connections;
+  runs: GetSource_workspace_source_runs;
 }
 
 export interface GetSource_workspace {

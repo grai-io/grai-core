@@ -9,12 +9,7 @@ import {
 } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import { Link } from "react-router-dom"
-import SourceDelete from "./SourceDelete"
-
-interface Source {
-  id: string
-  name: string
-}
+import SourceDelete, { Source } from "./SourceDelete"
 
 type SourcesMenuProps = {
   source: Source

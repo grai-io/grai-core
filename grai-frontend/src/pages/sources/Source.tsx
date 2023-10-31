@@ -42,6 +42,11 @@ export const GET_SOURCE = gql`
             }
           }
         }
+        runs {
+          meta {
+            total
+          }
+        }
       }
     }
   }

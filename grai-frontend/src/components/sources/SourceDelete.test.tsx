@@ -7,6 +7,12 @@ import SourceDelete, { DELETE_SOURCE } from "./SourceDelete"
 const source = {
   id: "1",
   name: "Test Source",
+  connections: { data: [] },
+  runs: {
+    meta: {
+      total: 0,
+    },
+  },
 }
 
 test("renders", async () => {
@@ -16,7 +22,7 @@ test("renders", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
@@ -27,12 +33,12 @@ test("delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
@@ -57,17 +63,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete source ApolloError: Error!")
+      screen.getByText("Failed to delete source ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

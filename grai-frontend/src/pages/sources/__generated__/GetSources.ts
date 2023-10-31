@@ -59,6 +59,16 @@ export interface GetSources_workspace_sources_data_connections {
   data: GetSources_workspace_sources_data_connections_data[];
 }
 
+export interface GetSources_workspace_sources_data_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetSources_workspace_sources_data_runs {
+  __typename: "RunPagination";
+  meta: GetSources_workspace_sources_data_runs_meta;
+}
+
 export interface GetSources_workspace_sources_data {
   __typename: "Source";
   id: any;
@@ -67,6 +77,7 @@ export interface GetSources_workspace_sources_data {
   nodes: GetSources_workspace_sources_data_nodes;
   edges: GetSources_workspace_sources_data_edges;
   connections: GetSources_workspace_sources_data_connections;
+  runs: GetSources_workspace_sources_data_runs;
 }
 
 export interface GetSources_workspace_sources_meta {
