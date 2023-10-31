@@ -64,7 +64,7 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
     return () => {
       stopPolling()
     }
-  }, [success, runError, startPolling, stopPolling])
+  }, [success, runError, startPolling, stopPolling, onValidate])
 
   if (error) return <GraphError error={error} />
 
