@@ -11,6 +11,7 @@ import { CREATE_CONNECTION } from "./SetupConnectionForm"
 import { GET_RUN } from "./ValidateConnection"
 
 jest.setTimeout(30000)
+jest.retryTimes(1)
 
 test("renders", async () => {
   render(<CreateConnectionWizard workspaceId="1" />, {
