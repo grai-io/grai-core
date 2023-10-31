@@ -55,7 +55,10 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   useEffect(() => {
     startPolling(1000)
 
-    if (success) stopPolling()
+    if (success) {
+      stopPolling()
+      onValidate()
+    }
     if (runError) stopPolling()
 
     return () => {
@@ -66,8 +69,6 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   if (error) return <GraphError error={error} />
 
   if (success) {
-    onValidate()
-
     return (
       <Alert severity="success">
         <AlertTitle>All tests successfully passed!</AlertTitle>Continue to
