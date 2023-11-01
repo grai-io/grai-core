@@ -1,11 +1,11 @@
+import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { useSnackbar } from "notistack"
-import React from "react"
-import DangerItem from "./DangerItem"
 import {
   UpdateWorkspaceSampleData,
   UpdateWorkspaceSampleDataVariables,
 } from "./__generated__/UpdateWorkspaceSampleData"
+import DangerItem from "./DangerItem"
 
 export const UPDATE_WORKSPACE = gql`
   mutation UpdateWorkspaceSampleData($id: ID!) {

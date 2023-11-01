@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import HideDemoWorkspace, { UPDATE_WORKSPACE } from "./HideDemoWorkspace"
-import { GraphQLError } from "graphql"
 
 const workspace = {
   id: "1",
