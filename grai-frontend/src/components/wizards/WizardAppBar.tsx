@@ -1,6 +1,5 @@
 import React from "react"
-import { Close } from "@mui/icons-material"
-import { Box, Divider, IconButton, Toolbar, Typography } from "@mui/material"
+import { Box, Divider, Toolbar, Typography } from "@mui/material"
 import { WizardSteps } from "./WizardLayout"
 import WizardStepper from "./WizardStepper"
 
@@ -8,14 +7,12 @@ type WizardAppBarProps = {
   title?: string
   steps: WizardSteps
   activeStep: number
-  onClose?: () => void
 }
 
 const WizardAppBar: React.FC<WizardAppBarProps> = ({
   title,
   steps,
   activeStep,
-  onClose,
 }) => (
   <Box>
     <Toolbar>
@@ -25,13 +22,7 @@ const WizardAppBar: React.FC<WizardAppBarProps> = ({
 
       <WizardStepper steps={steps} activeStep={activeStep} sx={{ flex: 2 }} />
 
-      <Box sx={{ flex: 1, textAlign: "right" }}>
-        {onClose && (
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        )}
-      </Box>
+      <Box sx={{ flex: 1 }} />
     </Toolbar>
     <Divider />
   </Box>

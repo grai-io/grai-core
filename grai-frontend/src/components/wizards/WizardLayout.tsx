@@ -19,14 +19,12 @@ export type WizardSteps = WizardStep[]
 type WizardLayoutProps = {
   title?: string
   steps: WizardSteps
-  onClose?: () => void
   className?: string
 }
 
 const WizardLayout: React.FC<WizardLayoutProps> = ({
   title,
   steps,
-  onClose,
   className,
 }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -48,12 +46,7 @@ const WizardLayout: React.FC<WizardLayoutProps> = ({
 
   return (
     <Box className={className}>
-      <WizardAppBar
-        title={title}
-        steps={steps}
-        activeStep={activeStep}
-        onClose={onClose}
-      />
+      <WizardAppBar title={title} steps={steps} activeStep={activeStep} />
       <Toolbar />
       <Box sx={{ px: 5 }}>{stepElement}</Box>
     </Box>

@@ -1,16 +1,14 @@
 import React, { ReactNode } from "react"
 import { ArrowBack } from "@mui/icons-material"
-import { Toolbar, Container, Typography, Box, Button } from "@mui/material"
+import { Toolbar, Container, Box, Button } from "@mui/material"
 import { ElementOptions } from "./WizardLayout"
 
 type WizardBottomBarProps = {
-  actionText?: string
   opts: ElementOptions
   children?: ReactNode
 }
 
 const WizardBottomBar: React.FC<WizardBottomBarProps> = ({
-  actionText,
   opts,
   children,
 }) => (
@@ -27,21 +25,7 @@ const WizardBottomBar: React.FC<WizardBottomBarProps> = ({
           </Button>
         )}
       </Box>
-      <Box>
-        {actionText && (
-          <Typography
-            sx={{
-              fontSize: 16,
-              color: theme => theme.palette.grey[500],
-              fontWeight: 500,
-            }}
-          >
-            {actionText}
-          </Typography>
-        )}
-
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </Container>
   </Toolbar>
 )

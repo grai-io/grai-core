@@ -36,18 +36,17 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
   const { loading, error, data } = useQuery<GetConnectors>(GET_CONNECTORS)
 
   if (error) return <GraphError error={error} />
-  if (loading) return <Loading />
+  if (loading || !data) return <Loading />
 
-  const categories =
-    data?.connectors.reduce<string[]>((res, connector) => {
-      const category = connector.category ?? "others"
+  const categories = data.connectors.reduce<string[]>((res, connector) => {
+    const category = connector.category ?? "others"
 
-      if (!res.includes(category)) {
-        return res.concat(category)
-      }
+    if (!res.includes(category)) {
+      return res.concat(category)
+    }
 
-      return res
-    }, []) ?? []
+    return res
+  }, [])
 
   const emptySource = {
     id: "source",
