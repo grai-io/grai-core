@@ -1,6 +1,10 @@
 import { render, screen } from "testing"
 import ConnectionConfiguration from "./ConnectionConfiguration"
 
+const workspace = {
+  id: "1",
+}
+
 const connection = {
   id: "1",
   schedules: null,
@@ -16,9 +20,12 @@ const connection = {
 }
 
 test("renders", async () => {
-  render(<ConnectionConfiguration connection={connection} />, {
-    withRouter: true,
-  })
+  render(
+    <ConnectionConfiguration connection={connection} workspace={workspace} />,
+    {
+      withRouter: true,
+    },
+  )
 
   expect(screen.getByText("Namespace")).toBeInTheDocument()
 })

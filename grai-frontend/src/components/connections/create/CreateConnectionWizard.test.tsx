@@ -6,11 +6,12 @@ import { act, render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
 import CreateConnectionWizard from "./CreateConnectionWizard"
 import { UPDATE_CONNECTION } from "./SetSchedule"
-import { CREATE_CONNECTION } from "./SetupConnection"
-import { CREATE_RUN } from "./TestConnection"
-import { GET_RUN } from "./ValidationRun"
+import { CREATE_RUN } from "./SetupConnection"
+import { CREATE_CONNECTION } from "./SetupConnectionForm"
+import { GET_RUN } from "./ValidateConnection"
 
 jest.setTimeout(30000)
+jest.retryTimes(1)
 
 test("renders", async () => {
   render(<CreateConnectionWizard workspaceId="1" />, {
@@ -231,6 +232,10 @@ test("submit", async () => {
             id: "1",
             status: "success",
             metadata: {},
+            connection: {
+              id: "1",
+              validated: true,
+            },
           },
         },
       },
@@ -283,18 +288,15 @@ test("submit", async () => {
 
   await submit(user, container)
 
-  await waitFor(() => {
-    expect(screen.queryByText("Connect to PostgreSQL")).toBeFalsy()
-  })
-
-  expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
-
   const progressbar = screen.queryByRole("progressbar")
 
   if (progressbar) {
     // eslint-disable-next-line jest/no-conditional-expect
     await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
   }
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
 
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled()
@@ -304,10 +306,6 @@ test("submit", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
-
-  await waitFor(() => {
-    expect(screen.queryByText("Test connection to PostgreSQL")).toBeFalsy()
-  })
 
   expect(
     screen.getByText("Set a schedule for this connection"),

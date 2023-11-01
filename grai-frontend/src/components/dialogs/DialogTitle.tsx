@@ -1,23 +1,31 @@
 import React from "react"
 import { ChevronLeft, Close } from "@mui/icons-material"
-import { DialogTitle as BaseTitle, IconButton, Tooltip } from "@mui/material"
+import {
+  DialogTitle as BaseTitle,
+  IconButton,
+  SxProps,
+  Theme,
+  Tooltip,
+} from "@mui/material"
 
 export interface DialogTitleProps {
   children?: React.ReactNode
   onClose?: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void
   onBack?: () => void
+  sx?: SxProps<Theme>
 }
 
 const DialogTitle: React.FC<DialogTitleProps> = ({
   children,
   onClose,
   onBack,
+  sx,
   ...other
 }) => {
   const handleClose = () => onClose && onClose({}, "backdropClick")
 
   return (
-    <BaseTitle sx={{ m: 0, p: 2 }} {...other}>
+    <BaseTitle sx={{ m: 0, p: 2, ...sx }} {...other}>
       {onBack && (
         <Tooltip title="Back">
           <IconButton

@@ -3,8 +3,8 @@ import useWorkspace from "helpers/useWorkspace"
 import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import ConnectorSelectTab from "./ConnectorSelectTab"
 import SetSchedule from "./SetSchedule"
-import SetupConnection, { Values } from "./SetupConnection"
-import TestConnection from "./TestConnection"
+import SetupConnection from "./SetupConnection"
+import { Values } from "./SetupConnectionForm"
 import { Connector } from "../connectors/ConnectorCard"
 
 export interface Connection extends Values {
@@ -49,19 +49,6 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
             connection={connection}
             setConnection={setConnection}
             opts={opts}
-          />
-        ),
-    },
-    {
-      title: "Test connection",
-      element: opts =>
-        connector &&
-        connection && (
-          <TestConnection
-            workspaceId={workspaceId}
-            opts={opts}
-            connector={connector}
-            connection={connection}
           />
         ),
     },

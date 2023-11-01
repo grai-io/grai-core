@@ -91,6 +91,11 @@ const sourceMock = {
           connections: {
             data: [],
           },
+          runs: {
+            meta: {
+              total: 0,
+            },
+          },
         },
       },
     },

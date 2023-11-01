@@ -100,6 +100,7 @@ export interface Connection {
   last_successful_run: Run | null
   runs: { data: Run[] }
   connector: Connector
+  validated: boolean
 }
 
 export interface RunResult {
@@ -177,7 +178,7 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
       data =>
         onRun &&
         data.data?.runConnection.connection.last_run &&
-        onRun(data.data.runConnection.connection.last_run)
+        onRun(data.data.runConnection.connection.last_run),
     )
 
   const loading2 =
@@ -188,7 +189,10 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
 
   if (menuItem)
     return (
-      <MenuItem disabled={disabled || loading} onClick={handleClick}>
+      <MenuItem
+        disabled={disabled || !connection.validated || loading}
+        onClick={handleClick}
+      >
         <ListItemIcon>
           {loading2 ? <CircularProgress /> : <PlayArrow />}
         </ListItemIcon>
@@ -196,7 +200,15 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
       </MenuItem>
     )
 
-  return <ConnectionRunButton onRun={handleRun} disabled={disabled} loading={loading2} status={connection.last_run?.status ?? null} events={connection.connector.events}/>
+  return (
+    <ConnectionRunButton
+      onRun={handleRun}
+      disabled={disabled || !connection.validated}
+      loading={loading2}
+      status={connection.last_run?.status ?? null}
+      events={connection.connector.events}
+    />
+  )
 }
 
 export default ConnectionRun

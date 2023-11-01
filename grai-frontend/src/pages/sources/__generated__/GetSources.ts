@@ -7,6 +7,11 @@
 // GraphQL query operation: GetSources
 // ====================================================
 
+export interface GetSources_workspace_organisation {
+  __typename: "Organisation";
+  id: any;
+}
+
 export interface GetSources_workspace_sources_data_nodes_meta {
   __typename: "PaginationResult";
   total: number;
@@ -44,6 +49,7 @@ export interface GetSources_workspace_sources_data_connections_data {
   __typename: "Connection";
   id: any;
   name: string;
+  validated: boolean;
   connector: GetSources_workspace_sources_data_connections_data_connector;
   last_run: GetSources_workspace_sources_data_connections_data_last_run | null;
 }
@@ -51,6 +57,16 @@ export interface GetSources_workspace_sources_data_connections_data {
 export interface GetSources_workspace_sources_data_connections {
   __typename: "ConnectionPagination";
   data: GetSources_workspace_sources_data_connections_data[];
+}
+
+export interface GetSources_workspace_sources_data_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetSources_workspace_sources_data_runs {
+  __typename: "RunPagination";
+  meta: GetSources_workspace_sources_data_runs_meta;
 }
 
 export interface GetSources_workspace_sources_data {
@@ -61,6 +77,7 @@ export interface GetSources_workspace_sources_data {
   nodes: GetSources_workspace_sources_data_nodes;
   edges: GetSources_workspace_sources_data_edges;
   connections: GetSources_workspace_sources_data_connections;
+  runs: GetSources_workspace_sources_data_runs;
 }
 
 export interface GetSources_workspace_sources_meta {
@@ -77,6 +94,8 @@ export interface GetSources_workspace_sources {
 export interface GetSources_workspace {
   __typename: "Workspace";
   id: any;
+  sample_data: boolean;
+  organisation: GetSources_workspace_organisation;
   sources: GetSources_workspace_sources;
 }
 

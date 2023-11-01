@@ -44,7 +44,7 @@ type OrganisationFormProps = {
 const OrganisationForm: React.FC<OrganisationFormProps> = ({ onCreate }) => {
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
-    name: "production",
+    name: "demo",
     sample_data: false,
   })
 

@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Box, InputLabel, Link, TextField, styled } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
@@ -62,6 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onDeviceRequest }) => {
 
         if (res.__typename === "User") {
           posthog.identify(res.id, { email: res.username })
+          hubspot.push(["identify", { email: res.username }])
           setLoggedIn(true)
           return
         }

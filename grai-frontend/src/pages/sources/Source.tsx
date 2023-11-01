@@ -30,6 +30,7 @@ export const GET_SOURCE = gql`
           data {
             id
             name
+            validated
             connector {
               id
               name
@@ -39,6 +40,16 @@ export const GET_SOURCE = gql`
               id
               status
             }
+            runs {
+              meta {
+                total
+              }
+            }
+          }
+        }
+        runs {
+          meta {
+            total
           }
         }
       }

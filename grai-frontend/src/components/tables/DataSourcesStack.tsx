@@ -30,7 +30,7 @@ const DataSourcesStack: React.FC<DataSourcesStackProps> = ({
         source.connections.data[0].connector.slug && (
           // <Tooltip title={source.name} key={source.name}>
           <DataSourceIcon
-            key={source.name}
+            key={source.id}
             dataSource={`grai-source-${source.connections.data[0].connector.slug}`}
             noMargin
             noBorder

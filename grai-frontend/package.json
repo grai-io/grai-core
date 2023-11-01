@@ -5,6 +5,7 @@
   "dependencies": {
     "@algolia/autocomplete-js": "^1.8.3",
     "@apollo/client": "^3.7.2",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@graphql-tools/mock": "^9.0.0",

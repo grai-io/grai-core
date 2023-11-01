@@ -37,7 +37,7 @@ test("no workspaces", async () => {
         query: CREATE_WORKSPACE,
         variables: {
           organisationName: "TestOrganisation",
-          name: "production",
+          name: "demo",
           sample_data: false,
         },
       },
@@ -45,7 +45,7 @@ test("no workspaces", async () => {
         data: {
           createWorkspace: {
             id: "1",
-            name: "production",
+            name: "demo",
             organisation: {
               id: "1",
               name: "TestOrganisation",
@@ -65,7 +65,7 @@ test("no workspaces", async () => {
         data: {
           loadWorkspaceSampleData: {
             id: "1",
-            name: "production",
+            name: "demo",
             organisation: {
               id: "1",
               name: "TestOrganisation",
@@ -76,7 +76,7 @@ test("no workspaces", async () => {
     },
   ]
 
-  render(<Workspaces />, { mocks, routes: ["/TestOrganisation/production"] })
+  render(<Workspaces />, { mocks, routes: ["/TestOrganisation/demo"] })
 
   await screen.findByRole("progressbar")
   await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())

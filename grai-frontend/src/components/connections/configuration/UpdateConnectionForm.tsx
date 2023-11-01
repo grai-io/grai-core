@@ -1,11 +1,25 @@
-import React from "react"
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { useSnackbar } from "notistack"
+import GraphError from "components/utils/GraphError"
 import {
   UpdateConnection,
   UpdateConnectionVariables,
 } from "./__generated__/UpdateConnection"
+import {
+  ValidateConnectionUpdate,
+  ValidateConnectionUpdateVariables,
+} from "./__generated__/ValidateConnectionUpdate"
 import ConnectionsForm, { Values } from "../ConnectionsForm"
+import ValidateConnection from "../create/ValidateConnection"
+
+export const CREATE_RUN = gql`
+  mutation ValidateConnectionUpdate($connectionId: ID!) {
+    runConnection(connectionId: $connectionId, action: VALIDATE) {
+      id
+    }
+  }
+`
 
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnection(
@@ -37,6 +51,14 @@ export const UPDATE_CONNECTION = gql`
   }
 `
 
+interface Run {
+  id: string
+}
+
+export interface Workspace {
+  id: string
+}
+
 interface Connector {
   id: string
   name: string
@@ -53,18 +75,32 @@ export interface Connection {
 
 type UpdateConnectionFormProps = {
   connection: Connection
+  workspace: Workspace
 }
 
 const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
   connection,
+  workspace,
 }) => {
+  const [run, setRun] = useState<Run | null>(null)
   const { enqueueSnackbar } = useSnackbar()
+
   const [updateConnection, { loading, error }] = useMutation<
     UpdateConnection,
     UpdateConnectionVariables
   >(UPDATE_CONNECTION)
 
-  const handleSubmit = (values: Values) =>
+  const [createRun, { error: runError }] = useMutation<
+    ValidateConnectionUpdate,
+    ValidateConnectionUpdateVariables
+  >(CREATE_RUN, {
+    variables: {
+      connectionId: connection.id,
+    },
+  })
+
+  const handleSubmit = (values: Values) => {
+    setRun(null)
     updateConnection({
       variables: {
         connectionId: connection.id,
@@ -77,7 +113,13 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
       },
     })
       .then(() => enqueueSnackbar("Connection updated"))
+      .then(() =>
+        createRun().then(
+          res => res.data?.runConnection && setRun(res.data.runConnection),
+        ),
+      )
       .catch(() => {})
+  }
 
   const defaultValues: Values = {
     connector: connection.connector,
@@ -94,7 +136,10 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
       loading={loading}
       error={error}
       edit
-    />
+    >
+      {run && <ValidateConnection workspaceId={workspace.id} run={run} />}
+      {runError && <GraphError error={runError} />}
+    </ConnectionsForm>
   )
 }
 

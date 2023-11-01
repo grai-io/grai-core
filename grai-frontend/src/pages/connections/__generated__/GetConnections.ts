@@ -32,9 +32,15 @@ export interface GetConnections_workspace_connections_data_runs_data {
   metadata: any;
 }
 
+export interface GetConnections_workspace_connections_data_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
 export interface GetConnections_workspace_connections_data_runs {
   __typename: "RunPagination";
   data: GetConnections_workspace_connections_data_runs_data[];
+  meta: GetConnections_workspace_connections_data_runs_meta;
 }
 
 export interface GetConnections_workspace_connections_data_last_run_user {
@@ -79,6 +85,7 @@ export interface GetConnections_workspace_connections_data {
   namespace: string;
   name: string;
   is_active: boolean;
+  validated: boolean;
   connector: GetConnections_workspace_connections_data_connector;
   runs: GetConnections_workspace_connections_data_runs;
   last_run: GetConnections_workspace_connections_data_last_run | null;

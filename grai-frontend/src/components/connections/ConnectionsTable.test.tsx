@@ -9,12 +9,18 @@ const connections = [
     namespace: "namespace1",
     name: "connection 1",
     is_active: true,
+    validated: true,
     connector: {
       id: "1",
       name: "connector 1",
       events: true,
     },
-    runs: { data: [] },
+    runs: {
+      data: [],
+      meta: {
+        total: 0,
+      },
+    },
     last_run: null,
     last_successful_run: null,
   },
@@ -23,12 +29,18 @@ const connections = [
     namespace: "namespace1",
     name: "connection 2",
     is_active: false,
+    validated: true,
     connector: {
       id: "1",
       name: "connector 1",
       events: false,
     },
-    runs: { data: [] },
+    runs: {
+      data: [],
+      meta: {
+        total: 0,
+      },
+    },
     last_run: null,
     last_successful_run: null,
   },
@@ -39,7 +51,7 @@ test("renders", async () => {
     <ConnectionsTable connections={connections} workspaceId="1" total={0} />,
     {
       withRouter: true,
-    }
+    },
   )
 })
 
@@ -48,7 +60,7 @@ test("renders loading", async () => {
     <ConnectionsTable connections={[]} workspaceId="1" loading total={0} />,
     {
       withRouter: true,
-    }
+    },
   )
 })
 
@@ -67,12 +79,12 @@ test("click row", async () => {
     <ConnectionsTable connections={connections} workspaceId="1" total={0} />,
     {
       routes: ["/:nodeId"],
-    }
+    },
   )
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()

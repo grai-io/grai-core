@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
-import SetupConnection, { UPDATE_CONNECTION } from "./SetupConnection"
+import SetupConnection, { CREATE_RUN } from "./SetupConnection"
+import { CREATE_CONNECTION, UPDATE_CONNECTION } from "./SetupConnectionForm"
 
 const opts = {
   activeStep: 0,
@@ -57,6 +58,86 @@ test("submit", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
+})
+
+test("submit run error", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    {
+      request: {
+        query: CREATE_CONNECTION,
+        variables: {
+          sourceName: "Test Connector",
+          name: "Test Connector",
+          namespace: "default",
+          metadata: {},
+          secrets: {},
+          workspaceId: "1",
+          connectorId: "1",
+        },
+      },
+      result: {
+        data: {
+          createConnection: {
+            id: "1",
+            connector: {
+              id: "1",
+              name: "Test Connector",
+              icon: null,
+            },
+            source: {
+              id: "1",
+              name: "Test Connector",
+            },
+            last_run: null,
+            name: "Test Connector",
+            namespace: "default",
+            metadata: {},
+            is_active: true,
+            created_at: "12324",
+            updated_at: "1234",
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: CREATE_RUN,
+        variables: {
+          connectionId: "1",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connection={null}
+      setConnection={() => {}}
+    />,
+    {
+      mocks,
+      withRouter: true,
+    },
+  )
+
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i })),
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
 })
 
 test("submit update", async () => {

@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import hubspot from "hubspot"
 import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
@@ -83,6 +84,7 @@ const TokenForm: React.FC<TokenFormProps> = ({
           if (!res) return
 
           posthog.identify(res.id, { email: res.username })
+          hubspot.push(["identify", { email: res.username }])
           setLoggedIn(true)
         })
         .catch(() => {})

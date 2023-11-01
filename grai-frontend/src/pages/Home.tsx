@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import { ShepherdTourContext } from "react-shepherd"
+// import { ShepherdTourContext } from "react-shepherd"
+// import useLocalState from "helpers/useLocalState"
 import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
+import SampleDataDialog from "components/home/SampleDataDialog"
 import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
 import Loading from "components/layout/Loading"
@@ -23,7 +25,8 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
-      runs(filters: { action: TESTS }) {
+      sample_data
+      runs(filters: { action: TESTS }, order: { created_at: DESC }) {
         meta {
           filtered
         }
@@ -33,7 +36,7 @@ export const GET_WORKSPACE = gql`
           filtered
         }
       }
-      connections {
+      sources {
         meta {
           total
         }
@@ -44,10 +47,16 @@ export const GET_WORKSPACE = gql`
 
 const Home: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
-  const tour = useContext(ShepherdTourContext)
+  // const tour = useContext(ShepherdTourContext)
   const [search, setSearch] = useState(false)
-  const [tourHidden, setTourHidden] = useLocalState(
-    "getting-started-tour",
+
+  // const [tourHidden, setTourHidden] = useLocalState(
+  //   "getting-started-tour",
+  //   false,
+  // )
+
+  const [sampleDialogHidden, setSampleDialogHidden] = useLocalState(
+    "sample-dialog",
     false,
   )
 
@@ -61,15 +70,15 @@ const Home: React.FC = () => {
     },
   })
 
-  useEffect(() => {
-    if (!tour || tourHidden) return
+  // useEffect(() => {
+  //   if (!tour || tourHidden) return
 
-    tour.on("cancel", () => {
-      setTourHidden(true)
-    })
+  //   tour.on("cancel", () => {
+  //     setTourHidden(true)
+  //   })
 
-    tour.start()
-  }, [tour, tourHidden, setTourHidden])
+  //   tour.start()
+  // }, [tour, tourHidden, setTourHidden])
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
@@ -85,7 +94,7 @@ const Home: React.FC = () => {
       <Box sx={{ padding: "24px" }}>
         <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
-        {workspace.connections.meta.total === 0 &&
+        {workspace.sources.meta.total === 0 &&
           workspace.nodes.meta.filtered === 0 && <GettingStarted />}
         <ReportsCard />
         <SourceGraph workspaceId={workspace.id} />
@@ -95,6 +104,12 @@ const Home: React.FC = () => {
         onClose={handleClose}
         workspaceId={workspace.id}
       />
+      {workspace.sample_data && (
+        <SampleDataDialog
+          open={!sampleDialogHidden}
+          onClose={() => setSampleDialogHidden(true)}
+        />
+      )}
     </>
   )
 }

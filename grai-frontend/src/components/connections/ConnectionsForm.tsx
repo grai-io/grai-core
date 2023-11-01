@@ -47,6 +47,7 @@ type ConnectionsFormProps = {
   error?: ApolloError
   loading?: boolean
   edit?: boolean
+  children?: React.ReactNode
 }
 
 const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
@@ -55,6 +56,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
   error,
   loading,
   edit,
+  children,
 }) => {
   const [values, setValues] = useState<Values>(defaultValues)
 
@@ -91,6 +93,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
           edit={edit}
         />
       )}
+      {children}
       <LoadingButton
         variant="contained"
         type="submit"

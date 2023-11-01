@@ -27,23 +27,24 @@ export interface GetWorkspaceHome_workspace_nodes {
   meta: GetWorkspaceHome_workspace_nodes_meta;
 }
 
-export interface GetWorkspaceHome_workspace_connections_meta {
+export interface GetWorkspaceHome_workspace_sources_meta {
   __typename: "PaginationResult";
   total: number;
 }
 
-export interface GetWorkspaceHome_workspace_connections {
-  __typename: "ConnectionPagination";
-  meta: GetWorkspaceHome_workspace_connections_meta;
+export interface GetWorkspaceHome_workspace_sources {
+  __typename: "SourcePagination";
+  meta: GetWorkspaceHome_workspace_sources_meta;
 }
 
 export interface GetWorkspaceHome_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
+  sample_data: boolean;
   runs: GetWorkspaceHome_workspace_runs;
   nodes: GetWorkspaceHome_workspace_nodes;
-  connections: GetWorkspaceHome_workspace_connections;
+  sources: GetWorkspaceHome_workspace_sources;
 }
 
 export interface GetWorkspaceHome {

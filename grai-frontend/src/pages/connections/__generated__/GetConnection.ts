@@ -70,9 +70,15 @@ export interface GetConnection_workspace_connection_runs_data {
   metadata: any;
 }
 
+export interface GetConnection_workspace_connection_runs_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
 export interface GetConnection_workspace_connection_runs {
   __typename: "RunPagination";
   data: GetConnection_workspace_connection_runs_data[];
+  meta: GetConnection_workspace_connection_runs_meta;
 }
 
 export interface GetConnection_workspace_connection {
@@ -80,6 +86,7 @@ export interface GetConnection_workspace_connection {
   id: any;
   namespace: string;
   name: string;
+  validated: boolean;
   connector: GetConnection_workspace_connection_connector;
   metadata: any;
   schedules: any | null;

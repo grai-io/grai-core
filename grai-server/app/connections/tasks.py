@@ -121,6 +121,9 @@ def execute_run(run: Run):
         elif run.action == Run.VALIDATE:
             adapter.run_validate()
             message = GitHubMessages.VALIDATE.value
+            connection = run.connection
+            connection.validated = True
+            connection.save()
         elif run.action == Run.EVENTS:
             adapter.run_events()
             message = GitHubMessages.EVENTS.value

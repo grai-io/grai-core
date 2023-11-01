@@ -19,7 +19,7 @@ const DangerItem: React.FC<DangerItemProps> = ({
 }) => (
   <Card
     variant="outlined"
-    sx={{ borderColor: theme => theme.palette.error.dark }}
+    sx={{ borderColor: theme => theme.palette.error.dark, mb: 2 }}
   >
     <List>
       <ListItem

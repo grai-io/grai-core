@@ -227,6 +227,7 @@ class Connection:
     schedules: Optional[JSON]
     is_active: strawberry.auto
     temp: strawberry.auto
+    validated: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
     created_by: User
@@ -282,6 +283,7 @@ class SourceNodeFilter:
 @strawberry.input
 class SourceConnectionFilter:
     temp: Optional[bool] = strawberry.UNSET
+    validated: Optional[bool] = strawberry.UNSET
 
 
 @strawberry.django.type(SourceModel)
@@ -333,7 +335,19 @@ class Source:
             if filters.temp is not strawberry.UNSET:
                 queryset = queryset.filter(temp=filters.temp)
 
+            if filters.validated is not strawberry.UNSET:
+                queryset = queryset.filter(validated=filters.validated)
+
         return Pagination[Connection](queryset=queryset, pagination=pagination)
+
+    @strawberry.field
+    def runs(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(connection__source=self)
+
+        return Pagination[Run](queryset=queryset, pagination=pagination)
 
 
 @strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)

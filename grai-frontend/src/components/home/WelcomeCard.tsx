@@ -1,13 +1,5 @@
 import React from "react"
-import { Search } from "@mui/icons-material"
-import {
-  Card,
-  Box,
-  Button,
-  Typography,
-  TextField,
-  InputAdornment,
-} from "@mui/material"
+import { Card, Box, Button, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import { GraiLogo, PersonAdd } from "components/icons"
 
@@ -16,7 +8,7 @@ type WelcomeCardProps = {
   setSearch: (search: boolean) => void
 }
 
-const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
+const WelcomeCard: React.FC<WelcomeCardProps> = () => (
   <Card
     elevation={0}
     sx={{
