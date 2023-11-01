@@ -24,7 +24,7 @@ type Status = {
     | "warning"
 }
 
-interface Run {
+export interface Run {
   id: string
   status: string
 }

@@ -8,15 +8,13 @@ import useWorkspace from "helpers/useWorkspace"
 import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
 import ConnectionMenu from "components/connections/ConnectionMenu"
 import ConnectionRun from "components/connections/ConnectionRun"
+import ConnectionStatus from "components/connections/ConnectionStatus"
 import ConnectionEvents from "components/connections/events/ConnectionEvents"
 import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
 import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
-import ConnectorIcon from "components/connectors/ConnectorIcon"
 import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
 import PageTabs from "components/layout/PageTabs"
-import RunStatus from "components/runs/RunStatus"
-import SetupIncomplete from "components/sources/SetupIncomplete"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
@@ -136,7 +134,12 @@ const Connection: React.FC = () => {
     {
       value: "configuration",
       label: "Configuration",
-      component: <ConnectionConfiguration connection={connection} />,
+      component: (
+        <ConnectionConfiguration
+          connection={connection}
+          workspace={workspace}
+        />
+      ),
     },
     {
       value: "schedule",
@@ -165,16 +168,7 @@ const Connection: React.FC = () => {
     <TabState tabs={tabs}>
       <PageHeader
         title={connection.name}
-        status={
-          <>
-            {!connection.validated && <SetupIncomplete />}
-            {connection.last_run && (
-              <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
-            )}
-
-            <ConnectorIcon connector={connection.connector} />
-          </>
-        }
+        status={<ConnectionStatus connection={connection} />}
         buttons={
           <Stack direction="row" spacing={2}>
             <ConnectionRun

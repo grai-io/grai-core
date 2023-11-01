@@ -31,13 +31,15 @@ interface Run {
 type ValidateConnectionProps = {
   workspaceId: string
   run: Run
-  onValidate: () => void
+  onValidate?: () => void
+  detailed?: boolean
 }
 
 const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   workspaceId,
   run,
   onValidate,
+  detailed,
 }) => {
   const { error, data, startPolling, stopPolling } = useQuery<
     GetRunValidation,
@@ -57,7 +59,7 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
 
     if (success) {
       stopPolling()
-      onValidate()
+      onValidate && onValidate()
     }
     if (runError) stopPolling()
 
@@ -71,8 +73,8 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   if (success) {
     return (
       <Alert severity="success">
-        <AlertTitle>All tests successfully passed!</AlertTitle>Continue to
-        complete setting up your connection.
+        <AlertTitle>All tests successfully passed!</AlertTitle>
+        {detailed ? "Continue to complete setting up your connection." : ""}
       </Alert>
     )
   }

@@ -2,7 +2,15 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import UpdateConnectionForm, { UPDATE_CONNECTION } from "./UpdateConnectionForm"
+import UpdateConnectionForm, {
+  CREATE_RUN,
+  UPDATE_CONNECTION,
+} from "./UpdateConnectionForm"
+import { GET_RUN } from "../create/ValidateConnection"
+
+const workspace = {
+  id: "1",
+}
 
 const connection = {
   id: "1",
@@ -28,94 +36,166 @@ const connection = {
   },
 }
 
+const updateMock1 = {
+  request: {
+    query: UPDATE_CONNECTION,
+    variables: {
+      connectionId: "1",
+      namespace: "defaultdefault",
+      name: "connection 1test connection",
+      metadata: {
+        field1: "value1",
+      },
+      secrets: {},
+      schedules: null,
+      is_active: true,
+    },
+  },
+  result: {
+    data: {
+      updateConnection: {
+        __typename: "ConnectionType",
+        id: "1",
+        connector: {
+          id: "1",
+          name: "c",
+        },
+        namespace: "default",
+        name: "test connection",
+        metadata: {
+          field1: "value1",
+        },
+        secrets: {
+          field2: "value2",
+        },
+        schedules: null,
+        is_active: true,
+        created_at: "",
+        updated_at: "",
+      },
+    },
+  },
+}
+
+const updateMock2 = {
+  request: {
+    query: UPDATE_CONNECTION,
+    variables: {
+      connectionId: "1",
+      namespace: "defaultdefault",
+      name: "connection 1test connection",
+      metadata: {
+        field1: "value1",
+      },
+      secrets: {
+        field2: "value2",
+      },
+      schedules: null,
+      is_active: true,
+    },
+  },
+  result: {
+    data: {
+      updateConnection: {
+        __typename: "ConnectionType",
+        id: "1",
+        connector: {
+          id: "1",
+          name: "c",
+        },
+        namespace: "default",
+        name: "test connection",
+        metadata: {
+          field1: "value1",
+        },
+        secrets: {
+          field2: "value2",
+        },
+        schedules: null,
+        is_active: true,
+        created_at: "",
+        updated_at: "",
+      },
+    },
+  },
+}
+
 test("renders", async () => {
-  render(<UpdateConnectionForm connection={connection} />, {
-    withRouter: true,
-  })
+  render(
+    <UpdateConnectionForm connection={connection} workspace={workspace} />,
+    {
+      withRouter: true,
+    },
+  )
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    updateMock1,
+    updateMock2,
     {
       request: {
-        query: UPDATE_CONNECTION,
+        query: CREATE_RUN,
         variables: {
           connectionId: "1",
-          namespace: "defaultdefault",
-          name: "connection 1test connection",
-          metadata: {
-            field1: "value1",
-          },
-          secrets: {},
-          schedules: null,
-          is_active: true,
         },
       },
       result: {
         data: {
-          updateConnection: {
-            __typename: "ConnectionType",
+          runConnection: {
             id: "1",
-            connector: {
-              id: "1",
-              name: "c",
-            },
-            namespace: "default",
-            name: "test connection",
-            metadata: {
-              field1: "value1",
-            },
-            secrets: {
-              field2: "value2",
-            },
-            schedules: null,
-            is_active: true,
+            status: "PENDING",
             created_at: "",
             updated_at: "",
+            started_at: "",
+            finished_at: "",
+            logs: [],
+            connection: {
+              id: "1",
+              name: "test connection",
+              namespace: "default",
+              connector: {
+                id: "1",
+                name: "c",
+              },
+              metadata: {
+                field1: "value1",
+              },
+              secrets: {
+                field2: "value2",
+              },
+              schedules: null,
+              is_active: true,
+              created_at: "",
+              updated_at: "",
+            },
           },
         },
       },
     },
     {
       request: {
-        query: UPDATE_CONNECTION,
+        query: GET_RUN,
         variables: {
-          connectionId: "1",
-          namespace: "defaultdefault",
-          name: "connection 1test connection",
-          metadata: {
-            field1: "value1",
-          },
-          secrets: {
-            field2: "value2",
-          },
-          schedules: null,
-          is_active: true,
+          workspaceId: "1",
+          runId: "1",
         },
       },
       result: {
         data: {
-          updateConnection: {
-            __typename: "ConnectionType",
+          workspace: {
             id: "1",
-            connector: {
+            run: {
               id: "1",
-              name: "c",
+              status: "success",
+              metadata: {},
+              connection: {
+                id: "1",
+                validated: true,
+              },
             },
-            namespace: "default",
-            name: "test connection",
-            metadata: {
-              field1: "value1",
-            },
-            secrets: {
-              field2: "value2",
-            },
-            schedules: null,
-            is_active: true,
-            created_at: "",
-            updated_at: "",
           },
         },
       },
@@ -123,32 +203,32 @@ test("submit", async () => {
   ]
 
   const { container } = render(
-    <UpdateConnectionForm connection={connection} />,
-    { mocks }
+    <UpdateConnectionForm connection={connection} workspace={workspace} />,
+    { mocks },
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Namespace" }),
-        "default"
-      )
+        "default",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Name" }),
-        "test connection"
-      )
+        "test connection",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Field 1" }),
-        "value1"
-      )
+        "value1",
+      ),
   )
 
   await waitFor(() => {
@@ -156,7 +236,7 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /edit/i }))
+    async () => await user.click(screen.getByRole("button", { name: /edit/i })),
   )
 
   await waitFor(() => {
@@ -170,8 +250,14 @@ test("submit", async () => {
   if (secretField) await act(async () => await user.type(secretField, "value2"))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("All tests successfully passed!"),
+    ).toBeInTheDocument()
+  })
 })
 
 test("submit error", async () => {
@@ -199,37 +285,115 @@ test("submit error", async () => {
     },
   ]
 
-  render(<UpdateConnectionForm connection={connection} />, { mocks })
+  render(
+    <UpdateConnectionForm connection={connection} workspace={workspace} />,
+    { mocks },
+  )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Namespace" }),
-        "default"
-      )
+        "default",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Name" }),
-        "test connection"
-      )
+        "test connection",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Field 1" }),
-        "value1"
-      )
+        "value1",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("submit run error", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    updateMock1,
+    updateMock2,
+    {
+      request: {
+        query: CREATE_RUN,
+        variables: {
+          connectionId: "1",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
+  const { container } = render(
+    <UpdateConnectionForm connection={connection} workspace={workspace} />,
+    { mocks },
+  )
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Namespace" }),
+        "default",
+      ),
+  )
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test connection",
+      ),
+  )
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Field 1" }),
+        "value1",
+      ),
+  )
+
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument()
+  })
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /edit/i })),
+  )
+
+  await waitFor(() => {
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.querySelector("input[type=password]")).toBeInTheDocument()
+  })
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  const secretField = container.querySelector("input[type=password]")
+
+  if (secretField) await act(async () => await user.type(secretField, "value2"))
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
+  )
+
+  await waitFor(async () => {
+    expect(await screen.findByText("Error!")).toBeInTheDocument()
   })
 })

@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Tooltip } from "@mui/material"
 
-interface Connector {
+export interface Connector {
   name: string
   icon: string | null
 }
@@ -11,7 +11,10 @@ type ConnectorIconProps = {
   noBorder?: boolean
 }
 
-const ConnectorIcon: React.FC<ConnectorIconProps> = ({ connector, noBorder }) =>
+const ConnectorIcon: React.FC<ConnectorIconProps> = ({
+  connector,
+  noBorder,
+}) =>
   connector.icon ? (
     <Tooltip title={connector.name}>
       <Box
