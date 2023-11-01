@@ -7,9 +7,15 @@ from django_celery_beat.models import PeriodicTask, PeriodicTasks
 from datetime import datetime
 from typing import TYPE_CHECKING
 from django.apps import apps
+from django.core.cache import cache
+
 
 if TYPE_CHECKING:
     from lineage.models import Node
+
+
+class EmbeddingTaskStatus:
+    WAIT = 0
 
 
 def create_node_vector_index(node: "Node"):
@@ -18,21 +24,37 @@ def create_node_vector_index(node: "Node"):
 
     schema = model_to_schema(node, "NodeV1")
     content = GraiYamlSerializer.dump(schema)
-    try:
-        embedding_resp = openai.Embedding.create(input=content, model="text-embedding-ada-002")
-    except:
-        raise Exception(f"Encountered openai API error while creating embedding for {node_id}")
-
+    embedding_resp = openai.Embedding.create(input=content, model="text-embedding-ada-002")
     NodeEmbeddings.objects.update_or_create(node=node, embedding=embedding_resp.data[0].embedding)
 
 
-@shared_task
-def update_node_vector_index(node_id: UUID):
+def get_embedding_task_state(task_id: UUID | None) -> int | None:
+    if task_id is None:
+        return task_id
+
+    cache_key = f"lineage:NodeEmbeddingTasks:{task_id}"
+    return cache.get(cache_key, None)
+
+
+@shared_task(bind=True, max_retries=None)
+def update_node_vector_index(self, node_id: UUID, task_id: UUID | None = None):
     from lineage.models import Node
 
     logging.info(f"Creating embedding for node {node_id}")
+
+    task_status = get_embedding_task_state(task_id)
+    if task_status == EmbeddingTaskStatus.WAIT:
+        logging.info(f"Task {task_id} is waiting")
+        self.retry(countdown=10)
+        return
+
     node = Node.objects.get(id=node_id)
-    create_node_vector_index(node)
+    try:
+        create_node_vector_index(node)
+    except openai.error.RateLimitError:
+        logging.info(f"Openai rate limit reach retrying in 10 seconds")
+        self.retry(countdown=10)
+        return
 
 
 @shared_task

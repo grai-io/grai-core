@@ -14,10 +14,10 @@ app = Celery("the_guide")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 app.conf.beat_schedule = {
-    "lineage:Node:bulk_update_embeddings": {
-        "task": "lineage.tasks.bulk_update_embeddings",
-        "schedule": timedelta(minutes=5),
-    },
+    # "lineage:Node:bulk_update_embeddings": {
+    #     "task": "lineage.tasks.bulk_update_embeddings",
+    #     "schedule": timedelta(minutes=5),
+    # },
 }
 
 # Load task modules from all registered Django apps.

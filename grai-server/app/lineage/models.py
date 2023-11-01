@@ -8,14 +8,14 @@ from grai_schemas.serializers import GraiEncoder
 
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
-from .managers import CacheManager, SourceManager
+from .managers import CacheManager, SourceManager, NodeManager
 from pgvector.django import VectorField, HnswIndex
 from django.conf import settings
 from lineage.tasks import update_node_vector_index
 
 
 class Node(TenantModel):
-    objects = CacheManager()
+    objects = NodeManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.TextField(default="default")
