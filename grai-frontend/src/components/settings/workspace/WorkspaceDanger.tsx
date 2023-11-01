@@ -2,10 +2,12 @@ import React from "react"
 import { Box, Grid, Typography } from "@mui/material"
 import ClearWorkspace from "./ClearWorkspace"
 import ClearWorkspaceCache from "./ClearWorkspaceCache"
+import HideDemoWorkspace from "./HideDemoWorkspace"
 
 export interface Workspace {
   id: string
   name: string
+  sample_data: boolean
 }
 
 type WorkspaceDangerProps = {
@@ -20,6 +22,7 @@ const WorkspaceDanger: React.FC<WorkspaceDangerProps> = ({ workspace }) => (
     <Grid container>
       <Grid item md={6}>
         <ClearWorkspaceCache />
+        {workspace.sample_data && <HideDemoWorkspace workspace={workspace} />}
         <ClearWorkspace workspace={workspace} />
       </Grid>
     </Grid>
