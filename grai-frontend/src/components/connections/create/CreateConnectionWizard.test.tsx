@@ -25,24 +25,6 @@ test("renders", async () => {
   })
 })
 
-test("close", async () => {
-  const user = userEvent.setup()
-
-  render(<CreateConnectionWizard workspaceId="1" />, {
-    routes: ["/:organisationName/:workspaceName/sources"],
-  })
-
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
-
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await waitFor(() => {
-    expect(screen.queryByText("Select an integration")).toBeFalsy()
-  })
-
-  expect(screen.getByText("New Page")).toBeInTheDocument()
-})
-
 const connectorsMock = {
   request: {
     query: GET_CONNECTORS,

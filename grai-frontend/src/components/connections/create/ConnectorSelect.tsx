@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
@@ -6,6 +6,8 @@ import { Connections } from "components/icons"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import { GetConnectors } from "./__generated__/GetConnectors"
+import ConnectorCategoryTabs from "./ConnectorCategoryTabs"
+import ConnectorSearch from "./ConnectorSearch"
 import { Connector } from "../connectors/ConnectorCard"
 import ConnectorList from "../connectors/ConnectorList"
 
@@ -22,46 +24,30 @@ export const GET_CONNECTORS = gql`
   }
 `
 
-type Category = {
-  title: string
-  connectors: Connector[]
-}
-
 type ConnectorSelectProps = {
   onSelect: (connector: Connector) => void
 }
 
 const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
+  const [search, setSearch] = useState("")
+  const [category, setCategory] = useState<string | null>(null)
+
   const { routePrefix } = useWorkspace()
   const { loading, error, data } = useQuery<GetConnectors>(GET_CONNECTORS)
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const categories = data?.connectors.reduce<Category[]>((res, connector) => {
-    const category = connector.category ?? "other"
+  const categories =
+    data?.connectors.reduce<string[]>((res, connector) => {
+      const category = connector.category ?? "others"
 
-    const group = res.find(g => g.title === category)
-
-    if (group) {
-      group.connectors.push(connector)
-    } else {
-      const newCategory = {
-        title: category,
-        connectors: [connector],
+      if (!res.includes(category)) {
+        return res.concat(category)
       }
 
-      return res.concat(newCategory)
-    }
-
-    return res
-  }, [])
-
-  const databases = categories?.find(c => c.title === "databases")
-  const datatools = categories?.find(c => c.title === "data tools")
-  const others = categories?.filter(
-    c => !["databases", "data tools"].includes(c.title),
-  )
+      return res
+    }, []) ?? []
 
   const emptySource = {
     id: "source",
@@ -73,36 +59,36 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
       </Box>
     ),
     to: `${routePrefix}/sources/create`,
+    category: "others",
   }
+
+  const connectors = [...(data?.connectors ?? []), emptySource]
+  const filteredConnectors = category
+    ? connectors.filter(
+        connector => (connector.category ?? "others") === category,
+      )
+    : connectors
+  const searchedConnectors = search
+    ? filteredConnectors.filter(connector =>
+        connector.name.toLowerCase().includes(search.toLowerCase()),
+      )
+    : filteredConnectors
 
   return (
     <>
-      {databases && (
-        <ConnectorList
-          title={databases.title}
-          connectors={databases.connectors}
-          onSelect={onSelect}
-        />
-      )}
-      {datatools && (
-        <ConnectorList
-          title={datatools.title}
-          connectors={datatools.connectors}
-          onSelect={onSelect}
-        />
-      )}
-      {others?.map(category => (
-        <ConnectorList
-          key={category.title}
-          title={category.title}
-          connectors={
-            category.title === "other"
-              ? [...category.connectors, emptySource]
-              : category.connectors
-          }
-          onSelect={onSelect}
-        />
-      ))}
+      <Box sx={{ display: "flex", my: 3 }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <ConnectorCategoryTabs
+            categories={categories}
+            value={category}
+            onChange={setCategory}
+          />
+        </Box>
+        <ConnectorSearch value={search} onChange={setSearch} />
+      </Box>
+      <Box sx={{ mt: 5, pb: 5 }}>
+        <ConnectorList connectors={searchedConnectors} onSelect={onSelect} />
+      </Box>
     </>
   )
 }
