@@ -4,21 +4,19 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetWorkspaceSettingsW
+// GraphQL mutation operation: UpdateWorkspaceSampleData
 // ====================================================
 
-export interface GetWorkspaceSettingsW_workspace {
+export interface UpdateWorkspaceSampleData_updateWorkspace {
   __typename: "Workspace";
   id: any;
-  name: string;
   sample_data: boolean;
 }
 
-export interface GetWorkspaceSettingsW {
-  workspace: GetWorkspaceSettingsW_workspace;
+export interface UpdateWorkspaceSampleData {
+  updateWorkspace: UpdateWorkspaceSampleData_updateWorkspace;
 }
 
-export interface GetWorkspaceSettingsWVariables {
-  organisationName: string;
-  workspaceName: string;
+export interface UpdateWorkspaceSampleDataVariables {
+  id: string;
 }
