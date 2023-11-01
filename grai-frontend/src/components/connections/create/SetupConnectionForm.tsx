@@ -311,8 +311,8 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <WizardSubtitle
-        title={`Connect to ${connector.name}`}
-        icon={connector.icon}
+        title="Setup connection"
+        subTitle="Configure the connection to your source"
       />
       {errorCreate && <GraphError error={errorCreate} />}
       {errorUpdate && <GraphError error={errorUpdate} />}

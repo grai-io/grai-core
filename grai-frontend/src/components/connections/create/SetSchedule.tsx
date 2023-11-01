@@ -81,7 +81,10 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
 
   return (
     <>
-      <WizardSubtitle title="Set a schedule for this connection" />
+      <WizardSubtitle
+        title="Set schedule"
+        subTitle="Set a schedule for this connection"
+      />
       {error && <GraphError error={error} />}
       <Grid container sx={{ pt: 3 }}>
         <Grid item md={8}>

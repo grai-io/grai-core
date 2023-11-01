@@ -1,48 +1,28 @@
-import React, { ReactNode } from "react"
-import { Toolbar, Container, Typography, Box } from "@mui/material"
+import React from "react"
+import { Typography, Box } from "@mui/material"
 
 type WizardSubtitleProps = {
   title?: string | null
-  icon?: string | null | ReactNode
-  children?: ReactNode
+  subTitle?: string | null
 }
 
-const WizardSubtitle: React.FC<WizardSubtitleProps> = ({
-  title,
-  icon,
-  children,
-}) => (
-  <>
-    <Toolbar
+const WizardSubtitle: React.FC<WizardSubtitleProps> = ({ title, subTitle }) => (
+  <Box>
+    <Typography
+      variant="h6"
       sx={{
-        backgroundColor: theme => theme.palette.grey[100],
-        height: 80,
+        color: "#1F2A37",
+        fontSize: 22,
+        fontWeight: 800,
+        lineHeight: "150%",
+        letterSpacing: "0.22px",
+        mb: "14px",
       }}
     >
-      <Container maxWidth="lg">
-        {
-          <Box sx={{ display: "flex" }}>
-            {icon &&
-              (typeof icon === "string" ? (
-                <img
-                  src={icon}
-                  alt={`${title} logo`}
-                  style={{ height: 28, width: 28 }}
-                />
-              ) : (
-                icon
-              ))}
-            {title && (
-              <Typography variant="h5" sx={{ ml: icon ? 2 : undefined }}>
-                {title}
-              </Typography>
-            )}
-          </Box>
-        }
-        {children}
-      </Container>
-    </Toolbar>
-  </>
+      {title}
+    </Typography>
+    <Typography>{subTitle}</Typography>
+  </Box>
 )
 
 export default WizardSubtitle

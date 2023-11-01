@@ -103,7 +103,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
       },
     })
       .then(res =>
-        workspaceNavigate(`runs/${res.data?.uploadConnectorFile.id}`)
+        workspaceNavigate(`runs/${res.data?.uploadConnectorFile.id}`),
       )
       .then(() => enqueueSnackbar("File uploaded"))
       .catch(() => {})
@@ -120,8 +120,8 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <WizardSubtitle
-        title={`Connect to ${connector?.name}`}
-        icon={connector?.icon}
+        title="Setup connection"
+        subTitle="Choose a file to upload"
       />
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>

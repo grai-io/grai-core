@@ -11,7 +11,9 @@ test("renders", async () => {
     expect(screen.getByText("Add Source")).toBeInTheDocument()
   })
 
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Select integration/i }),
+  ).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()

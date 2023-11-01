@@ -33,7 +33,9 @@ test("renders", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("submit", async () => {
@@ -52,7 +54,9 @@ test("submit", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -128,7 +132,9 @@ test("submit run error", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -163,7 +169,9 @@ test("submit update", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -223,7 +231,9 @@ test("submit update error", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -258,7 +268,9 @@ test("renders file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("renders file yaml", async () => {
@@ -284,7 +296,9 @@ test("renders file yaml", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test YAML Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("upload file", async () => {
@@ -312,7 +326,9 @@ test("upload file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -373,7 +389,9 @@ test("upload wrong file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -435,7 +453,9 @@ test("upload file error", async () => {
     { withRouter: true, mocks },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -484,6 +504,5 @@ test("renders coming soon", async () => {
     },
   )
 
-  expect(screen.getByText("Test Integration")).toBeInTheDocument()
   expect(screen.getByText("Test coming soon")).toBeInTheDocument()
 })

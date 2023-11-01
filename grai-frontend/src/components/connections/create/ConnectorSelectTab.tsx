@@ -25,7 +25,7 @@ const ConnectorSelectTab: React.FC<ConnectorSelectTabProps> = ({
           mb: "14px",
         }}
       >
-        Select an integration
+        Select integration
       </Typography>
       <Typography>Choose the integration for your workflow</Typography>
     </Box>
