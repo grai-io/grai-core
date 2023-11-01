@@ -131,6 +131,7 @@ test("submit error", async () => {
           workspace: {
             id: "1",
             name: "Test Workspace",
+            sample_data: false,
           },
         },
       },

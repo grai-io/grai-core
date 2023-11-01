@@ -7,6 +7,7 @@ import WorkspaceDanger from "./WorkspaceDanger"
 const workspace = {
   id: "1",
   name: "Test Workspace",
+  sample_data: false,
 }
 
 test("renders", async () => {

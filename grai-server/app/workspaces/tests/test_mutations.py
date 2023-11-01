@@ -162,6 +162,35 @@ async def test_update_workspace(test_context):
     }
 
 
+@pytest.mark.django_db
+async def test_update_workspace_sample_data(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation UpdateWorkspace($id: ID!, $sample_data: Boolean!) {
+            updateWorkspace(id: $id, sample_data: $sample_data) {
+                id
+                sample_data
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(workspace.id),
+            "sample_data": True,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateWorkspace"] == {
+        "id": str(workspace.id),
+        "sample_data": True,
+    }
+
+
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_clear_workspace(test_context):

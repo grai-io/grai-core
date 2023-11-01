@@ -121,13 +121,18 @@ class Mutation:
         self,
         info: Info,
         id: strawberry.ID,
-        name: str,
+        name: Optional[str] = None,
+        sample_data: Optional[bool] = None,
     ) -> Workspace:
-        validate_no_slash(name, "Workspace name")
-
         workspace = await aget_workspace(info, id)
 
-        workspace.name = name
+        if name is not None:
+            validate_no_slash(name, "Workspace name")
+            workspace.name = name
+
+        if sample_data is not None:
+            workspace.sample_data = sample_data
+
         await sync_to_async(workspace.save)()
 
         return workspace
