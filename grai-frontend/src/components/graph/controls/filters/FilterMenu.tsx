@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import { ClickAwayListener, Popper, styled } from "@mui/material"
+import { CombinedFilters } from "components/graph/useCombinedFilters"
 import { Option } from "./FilterAutocomplete"
 import FilterButton from "./FilterButton"
 import FilterContent from "./FilterContent"
-import { CombinedFilters } from "components/graph/useCombinedFilters"
 import { Values } from "../FilterControl"
 
 const StyledPopper = styled(Popper)(({ theme }) => ({

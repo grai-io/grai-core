@@ -3,7 +3,6 @@ import { gql, useLazyQuery } from "@apollo/client"
 import { Edge as RFEdge, Node as RFNode, Viewport } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import useWorkspace from "helpers/useWorkspace"
-import { Filter } from "components/filters/filters"
 import {
   GetGraphLoadTable,
   GetGraphLoadTableVariables,

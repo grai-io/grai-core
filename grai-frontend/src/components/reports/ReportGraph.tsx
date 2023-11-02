@@ -4,8 +4,8 @@ import GraphComponent, {
   ResultError,
   Table,
 } from "components/graph/GraphComponent"
-import { Run } from "./run/RunLog"
 import useCombinedFilters from "components/graph/useCombinedFilters"
+import { Run } from "./run/RunLog"
 
 type ReportGraphProps = {
   tables: Table[]

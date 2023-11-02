@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 import { GET_FILTERS } from "components/graph/controls/FilterControl"
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const baseFilter = {
   min_x: -500,

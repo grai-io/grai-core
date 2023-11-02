@@ -3,12 +3,12 @@ import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesEdgeLineage,
   GetTablesAndEdgesEdgeLineageVariables,
 } from "./__generated__/GetTablesAndEdgesEdgeLineage"
-import useCombinedFilters from "components/graph/useCombinedFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesEdgeLineage(

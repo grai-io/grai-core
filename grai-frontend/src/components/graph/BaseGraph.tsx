@@ -10,11 +10,9 @@ import ReactFlow, {
   Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import { Filter } from "components/filters/filters"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
-// import GraphDrawer from "./drawer/GraphDrawer"
 import TestEdge from "./TestEdge"
 import { CombinedFilters } from "./useCombinedFilters"
 
