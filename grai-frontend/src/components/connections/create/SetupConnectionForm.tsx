@@ -362,23 +362,27 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
             />
           )}
           {children}
+          <WizardBottomBar opts={opts}>
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              sx={{
+                minWidth: 120,
+                backgroundColor: "#FC6016",
+                boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
+              }}
+              endIcon={<ArrowForward />}
+              loading={loadingCreate || loadingUpdate}
+              disabled={!dirty && disabled}
+            >
+              Continue
+            </LoadingButton>
+          </WizardBottomBar>
         </Grid>
         <Grid item md={4} sx={{}}>
           <CreateConnectionHelp connector={connector} />
         </Grid>
       </Grid>
-      <WizardBottomBar opts={opts}>
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120 }}
-          endIcon={<ArrowForward />}
-          loading={loadingCreate || loadingUpdate}
-          disabled={!dirty && disabled}
-        >
-          Continue
-        </LoadingButton>
-      </WizardBottomBar>
     </Form>
   )
 }

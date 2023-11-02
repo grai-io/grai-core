@@ -12,22 +12,20 @@ const WizardBottomBar: React.FC<WizardBottomBarProps> = ({
   opts,
   children,
 }) => (
-  <Toolbar sx={{ height: 80 }}>
-    <Container maxWidth="lg" sx={{ display: "flex" }}>
-      <Box sx={{ flexGrow: 1 }}>
-        {opts.activeStep > 0 && (
-          <Button
-            variant="outlined"
-            onClick={opts.backStep}
-            startIcon={<ArrowBack />}
-          >
-            Go Back
-          </Button>
-        )}
-      </Box>
-      <Box>{children}</Box>
-    </Container>
-  </Toolbar>
+  <Box sx={{ textAlign: "right", my: 3 }}>
+    {opts.activeStep > 0 && (
+      <Button
+        variant="outlined"
+        onClick={opts.backStep}
+        startIcon={<ArrowBack />}
+        sx={{ mr: 2 }}
+      >
+        Go Back
+      </Button>
+    )}
+
+    {children}
+  </Box>
 )
 
 export default WizardBottomBar

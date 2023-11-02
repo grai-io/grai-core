@@ -154,22 +154,26 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
             onChange={file => setValues({ ...values, file })}
             accept={accept}
           />
+          <WizardBottomBar opts={opts}>
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              sx={{
+                minWidth: 120,
+                backgroundColor: "#FC6016",
+                boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
+              }}
+              disabled={!values.file}
+              loading={loading}
+            >
+              Finish
+            </LoadingButton>
+          </WizardBottomBar>
         </Grid>
         <Grid item md={4} sx={{}}>
           <CreateConnectionHelp connector={connector} />
         </Grid>
       </Grid>
-      <WizardBottomBar opts={opts}>
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120 }}
-          disabled={!values.file}
-          loading={loading}
-        >
-          Finish
-        </LoadingButton>
-      </WizardBottomBar>
     </Form>
   )
 }
