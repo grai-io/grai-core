@@ -1,31 +1,20 @@
 import React from "react"
-import { Box, Divider, Toolbar, Typography } from "@mui/material"
+import { Box, Divider } from "@mui/material"
 import { WizardSteps } from "./WizardLayout"
 import WizardStepper from "./WizardStepper"
 
 type WizardAppBarProps = {
-  title?: string
   steps: WizardSteps
   activeStep: number
 }
 
-const WizardAppBar: React.FC<WizardAppBarProps> = ({
-  title,
-  steps,
-  activeStep,
-}) => (
-  <Box>
-    <Toolbar>
-      <Typography variant="h6" component="div" sx={{ flex: 1 }}>
-        {title}
-      </Typography>
-
-      <WizardStepper steps={steps} activeStep={activeStep} sx={{ flex: 2 }} />
-
-      <Box sx={{ flex: 1 }} />
-    </Toolbar>
+const WizardAppBar: React.FC<WizardAppBarProps> = ({ steps, activeStep }) => (
+  <>
+    <Box sx={{ p: "24px", display: "flex", justifyContent: "center" }}>
+      <WizardStepper steps={steps} activeStep={activeStep} />
+    </Box>
     <Divider />
-  </Box>
+  </>
 )
 
 export default WizardAppBar

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react"
 import { ArrowBack } from "@mui/icons-material"
-import { Toolbar, Container, Box, Button } from "@mui/material"
+import { Box, Button } from "@mui/material"
 import { ElementOptions } from "./WizardLayout"
 
 type WizardBottomBarProps = {
