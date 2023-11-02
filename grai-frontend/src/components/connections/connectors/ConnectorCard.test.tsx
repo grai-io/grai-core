@@ -12,6 +12,7 @@ test("renders", async () => {
         id: "1",
         name: "connector 1",
         metadata: null,
+        icon: null,
       }}
       onSelect={onSelect}
     />,
@@ -29,6 +30,7 @@ test("coming soon", async () => {
         name: "connector 1",
         metadata: null,
         status: "coming_soon",
+        icon: null,
       }}
       onSelect={onSelect}
     />,
@@ -36,6 +38,28 @@ test("coming soon", async () => {
       withRouter: true,
     },
   )
+
+  expect(screen.getByText(/Coming soon/i)).toBeInTheDocument()
+})
+
+test("alpha", async () => {
+  render(
+    <ConnectorCard
+      connector={{
+        id: "1",
+        name: "connector 1",
+        metadata: null,
+        status: "alpha",
+        icon: null,
+      }}
+      onSelect={() => {}}
+    />,
+    {
+      withRouter: true,
+    },
+  )
+
+  expect(screen.getByText(/alpha/i)).toBeInTheDocument()
 })
 
 test("click", async () => {
@@ -47,6 +71,7 @@ test("click", async () => {
         id: "1",
         name: "connector 1",
         metadata: null,
+        icon: null,
       }}
       onSelect={onSelect}
     />,
@@ -72,6 +97,7 @@ test("to", async () => {
         name: "connector 1",
         metadata: null,
         to: "a",
+        icon: null,
       }}
       onSelect={onSelect}
     />,

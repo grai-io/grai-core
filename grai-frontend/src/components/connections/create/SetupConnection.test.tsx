@@ -21,12 +21,19 @@ const opts = {
   },
 }
 
+const connector = {
+  id: "1",
+  name: "Test Connector",
+  metadata: null,
+  icon: "icon",
+}
+
 test("renders", async () => {
   render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={setConnection}
     />,
@@ -35,7 +42,9 @@ test("renders", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("submit", async () => {
@@ -45,7 +54,7 @@ test("submit", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={setConnection}
     />,
@@ -54,7 +63,9 @@ test("submit", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -122,7 +133,7 @@ test("submit run error", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={setConnection}
     />,
@@ -132,7 +143,9 @@ test("submit run error", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -151,7 +164,7 @@ test("submit update", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={{
         id: "1",
         namespace: "default",
@@ -167,7 +180,9 @@ test("submit update", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -210,7 +225,7 @@ test("submit update error", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={{
         id: "1",
         namespace: "default",
@@ -227,7 +242,9 @@ test("submit update error", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>
@@ -253,6 +270,7 @@ test("renders file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -262,7 +280,9 @@ test("renders file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("renders file yaml", async () => {
@@ -279,6 +299,7 @@ test("renders file yaml", async () => {
             extension: "yaml",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -288,7 +309,9 @@ test("renders file yaml", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test YAML Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 })
 
 test("upload file", async () => {
@@ -307,6 +330,7 @@ test("upload file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -316,7 +340,9 @@ test("upload file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -368,6 +394,7 @@ test("upload wrong file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -377,7 +404,9 @@ test("upload wrong file", async () => {
     },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -432,6 +461,7 @@ test("upload file error", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -439,7 +469,9 @@ test("upload file error", async () => {
     { withRouter: true, mocks },
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -479,6 +511,7 @@ test("renders coming soon", async () => {
         name: "Test",
         metadata: {},
         status: "coming_soon",
+        icon: null,
       }}
       connection={null}
       setConnection={setConnection}
@@ -488,6 +521,5 @@ test("renders coming soon", async () => {
     },
   )
 
-  expect(screen.getByText("Test Integration")).toBeInTheDocument()
   expect(screen.getByText("Test coming soon")).toBeInTheDocument()
 })

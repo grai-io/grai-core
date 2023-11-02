@@ -8,8 +8,14 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Create Source")).toBeInTheDocument()
+    expect(screen.getByText("Add Source")).toBeInTheDocument()
   })
 
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Select integration/i }),
+  ).toBeInTheDocument()
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
 })
