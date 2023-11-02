@@ -1,0 +1,45 @@
+---
+title: Grai Server Documentation
+description: Everything you need to know about the Grai Server
+---
+
+# Grai Server
+
+## Introduction
+
+The Grai Server component is the core of the Grai platform.
+It tracks the state of your data dependency graph, and executes jobs as needed to keep your data up to date.
+With it you can schedule jobs like integration syncs to run on a regular basis, or trigger them manually.
+It also tracks testing events called from your CI integrations.
+
+In addition to core data tracking the server backs both a [REST](/server/rest-api) and [GraphQL](/server/graphql-api) API and provides an admin console through which you can manage users on your Grai instance.
+
+## Dependencies
+
+Grai relies on the following background services.
+
+- [PostgresQL](https://www.postgresql.org/) as the core database
+- [Redis](https://redis.com/) for cacheing
+- [Celery](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) for job scheduling and worker execution
+- [Flower](https://flower.readthedocs.io/en/latest/) for monitoring of Celery tasks
+- [Django](https://www.djangoproject.com/) for our backend web framework
+
+You'll find the default admin login credentials below but these should be changed immediately in a production setting.
+
+```copy
+username: null@grai.io
+password: super_secret
+```
+
+## Admin
+
+For self-hosted users, the admin page can be accessed under the `/admin` route on your Grai instance.
+For a default installation this would be `localhost:8000/admin`.
+It is password protected and only accessible by superusers.
+
+The [Settings](/server/settings) page provides more information about configuring your own superuser but the default credentials are:
+
+```copy
+username: null@grai.io
+password: super_secret
+```
