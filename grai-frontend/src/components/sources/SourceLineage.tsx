@@ -10,6 +10,7 @@ import {
   GetTablesAndEdgesSourceLineage,
   GetTablesAndEdgesSourceLineageVariables,
 } from "./__generated__/GetTablesAndEdgesSourceLineage"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesSourceLineage(
@@ -59,10 +60,8 @@ type SourceLineageProps = {
 const SourceLineage: React.FC<SourceLineageProps> = ({ source }) => {
   const [value, setValue] = useState(0)
   const { organisationName, workspaceName } = useWorkspace()
-  const { filters, setFilters } = useFilters(
+  const { combinedFilters } = useCombinedFilters(
     `sources-${source.id}-graph-filters`,
-  )
-  const { inlineFilters, setInlineFilters } = useInlineFilters(
     `sources-${source.id}-graph-inline-filters`,
   )
 
@@ -102,10 +101,7 @@ const SourceLineage: React.FC<SourceLineageProps> = ({ source }) => {
             setValue,
           },
         }}
-        filters={filters ?? []}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters ?? []}
-        setInlineFilters={setInlineFilters}
+        combinedFilters={combinedFilters}
       />
     </Box>
   )

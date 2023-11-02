@@ -4,9 +4,8 @@ import GraphComponent, {
   ResultError,
   Table,
 } from "components/graph/GraphComponent"
-import useFilters from "components/graph/useFilters"
-import useInlineFilters from "components/graph/useInlineFilters"
 import { Run } from "./run/RunLog"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 
 type ReportGraphProps = {
   tables: Table[]
@@ -21,8 +20,8 @@ const ReportGraph: React.FC<ReportGraphProps> = ({
   limitGraph,
   run,
 }) => {
-  const { filters, setFilters } = useFilters(`reports-${run?.id}-graph-filters`)
-  const { inlineFilters, setInlineFilters } = useInlineFilters(
+  const { combinedFilters } = useCombinedFilters(
+    `reports-${run?.id}-graph-filters`,
     `reports-${run?.id}-graph-inline-filters`,
   )
 
@@ -36,10 +35,7 @@ const ReportGraph: React.FC<ReportGraphProps> = ({
         tables={tables}
         errors={errors}
         limitGraph={limitGraph}
-        filters={filters ?? []}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters ?? []}
-        setInlineFilters={setInlineFilters}
+        combinedFilters={combinedFilters}
       />
     </Box>
   )

@@ -87,12 +87,18 @@ export type Option = {
 type FilterAutocompleteProps = {
   options: Option[]
   onClose?: () => void
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
 const FilterAutocomplete: React.FC<FilterAutocompleteProps> = ({
   options,
   onClose,
+  filters,
+  setFilters,
 }) => {
+  const value = options.filter(option => filters.includes(option.value))
+
   return (
     <Autocomplete<Option, true>
       open
@@ -105,17 +111,17 @@ const FilterAutocomplete: React.FC<FilterAutocompleteProps> = ({
           onClose && onClose()
         }
       }}
-      // value={pendingValue}
-      // onChange={(event, newValue, reason) => {
-      //   if (
-      //     event.type === 'keydown' &&
-      //     (event as React.KeyboardEvent).key === 'Backspace' &&
-      //     reason === 'removeOption'
-      //   ) {
-      //     return;
-      //   }
-      //   setPendingValue(newValue);
-      // }}
+      value={value}
+      onChange={(event, newValue, reason) => {
+        if (
+          event.type === "keydown" &&
+          (event as React.KeyboardEvent).key === "Backspace" &&
+          reason === "removeOption"
+        ) {
+          return
+        }
+        setFilters(newValue.map(option => option.value))
+      }}
       disableCloseOnSelect
       PopperComponent={PopperComponent}
       noOptionsText="No filters found"

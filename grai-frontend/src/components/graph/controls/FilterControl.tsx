@@ -7,11 +7,25 @@ import {
   GetFiltersControlVariables,
 } from "./__generated__/GetFiltersControl"
 import FilterMenu from "./filters/FilterMenu"
+import { CombinedFilters } from "../useCombinedFilters"
 
 export const GET_FILTERS = gql`
   query GetFiltersControl($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
+      name
+      namespaces {
+        data
+      }
+      tags {
+        data
+      }
+      sources {
+        data {
+          id
+          name
+        }
+      }
       filters {
         data {
           id
@@ -22,12 +36,25 @@ export const GET_FILTERS = gql`
   }
 `
 
+export type Values = {
+  namespaces: string[]
+  tags: string[]
+  sources: {
+    id: string
+    name: string
+  }[]
+}
+
 type Option = {
   value: string
   label: string | null
 }
 
-const FilterControl: React.FC = () => {
+type FilterControlProps = {
+  combinedFilters: CombinedFilters
+}
+
+const FilterControl: React.FC<FilterControlProps> = ({ combinedFilters }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -56,7 +83,20 @@ const FilterControl: React.FC = () => {
         label: filter.name,
       })) || []
 
-  return <FilterMenu options={options} />
+  const values: Values = {
+    namespaces: data?.workspace.namespaces.data || [],
+    tags: data?.workspace.tags.data || [],
+    sources: data?.workspace.sources.data || [],
+  }
+
+  return (
+    <FilterMenu
+      options={options}
+      combinedFilters={combinedFilters}
+      values={values}
+      workspaceId={data?.workspace.id}
+    />
+  )
 }
 
 export default FilterControl

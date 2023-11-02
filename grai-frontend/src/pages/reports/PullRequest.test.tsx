@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
+import { filtersMock } from "pages/Graph.test"
 
 test("renders", async () => {
   render(<PullRequest />, {
@@ -11,7 +12,7 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getAllByRole("heading", { name: /Hello world/i })
+      screen.getAllByRole("heading", { name: /Hello world/i }),
     ).toBeTruthy()
   })
 
@@ -26,7 +27,7 @@ test("renders errors", async () => {
       request: {
         query: GET_PULL_REQUEST,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -90,17 +91,18 @@ test("renders errors", async () => {
         },
       },
     },
+    filtersMock,
   ]
 
   render(<PullRequest />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/pulls/:reference",
-    route: "/org/demo/reports/github/owner/repo/pulls/123",
+    route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Pull Request Title/i })
+      screen.getByRole("heading", { name: /Pull Request Title/i }),
     ).toBeTruthy()
   })
 
@@ -115,7 +117,7 @@ test("not found", async () => {
       request: {
         query: GET_PULL_REQUEST,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -146,7 +148,7 @@ test("not found", async () => {
   render(<PullRequest />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/pulls/:reference",
-    route: "/org/demo/reports/github/owner/repo/pulls/123",
+    route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
   await waitFor(() => {
@@ -160,7 +162,7 @@ test("error", async () => {
       request: {
         query: GET_PULL_REQUEST,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -177,7 +179,7 @@ test("error", async () => {
   render(<PullRequest />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/pulls/:reference",
-    route: "/org/demo/reports/github/owner/repo/pulls/123",
+    route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
   await waitFor(() => {

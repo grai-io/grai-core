@@ -16,6 +16,7 @@ import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
 // import GraphDrawer from "./drawer/GraphDrawer"
 import TestEdge from "./TestEdge"
+import { CombinedFilters } from "./useCombinedFilters"
 
 const nodeTypes = {
   baseNode: BaseNode,
@@ -66,10 +67,7 @@ type BaseGraphProps = {
   onMove?: (viewport: Viewport) => void
   onRefresh?: () => void
   refreshLoading?: boolean
-  filters: string[]
-  setFilters: (filters: string[]) => void
-  inlineFilters: Filter[]
-  setInlineFilters: (filters: Filter[]) => void
+  combinedFilters: CombinedFilters
   defaultViewport?: Viewport
 }
 
@@ -86,10 +84,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   onMove,
   onRefresh,
   refreshLoading,
-  filters,
-  setFilters,
-  inlineFilters,
-  setInlineFilters,
+  combinedFilters,
   defaultViewport,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
@@ -137,6 +132,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onSearch={onSearch}
         onRefresh={onRefresh}
         loading={refreshLoading}
+        combinedFilters={combinedFilters}
       />
 
       <ReactFlow

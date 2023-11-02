@@ -3,6 +3,8 @@ import { ClickAwayListener, Popper, styled } from "@mui/material"
 import { Option } from "./FilterAutocomplete"
 import FilterButton from "./FilterButton"
 import FilterContent from "./FilterContent"
+import { CombinedFilters } from "components/graph/useCombinedFilters"
+import { Values } from "../FilterControl"
 
 const StyledPopper = styled(Popper)(({ theme }) => ({
   border: `1px solid ${theme.palette.mode === "light" ? "#e1e4e8" : "#30363d"}`,
@@ -16,9 +18,19 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "light" ? "#fff" : "#1c2128",
 }))
 
-type FilterMenuProps = { options: Option[] }
+type FilterMenuProps = {
+  options: Option[]
+  combinedFilters: CombinedFilters
+  values: Values
+  workspaceId: string
+}
 
-const FilterMenu: React.FC<FilterMenuProps> = ({ options }) => {
+const FilterMenu: React.FC<FilterMenuProps> = ({
+  options,
+  combinedFilters,
+  values,
+  workspaceId,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,7 +65,13 @@ const FilterMenu: React.FC<FilterMenuProps> = ({ options }) => {
         ]}
       >
         <ClickAwayListener onClickAway={handleClose}>
-          <FilterContent options={options} onClose={handleClose} />
+          <FilterContent
+            options={options}
+            onClose={handleClose}
+            combinedFilters={combinedFilters}
+            values={values}
+            workspaceId={workspaceId}
+          />
         </ClickAwayListener>
       </StyledPopper>
     </>

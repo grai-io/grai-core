@@ -8,6 +8,7 @@ import LimitGraphControl from "./LimitGraphControl"
 import LoadMoreControl, { LoadMoreControlOptions } from "./LoadMoreControl"
 import SearchControl from "./SearchControl"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
+import { CombinedFilters } from "../useCombinedFilters"
 
 export type ControlOptions = {
   steps?: StepsControlOptions
@@ -21,6 +22,7 @@ type GraphControlsProps = {
   onSearch: (input: string | null) => void
   onRefresh?: () => void
   loading?: boolean
+  combinedFilters: CombinedFilters
 }
 
 const GraphControls: React.FC<GraphControlsProps> = ({
@@ -30,6 +32,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
   onSearch,
   onRefresh,
   loading,
+  combinedFilters,
 }) => {
   const { searchParams, setSearchParam } = useSearchParams()
 
@@ -60,7 +63,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
           )}
           {options?.steps && <StepsControl options={options.steps} />}
           <SearchControl value={search} onChange={onSearch} />
-          <FilterControl />
+          <FilterControl combinedFilters={combinedFilters} />
         </Stack>
         {options?.loadMore && <LoadMoreControl options={options.loadMore} />}
         <Box sx={{ flexGrow: 1 }} />

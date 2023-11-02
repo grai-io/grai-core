@@ -9,10 +9,12 @@ type SavedFiltersProps = {
   options: Option[]
   onClose?: () => void
   onAdd?: () => void
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
 const SavedFilters: React.FC<SavedFiltersProps> = React.forwardRef(
-  ({ options, onClose, onAdd }, ref) => {
+  ({ options, onClose, onAdd, filters, setFilters }, ref) => {
     const { routePrefix } = useWorkspace()
 
     return (
@@ -44,7 +46,12 @@ const SavedFilters: React.FC<SavedFiltersProps> = React.forwardRef(
             </Button>
           </Box>
         </Box>
-        <FilterAutocomplete options={options} onClose={onClose} />
+        <FilterAutocomplete
+          options={options}
+          onClose={onClose}
+          filters={filters}
+          setFilters={setFilters}
+        />
         <Box sx={{ p: "16px", pt: "10px" }}>
           <Button startIcon={<Add />} sx={{ color: "#8338EC" }} onClick={onAdd}>
             Add New Filter

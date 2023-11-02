@@ -16,6 +16,7 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
@@ -66,8 +67,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
     zoom: 1,
   })
 
-  const { filters, setFilters } = useFilters()
-  const { inlineFilters, setInlineFilters } = useInlineFilters()
+  const { combinedFilters, filters, inlineFilters } = useCombinedFilters()
 
   const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
@@ -135,10 +135,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
         onMove={setViewport}
         onRefresh={handleRefresh}
         refreshLoading={loading}
-        filters={filters ?? []}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters ?? []}
-        setInlineFilters={setInlineFilters}
+        combinedFilters={combinedFilters}
         defaultViewport={viewport}
       />
     </div>

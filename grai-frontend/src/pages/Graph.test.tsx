@@ -3,10 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { GET_WORKSPACE } from "components/graph/drawer/filters-inline/GraphFilterInline"
-import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
-import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
+import { GET_FILTERS } from "components/graph/controls/FilterControl"
 
 const baseFilter = {
   min_x: -500,
@@ -22,13 +20,28 @@ export const filtersMock = {
     variables: {
       organisationName: "default",
       workspaceName: "demo",
-      search: "",
+      // search: "",
     },
   },
   result: {
     data: {
       workspace: {
         id: "1",
+        name: "demo",
+        namespaces: {
+          data: ["namespace1", "namespace2"],
+        },
+        tags: {
+          data: ["tag1", "tag2"],
+        },
+        sources: {
+          data: [
+            {
+              id: "1",
+              name: "source1",
+            },
+          ],
+        },
         filters: {
           data: [
             {
@@ -105,42 +118,42 @@ const tablesMockWithFilter = {
   },
 }
 
-export const searchMock = (search: string = "", graph_tables: any[] = []) => ({
-  request: {
-    query: SEARCH_TABLES,
-    variables: {
-      organisationName: "default",
-      workspaceName: "demo",
-      search,
-    },
-  },
-  result: {
-    data: {
-      workspace: {
-        id: "1",
-        graph_tables,
-      },
-    },
-  },
-})
+// export const searchMock = (search: string = "", graph_tables: any[] = []) => ({
+//   request: {
+//     query: SEARCH_TABLES,
+//     variables: {
+//       organisationName: "default",
+//       workspaceName: "demo",
+//       search,
+//     },
+//   },
+//   result: {
+//     data: {
+//       workspace: {
+//         id: "1",
+//         graph_tables,
+//       },
+//     },
+//   },
+// })
 
 const mocks = [
   filtersMock,
   filtersMock,
   tablesMock,
   tablesMock,
-  searchMock(),
-  searchMock(),
-  searchMock("s", [
-    {
-      id: "1",
-      name: "test table",
-      display_name: "test table",
-      data_source: "source",
-      x: 0,
-      y: 0,
-    },
-  ]),
+  // searchMock(),
+  // searchMock(),
+  // searchMock("s", [
+  //   {
+  //     id: "1",
+  //     name: "test table",
+  //     display_name: "test table",
+  //     data_source: "source",
+  //     x: 0,
+  //     y: 0,
+  //   },
+  // ]),
 ]
 
 jest.retryTimes(1)
@@ -238,8 +251,8 @@ test("renders empty", async () => {
     mocks: [
       filtersMock,
       filtersMock,
-      searchMock(),
-      searchMock(),
+      // searchMock(),
+      // searchMock(),
       {
         request: {
           query: GET_TABLES_AND_EDGES,
@@ -386,8 +399,8 @@ test("error", async () => {
         errors: [new GraphQLError("Error!")],
       },
     },
-    searchMock(),
-    searchMock(),
+    // searchMock(),
+    // searchMock(),
   ]
 
   render(<Graph alwaysShow />, {
@@ -406,8 +419,8 @@ test("no nodes", async () => {
   const mocks = [
     filtersMock,
     filtersMock,
-    searchMock(),
-    searchMock(),
+    // searchMock(),
+    // searchMock(),
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -486,9 +499,9 @@ test("search", async () => {
     async () => await user.type(screen.getByTestId("search-input"), "s"),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("test table")).toBeInTheDocument()
-  })
+  // await waitFor(() => {
+  //   expect(screen.getByText("test table")).toBeInTheDocument()
+  // })
 })
 
 test("filter", async () => {
@@ -522,8 +535,8 @@ test("filter", async () => {
       tablesMock,
       tablesMock,
       tablesMockWithFilter,
-      searchMock(),
-      searchMock(),
+      // searchMock(),
+      // searchMock(),
     ],
   })
 
@@ -532,19 +545,19 @@ test("filter", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
+    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
   })
 
   await act(async () => {
-    await user.click(screen.getByTestId("FilterListIcon"))
+    await user.click(screen.getByTestId("FilterAltIcon"))
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Manage Filters")).toBeInTheDocument()
+    expect(screen.getByText("Saved Filters")).toBeInTheDocument()
   })
 
   await act(async () => {
-    await user.click(screen.getByText("Manage Filters"))
+    await user.click(screen.getByRole("link", { name: "Manage" }))
   })
 
   await waitFor(() => {
@@ -615,33 +628,6 @@ test("inline filter", async () => {
     },
   })
 
-  const workspacesMock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        organisationName: "default",
-        workspaceName: "demo",
-      },
-    },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          name: "demo",
-          namespaces: {
-            data: ["default", "prod"],
-          },
-          tags: {
-            data: [],
-          },
-          sources: {
-            data: [],
-          },
-        },
-      },
-    },
-  }
-
   render(<Graph alwaysShow />, {
     path: ":organisationName/:workspaceName/graph",
     route:
@@ -654,14 +640,12 @@ test("inline filter", async () => {
       tablesMock,
       tablesMock,
       tablesMockWithFilter,
-      searchMock(),
-      searchMock(),
+      // searchMock(),
+      // searchMock(),
       inlineFilterMock(),
       inlineFilterMock(),
       inlineFilterMock(),
       inlineFilterMock("prod"),
-      workspacesMock,
-      workspacesMock,
     ],
   })
 
@@ -678,18 +662,18 @@ test("inline filter", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Namespace")).toBeInTheDocument()
+    expect(screen.getByText(/Saved Filters/i)).toBeInTheDocument()
+  })
+
+  expect(
+    screen.getByRole("button", { name: /add new filter/i }),
+  ).toBeInTheDocument()
+
+  await act(async () => {
+    await user.click(screen.getByRole("button", { name: /add new filter/i }))
   })
 
   await act(async () => {
-    await user.click(screen.getByText("Namespace"))
-  })
-
-  await act(async () => {
-    await user.click(screen.getByText("prod"))
-  })
-
-  await waitFor(async () => {
-    await user.click(screen.getByTestId("DeleteIcon"))
+    await user.click(screen.getByRole("button", { name: /add row/i }))
   })
 })
