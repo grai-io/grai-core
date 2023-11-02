@@ -32,7 +32,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
 }) => {
   const navigate = useNavigate()
 
-  const comingSoon = connector.status == "coming_soon"
+  const comingSoon = connector.status === "coming_soon"
 
   return (
     <Box>
