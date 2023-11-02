@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import { Box } from "@mui/material"
+import { CombinedFilters } from "components/graph/useCombinedFilters"
 import AddFilter from "./AddFilter"
 import { Option } from "./FilterAutocomplete"
 import SavedFilters from "./SavedFilters"
-import { CombinedFilters } from "components/graph/useCombinedFilters"
 import { Values } from "../FilterControl"
 
 type FilterContentProps = {

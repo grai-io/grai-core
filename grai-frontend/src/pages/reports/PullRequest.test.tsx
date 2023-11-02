@@ -1,9 +1,9 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import { filtersMock } from "pages/Graph.test"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
-import { filtersMock } from "pages/Graph.test"
 
 test("renders", async () => {
   render(<PullRequest />, {

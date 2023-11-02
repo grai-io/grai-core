@@ -9,6 +9,7 @@ import GraphComponent, {
   ResultError,
   Table,
 } from "components/graph/GraphComponent"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 import useFilters from "components/graph/useFilters"
 import useInlineFilters from "components/graph/useInlineFilters"
 import GraphError from "components/utils/GraphError"
@@ -16,7 +17,6 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import useCombinedFilters from "components/graph/useCombinedFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(

@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 import useFilters from "components/graph/useFilters"
 import useInlineFilters from "components/graph/useInlineFilters"
 import GraphError from "components/utils/GraphError"
@@ -10,7 +11,6 @@ import {
   GetTablesAndEdgesSourceLineage,
   GetTablesAndEdgesSourceLineageVariables,
 } from "./__generated__/GetTablesAndEdgesSourceLineage"
-import useCombinedFilters from "components/graph/useCombinedFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesSourceLineage(

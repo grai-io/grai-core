@@ -3,8 +3,8 @@ import { Add } from "@mui/icons-material"
 import { Box, Button, Divider } from "@mui/material"
 import FilterRows from "components/filters/FilterRows"
 import { Filter } from "components/filters/filters"
-import { Values } from "../FilterControl"
 import FilterSave from "./FilterSave"
+import { Values } from "../FilterControl"
 
 type AddFilterProps = {
   onClose?: () => void

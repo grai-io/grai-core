@@ -1,15 +1,15 @@
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Button, TextField } from "@mui/material"
+import { useSnackbar } from "notistack"
 import { Filter } from "components/filters/filters"
 import Form from "components/form/Form"
-import { useSnackbar } from "notistack"
-import React, { useState } from "react"
-import { NewFilter } from "./__generated__/NewFilter"
 import {
   CreateFilterInline,
   CreateFilterInlineVariables,
 } from "./__generated__/CreateFilterInline"
+import { NewFilter } from "./__generated__/NewFilter"
 
 export const CREATE_FILTER = gql`
   mutation CreateFilterInline(
