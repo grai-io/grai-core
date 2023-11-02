@@ -4,6 +4,8 @@ import { GraphQLError } from "graphql"
 import { render, waitFor, screen, act } from "testing"
 import SetSchedule, { UPDATE_CONNECTION } from "./SetSchedule"
 
+const onComplete = jest.fn()
+
 const opts = {
   activeStep: 0,
   setActiveStep: function (activeStep: number): void {
@@ -28,7 +30,7 @@ const connection = {
 
 test("renders", async () => {
   render(
-    <SetSchedule opts={opts} connection={connection} onComplete={() => {}} />
+    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
   )
 
   expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
@@ -38,7 +40,7 @@ test("submit", async () => {
   const user = userEvent.setup()
 
   render(
-    <SetSchedule opts={opts} connection={connection} onComplete={() => {}} />
+    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
   )
 
   expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
@@ -47,17 +49,24 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Minutes" }), "10,30")
+      await user.type(
+        screen.getByRole("textbox", { name: "Minutes" }),
+        "10,30",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
+      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8"),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /finish/i }))
+      await user.click(screen.getByRole("button", { name: /finish/i })),
   )
+
+  await waitFor(() => {
+    expect(onComplete).toHaveBeenCalled()
+  })
 })
 
 test("error", async () => {
@@ -89,8 +98,8 @@ test("error", async () => {
   ]
 
   render(
-    <SetSchedule opts={opts} connection={connection} onComplete={() => {}} />,
-    { mocks }
+    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
+    { mocks },
   )
 
   expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
@@ -99,16 +108,19 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Minutes" }), "10,30")
+      await user.type(
+        screen.getByRole("textbox", { name: "Minutes" }),
+        "10,30",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
+      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8"),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /finish/i }))
+      await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
   await waitFor(() => {

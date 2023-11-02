@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import FilterForm from "./FilterForm"
 
 const defaultProps = {
@@ -16,14 +16,20 @@ test("renders", async () => {
   await screen.findByText("Save")
 })
 
+const onClose = jest.fn()
+
 test("close", async () => {
   const user = userEvent.setup()
 
-  render(<FilterForm {...defaultProps} onClose={() => {}} />)
+  render(<FilterForm {...defaultProps} onClose={onClose} />)
 
   expect(screen.getByText("Cancel")).toBeInTheDocument()
 
   await act(async () => {
     user.click(screen.getByText("Cancel"))
+  })
+
+  await waitFor(() => {
+    expect(onClose).toHaveBeenCalled()
   })
 })

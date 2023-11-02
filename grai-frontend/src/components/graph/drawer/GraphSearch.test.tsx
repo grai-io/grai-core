@@ -5,6 +5,8 @@ import { act, render, screen, waitFor } from "testing"
 import { searchMock } from "pages/Graph.test"
 import GraphSearch, { SEARCH_TABLES } from "./GraphSearch"
 
+const onSearch = jest.fn()
+
 const mocks = [
   searchMock(),
   searchMock("s", [
@@ -20,21 +22,14 @@ const mocks = [
 ]
 
 test("renders", async () => {
-  let search: string | null = ""
-
   render(
     <ReactFlowProvider>
-      <GraphSearch
-        search={search}
-        onSearch={(value: string | null) => {
-          search = value
-        }}
-      />
+      <GraphSearch search="" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
-    }
+    },
   )
 
   await waitFor(() => {
@@ -45,13 +40,13 @@ test("renders", async () => {
 test("renders search", async () => {
   render(
     <ReactFlowProvider>
-      <GraphSearch search="s" onSearch={() => {}} />
+      <GraphSearch search="s" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
       mocks,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -68,13 +63,13 @@ test("keyboard", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphSearch search="s" onSearch={() => {}} />
+      <GraphSearch search="s" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
       mocks,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -107,13 +102,13 @@ test("click", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphSearch search="s" onSearch={() => {}} />
+      <GraphSearch search="s" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
       mocks,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -134,13 +129,13 @@ test("clear", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphSearch search="s" onSearch={() => {}} />
+      <GraphSearch search="s" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
       mocks,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -177,13 +172,13 @@ test("errors", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphSearch search="s" onSearch={() => {}} />
+      <GraphSearch search="s" onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
       mocks,
-    }
+    },
   )
 
   await waitFor(() => {

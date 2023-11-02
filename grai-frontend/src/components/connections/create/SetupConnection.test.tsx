@@ -6,6 +6,8 @@ import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
 import SetupConnection, { CREATE_RUN } from "./SetupConnection"
 import { CREATE_CONNECTION, UPDATE_CONNECTION } from "./SetupConnectionForm"
 
+const setConnection = jest.fn()
+
 const opts = {
   activeStep: 0,
   setActiveStep: function (activeStep: number): void {
@@ -26,7 +28,7 @@ test("renders", async () => {
       opts={opts}
       connector={{ id: "1", name: "Test Connector", metadata: null }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -45,7 +47,7 @@ test("submit", async () => {
       opts={opts}
       connector={{ id: "1", name: "Test Connector", metadata: null }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -58,6 +60,8 @@ test("submit", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
+
+  expect(setConnection).toHaveBeenCalled()
 })
 
 test("submit run error", async () => {
@@ -120,7 +124,7 @@ test("submit run error", async () => {
       opts={opts}
       connector={{ id: "1", name: "Test Connector", metadata: null }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       mocks,
@@ -156,7 +160,7 @@ test("submit update", async () => {
         secrets: {},
         sourceName: "default",
       }}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -215,7 +219,7 @@ test("submit update error", async () => {
         metadata: {},
         secrets: {},
       }}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       mocks,
@@ -251,7 +255,7 @@ test("renders file", async () => {
         },
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -277,7 +281,7 @@ test("renders file yaml", async () => {
         },
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -305,7 +309,7 @@ test("upload file", async () => {
         },
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       routes: ["/:organisationName/:workspaceName/runs/:runId"],
@@ -366,7 +370,7 @@ test("upload wrong file", async () => {
         },
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -430,7 +434,7 @@ test("upload file error", async () => {
         },
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     { withRouter: true, mocks },
   )
@@ -477,7 +481,7 @@ test("renders coming soon", async () => {
         status: "coming_soon",
       }}
       connection={null}
-      setConnection={() => {}}
+      setConnection={setConnection}
     />,
     {
       withRouter: true,

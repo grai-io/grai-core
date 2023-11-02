@@ -3,28 +3,29 @@ import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectionRunButton from "./ConnectionRunButton"
 
+const onRun = jest.fn()
+
 test("renders", async () => {
-  render(<ConnectionRunButton onRun={() => {}} status={null} />)
+  render(<ConnectionRunButton onRun={onRun} status={null} />)
 })
 
 test("run", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionRunButton onRun={() => {}} events status={null} />)
+  render(<ConnectionRunButton onRun={onRun} events status={null} />)
 
   await act(async () => await user.click(screen.getByText("Run")))
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+  expect(onRun).toHaveBeenCalled()
 })
 
 test("open", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionRunButton onRun={() => {}} events status={null} />)
+  render(<ConnectionRunButton onRun={onRun} events status={null} />)
 
   await act(
-    async () => await user.click(screen.getByTestId("ArrowDropDownIcon"))
+    async () => await user.click(screen.getByTestId("ArrowDropDownIcon")),
   )
 
   await waitFor(() => {

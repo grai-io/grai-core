@@ -31,7 +31,9 @@ test("navigate", async () => {
 })
 
 test("onClick", async () => {
-  render(<RunStatus run={run} onClick={() => {}} />, {
+  const onClick = jest.fn()
+
+  render(<RunStatus run={run} onClick={onClick} />, {
     withRouter: true,
   })
 

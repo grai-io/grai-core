@@ -4,8 +4,10 @@ import { ReactFlowProvider } from "reactflow"
 import { act, render, screen, waitFor } from "testing"
 import GraphControls from "./GraphControls"
 
+const onSearch = jest.fn()
+
 test("renders", async () => {
-  render(<GraphControls errors={false} search={null} onSearch={() => {}} />, {
+  render(<GraphControls errors={false} search={null} onSearch={onSearch} />, {
     withRouter: true,
   })
 
@@ -24,12 +26,12 @@ test("renders options", async () => {
         errors={false}
         options={{ steps: { value: 1, setValue: (input: number) => {} } }}
         search={null}
-        onSearch={() => {}}
+        onSearch={onSearch}
       />
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 })
 
@@ -38,21 +40,21 @@ test("renders errors", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphControls errors search={null} onSearch={() => {}} />
+      <GraphControls errors search={null} onSearch={onSearch} />
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   expect(screen.getByText("Limit Graph")).toBeInTheDocument()
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
+      await user.click(screen.getByRole("button", { name: /Limit Graph/i })),
   )
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
+      await user.click(screen.getByRole("button", { name: /Limit Graph/i })),
   )
 })

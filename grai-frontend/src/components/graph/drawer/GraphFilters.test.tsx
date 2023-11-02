@@ -4,8 +4,10 @@ import { act } from "react-dom/test-utils"
 import { render, screen, waitFor } from "testing"
 import GraphFilters, { GET_FILTERS } from "./GraphFilters"
 
+const setFilters = jest.fn()
+
 test("renders", async () => {
-  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
+  render(<GraphFilters filters={[]} setFilters={setFilters} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -18,7 +20,7 @@ test("renders", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
-  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
+  render(<GraphFilters filters={[]} setFilters={setFilters} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -77,7 +79,7 @@ test("errors", async () => {
     },
   ]
 
-  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
+  render(<GraphFilters filters={[]} setFilters={setFilters} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks,

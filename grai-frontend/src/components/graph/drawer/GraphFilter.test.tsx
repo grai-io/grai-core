@@ -4,6 +4,8 @@ import { fireEvent, render, screen, waitFor } from "testing"
 import GraphFilter from "./GraphFilter"
 import useFilters from "../useFilters"
 
+const setFilters = jest.fn()
+
 const filter = {
   id: "1",
   name: "test",
@@ -11,7 +13,7 @@ const filter = {
 }
 
 test("renders", async () => {
-  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
+  render(<GraphFilter filter={filter} filters={[]} setFilters={setFilters} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -55,7 +57,7 @@ test("click", async () => {
 })
 
 test("hover", async () => {
-  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
+  render(<GraphFilter filter={filter} filters={[]} setFilters={setFilters} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
