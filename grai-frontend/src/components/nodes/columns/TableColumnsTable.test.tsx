@@ -2,6 +2,8 @@ import React from "react"
 import { render, screen } from "testing"
 import TableColumnsTable, { Column } from "./TableColumnsTable"
 
+const onExpand = jest.fn()
+
 const columns: Column[] = [
   {
     id: "1",
@@ -32,8 +34,8 @@ test("renders", async () => {
       search={null}
       columns={columns}
       expanded={[]}
-      onExpand={() => {}}
-    />
+      onExpand={onExpand}
+    />,
   )
 
   expect(screen.getByText("Column 1")).toBeInTheDocument()
@@ -45,8 +47,8 @@ test("empty", async () => {
       search={null}
       columns={[]}
       expanded={[]}
-      onExpand={() => {}}
-    />
+      onExpand={onExpand}
+    />,
   )
 
   expect(screen.getByText("No columns found")).toBeInTheDocument()
@@ -59,8 +61,8 @@ test("search", async () => {
       search="search"
       columns={columns}
       expanded={[]}
-      onExpand={() => {}}
-    />
+      onExpand={onExpand}
+    />,
   )
 
   expect(screen.getByText("No columns found")).toBeInTheDocument()
@@ -73,8 +75,8 @@ test("expanded", async () => {
       search={null}
       columns={columns}
       expanded={["1"]}
-      onExpand={() => {}}
-    />
+      onExpand={onExpand}
+    />,
   )
 
   expect(screen.getByText("Column 1")).toBeInTheDocument()

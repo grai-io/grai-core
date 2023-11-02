@@ -41,6 +41,8 @@ test("renders", async () => {
 })
 
 test("select", async () => {
+  const onSelect = jest.fn()
+
   const user = userEvent.setup()
 
   const workspaces = [
@@ -70,11 +72,17 @@ test("select", async () => {
     },
   ]
 
-  render(<WorkspaceList workspaces={workspaces} onSelect={() => {}} />, {
+  render(<WorkspaceList workspaces={workspaces} onSelect={onSelect} />, {
     withRouter: true,
   })
 
   expect(screen.getByText("Workspace1")).toBeInTheDocument()
 
   await act(async () => await user.click(screen.getByText("Workspace1")))
+
+  expect(onSelect).toHaveBeenCalledWith({
+    id: "1",
+    name: "Workspace1",
+    organisation: { id: "o1", name: "Organisation1" },
+  })
 })

@@ -6,9 +6,11 @@ import CreateMembershipDialog, {
   CREATE_MEMBERSHIPS,
 } from "./CreateMembershipDialog"
 
+const onClose = jest.fn()
+
 test("renders", async () => {
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     {
       withRouter: true,
     },
@@ -23,7 +25,7 @@ test("submit", async () => {
   const user = userEvent.setup()
 
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     {
       withRouter: true,
     },
@@ -72,7 +74,7 @@ test("error", async () => {
   ]
 
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     { mocks },
   )
 

@@ -4,6 +4,8 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import AlertDelete, { DELETE_ALERT } from "./AlertDelete"
 
+const onClose = jest.fn()
+
 const alert = {
   id: "1",
   name: "Test Alert",
@@ -12,34 +14,34 @@ const alert = {
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<AlertDelete alert={alert} onClose={() => {}} />)
+  render(<AlertDelete alert={alert} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<AlertDelete alert={alert} onClose={() => {}} />)
+  render(<AlertDelete alert={alert} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<AlertDelete alert={alert} onClose={() => {}} />, {
+  render(<AlertDelete alert={alert} onClose={onClose} />, {
     mocks: [
       {
         request: {
@@ -57,17 +59,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete alert ApolloError: Error!")
+      screen.getByText("Failed to delete alert ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })
