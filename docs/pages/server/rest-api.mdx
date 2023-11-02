@@ -1,0 +1,50 @@
+---
+title: "REST API"
+description: Everything you need to know about the REST API.
+---
+
+# REST API
+
+The REST API is supported primarily for third party applications.
+It also back many of the secondary tools like the client library, cli, and some CI components like GitHub Actions.
+If you need a stable interface for development this is the place to look
+
+## Authentication
+
+The REST API supports three authentication modes.
+
+* Basic Auth (username/password)
+* API key Auth
+* JWT Auth
+
+### Basic Auth
+
+Basic Auth is the simplest form of authentication.
+It is supported by most HTTP clients and is easy to use.
+
+In order to use Basic Auth you will need to pass the username and password as the username and password of the HTTP request.
+
+
+### API Key Auth
+
+Each API key is associated with an individual user and workspace.
+In order to get started you'll need to first create an API key in the web app.
+Once you have a key calls to the REST API will look for an `Api-Key` header with the value of your API key.
+e.g.
+
+```bash
+curl -X POST \
+-H "Authorization: Api-Key {your_api_key}" \
+-H "Content-Type: application/json; charset=utf-8" \
+...
+```
+
+
+## REST Playground
+
+We maintain two playgrounds for the REST API alongside [openapi specs](https://api.grai.io/api/v1/schema/) for the most recent version of the API.
+
+* [**Redoc**](https://api.grai.io/api/v1/schema/redoc/)
+* [**Swagger UI**](https://api.grai.io/api/v1/schema/swagger-ui/)
+
+In order to actually perform queries you will need to register on the cloud and authenticate against the API.
