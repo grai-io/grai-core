@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { ArrowForward } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
-import { Grid, TextField } from "@mui/material"
+import { Box, Grid, InputAdornment, TextField } from "@mui/material"
 import Form from "components/form/Form"
 import { NewSource } from "components/sources/__generated__/NewSource"
 import GraphError from "components/utils/GraphError"
@@ -23,6 +23,7 @@ import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Connection } from "./CreateConnectionWizard"
 import ConnectionsMetadata from "../ConnectionsMetadata"
 import { Connector } from "../connectors/ConnectorCard"
+import ConnectorIcon from "../connectors/ConnectorIcon"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -318,6 +319,42 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
       {errorUpdate && <GraphError error={errorUpdate} />}
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>
+          <TextField
+            label="Integration"
+            value={connector.name}
+            disabled
+            fullWidth
+            sx={{
+              mb: 3,
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "black",
+              },
+            }}
+            InputProps={{
+              startAdornment: connector.icon ? (
+                <InputAdornment position="start">
+                  <Box
+                    sx={{
+                      width: "48px",
+                      height: "48px",
+                      backgroundColor: "#F8F8F8",
+                      borderRadius: "24px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ConnectorIcon connector={connector} />
+                  </Box>
+                </InputAdornment>
+              ) : undefined,
+              sx: {
+                pt: "23px",
+                pb: "18px",
+                pl: "18px",
+              },
+            }}
+          />
           <TextField
             label="Source"
             margin="normal"

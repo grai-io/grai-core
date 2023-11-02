@@ -10,11 +10,12 @@ import {
   Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import ConnectorIcon from "./ConnectorIcon"
 
 export interface Connector {
   id: string
   name: string
-  icon?: string | null | ReactNode
+  icon: string | null | ReactNode
   status?: string
   metadata: any
   to?: string
@@ -31,7 +32,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
 }) => {
   const navigate = useNavigate()
 
-  const comingSoon = connector.status === "coming_soon"
+  const comingSoon = connector.status == "coming_soon"
 
   return (
     <Box>
@@ -56,16 +57,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
           <List>
             <ListItem sx={{ pl: "20px" }}>
               <ListItemIcon sx={{ minWidth: 48 }}>
-                {connector.icon &&
-                  (typeof connector.icon === "string" ? (
-                    <img
-                      src={connector.icon}
-                      alt={`${connector.name} logo`}
-                      style={{ height: 28, width: 28 }}
-                    />
-                  ) : (
-                    connector.icon
-                  ))}
+                {connector.icon && <ConnectorIcon connector={connector} />}
               </ListItemIcon>
               <ListItemText
                 primary={

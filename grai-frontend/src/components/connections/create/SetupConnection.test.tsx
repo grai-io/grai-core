@@ -19,12 +19,19 @@ const opts = {
   },
 }
 
+const connector = {
+  id: "1",
+  name: "Test Connector",
+  metadata: null,
+  icon: null,
+}
+
 test("renders", async () => {
   render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={() => {}}
     />,
@@ -45,7 +52,7 @@ test("submit", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={() => {}}
     />,
@@ -122,7 +129,7 @@ test("submit run error", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={null}
       setConnection={() => {}}
     />,
@@ -153,7 +160,7 @@ test("submit update", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={{
         id: "1",
         namespace: "default",
@@ -214,7 +221,7 @@ test("submit update error", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connector={connector}
       connection={{
         id: "1",
         namespace: "default",
@@ -259,6 +266,7 @@ test("renders file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
@@ -287,6 +295,7 @@ test("renders file yaml", async () => {
             extension: "yaml",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
@@ -317,6 +326,7 @@ test("upload file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
@@ -380,6 +390,7 @@ test("upload wrong file", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
@@ -446,6 +457,7 @@ test("upload file error", async () => {
             extension: "json",
           },
         },
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
@@ -495,6 +507,7 @@ test("renders coming soon", async () => {
         name: "Test",
         metadata: {},
         status: "coming_soon",
+        icon: null,
       }}
       connection={null}
       setConnection={() => {}}
