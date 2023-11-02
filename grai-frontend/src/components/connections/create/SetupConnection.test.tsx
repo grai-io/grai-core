@@ -23,7 +23,7 @@ const connector = {
   id: "1",
   name: "Test Connector",
   metadata: null,
-  icon: null,
+  icon: "icon",
 }
 
 test("renders", async () => {
