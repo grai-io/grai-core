@@ -14,6 +14,8 @@ def _generate_token(user: User) -> str:
 def send_validation_email(user: User):
     token = _generate_token(user)
 
+    print(token)
+
     c = {
         "base_url": config("FRONTEND_URL", "http://localhost:3000"),
         "token": token,
