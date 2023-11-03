@@ -10,7 +10,6 @@ documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-tiktoken = "^0.5.1"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
