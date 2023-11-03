@@ -509,7 +509,6 @@
                     {
                         "name": "api_secret",
                         "required": true,
-                        "secret": true,
                         "order": 0
                     },
                     {
@@ -669,7 +668,6 @@
                     {
                         "name": "api_secret",
                         "required": true,
-                        "secret": true,
                         "order": 0
                     },
                     {

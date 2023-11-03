@@ -13,6 +13,7 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 from users.models import User
+from django.urls import reverse
 
 
 @pytest.fixture
@@ -680,7 +681,7 @@ def test_dbt_cloud_not_active(test_connection_dbt_cloud, client, hmac_secret):
 
 @pytest.mark.django_db
 def test_openlineage(client, test_connection_openlineage, workspace_api_key):
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
+    url = reverse("connections:openlineage", args=[test_connection_openlineage.id])
 
     body = {}
     auth_headers = {
@@ -696,7 +697,7 @@ def test_openlineage(client, test_connection_openlineage, workspace_api_key):
 
 @pytest.mark.django_db
 def test_openlineage_no_connection(client, workspace_api_key):
-    url = f"/api/v1/openlineage/{uuid.uuid4()}/"
+    url = reverse("connections:openlineage", args=[uuid.uuid4()])
 
     body = {}
     auth_headers = {
@@ -710,7 +711,7 @@ def test_openlineage_no_connection(client, workspace_api_key):
 
 @pytest.mark.django_db
 def test_openlineage_invalid_api_key(client, test_connection_openlineage):
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
+    url = reverse("connections:openlineage", args=[test_connection_openlineage.id])
 
     body = {}
     auth_headers = {
@@ -727,7 +728,7 @@ def test_openlineage_not_active(client, test_connection_openlineage, workspace_a
     test_connection_openlineage.is_active = False
     test_connection_openlineage.save()
 
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
+    url = reverse("connections:openlineage", args=[test_connection_openlineage.id])
 
     body = {}
     auth_headers = {

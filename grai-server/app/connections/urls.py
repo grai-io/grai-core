@@ -327,5 +327,5 @@ def open_lineage(request, connection: Connection):
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
     path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
-    path("openlineage/<uuid:connection>/", open_lineage),
+    path("openlineage/<uuid:connection>/", open_lineage, name="openlineage"),
 ]
