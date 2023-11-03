@@ -129,6 +129,7 @@ const FilterSave: React.FC<FilterSaveProps> = ({
       variant="contained"
       sx={{ backgroundColor: "#8338EC", ml: 2 }}
       onClick={handleClick}
+      disabled={inlineFilters.length === 0}
     >
       Save Filter
     </Button>
