@@ -11,16 +11,17 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
-from workspaces.models import Membership, Organisation, Workspace
+from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
+from users.models import User
 
 
 @pytest.fixture
-def create_organisation(name: str = None):
+def create_organisation(name: str = None) -> Organisation:
     return Organisation.objects.create(name=str(uuid.uuid4()) if name is None else name)
 
 
 @pytest.fixture
-def create_workspace(create_organisation, name: str = None):
+def create_workspace(create_organisation, name: str = None) -> Workspace:
     return Workspace.objects.create(
         name=str(uuid.uuid4()) if name is None else name,
         organisation=create_organisation,
@@ -28,26 +29,26 @@ def create_workspace(create_organisation, name: str = None):
 
 
 @pytest.fixture
-def test_organisation():
+def test_organisation() -> Organisation:
     return Organisation.objects.create(name="Org1")
 
 
 @pytest.fixture
-def test_workspace(test_organisation):
+def test_workspace(test_organisation) -> Workspace:
     return Workspace.objects.create(name="W10", organisation=test_organisation)
 
 
 @pytest.fixture
-def test_source(test_workspace):
+def test_source(test_workspace) -> Source:
     return Source.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
-def test_password():
+def test_password() -> str:
     return "strong-test-pass"
 
 
-def generate_username():
+def generate_username() -> str:
     return f"{str(uuid.uuid4())}@gmail.com"
 
 
@@ -62,7 +63,15 @@ def create_user(db, django_user_model, test_password):
 
 
 @pytest.fixture
-def auto_login_user(client, create_user, test_password, create_workspace):
+def workspace_api_key(create_workspace, create_user) -> str:
+    api_key, key = WorkspaceAPIKey.objects.create_key(
+        name=str(uuid.uuid4()), workspace=create_workspace, created_by=create_user()
+    )
+    return key
+
+
+@pytest.fixture
+def auto_login_user(client, create_user: User, test_password: str, create_workspace: Workspace):
     def make_auto_login(user=None, workspace=None):
         if user is None:
             user = create_user()
@@ -76,26 +85,26 @@ def auto_login_user(client, create_user, test_password, create_workspace):
 
 
 @pytest.fixture
-def test_connector():
+def test_connector() -> Connector:
     return Connector.objects.create(name=str(uuid.uuid4()), slug=str(uuid.uuid4()))
 
 
 @pytest.fixture
-def test_dbt_cloud_connector():
+def test_dbt_cloud_connector() -> Connector:
     connector, created = Connector.objects.get_or_create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
 
     return connector
 
 
 @pytest.fixture
-def test_openlineage_connector():
+def test_openlineage_connector(create_workspace) -> Connector:
     connector, created = Connector.objects.get_or_create(name=Connector.OPEN_LINEAGE, slug=Connector.OPEN_LINEAGE)
 
     return connector
 
 
 @pytest.fixture
-def test_repository(create_workspace):
+def test_repository(create_workspace) -> Repository:
     return Repository.objects.create(
         workspace=create_workspace,
         owner="test_owner",
@@ -106,7 +115,7 @@ def test_repository(create_workspace):
 
 
 @pytest.fixture
-def test_branch(create_workspace, test_repository):
+def test_branch(create_workspace, test_repository) -> Branch:
     return Branch.objects.create(
         workspace=create_workspace,
         repository=test_repository,
@@ -115,7 +124,7 @@ def test_branch(create_workspace, test_repository):
 
 
 @pytest.fixture
-def test_pull_request(create_workspace, test_repository, test_branch):
+def test_pull_request(create_workspace, test_repository, test_branch) -> PullRequest:
     return PullRequest.objects.create(
         workspace=create_workspace,
         repository=test_repository,
@@ -126,7 +135,7 @@ def test_pull_request(create_workspace, test_repository, test_branch):
 
 
 @pytest.fixture
-def test_commit(create_workspace, test_repository, test_branch):
+def test_commit(create_workspace, test_repository, test_branch) -> Commit:
     return Commit.objects.create(
         workspace=create_workspace,
         repository=test_repository,
@@ -137,7 +146,7 @@ def test_commit(create_workspace, test_repository, test_branch):
 
 
 @pytest.fixture
-def test_commit_with_pr(create_workspace, test_repository, test_branch, test_pull_request):
+def test_commit_with_pr(create_workspace, test_repository, test_branch, test_pull_request) -> Commit:
     return Commit.objects.create(
         workspace=create_workspace,
         repository=test_repository,
@@ -406,12 +415,14 @@ def test_create_run_connector_with_existing_pull_request(
 
 
 @pytest.fixture
-def hmac_secret():
+def hmac_secret() -> str:
     return "74d5de51a03ccbea9936aea756b2cc044d3816de"
 
 
 @pytest.fixture
-def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_secret, mocker, test_source):
+def test_connection_dbt_cloud(
+    create_workspace, test_dbt_cloud_connector, hmac_secret, mocker, test_source
+) -> Connection:
     mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
 
     dbt_cloud = types.SimpleNamespace()
@@ -444,12 +455,12 @@ def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_s
 
 
 @pytest.fixture
-def test_connection_openlineage(create_workspace, test_openlineage_connector, test_source):
+def test_connection_openlineage(create_workspace, test_openlineage_connector, test_source) -> Connection:
     connection = Connection.objects.create(
         workspace=create_workspace,
         connector=test_openlineage_connector,
         name=str(uuid.uuid4()),
-        secrets={"api_secret": "secret1234"},
+        secrets={},
         source=test_source,
     )
 
@@ -668,67 +679,61 @@ def test_dbt_cloud_not_active(test_connection_dbt_cloud, client, hmac_secret):
 
 
 @pytest.mark.django_db
-def test_openlineage(client, test_connection_openlineage):
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/{test_connection_openlineage.secrets['api_secret']}/"
+def test_openlineage(client, test_connection_openlineage, workspace_api_key):
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
 
     body = {}
+    auth_headers = {
+        "HTTP_AUTHORIZATION": f"Bearer {workspace_api_key}",
+    }
 
-    response = client.post(
-        url,
-        body,
-        content_type="application/json",
-    )
+    response = client.post(url, body, content_type="application/json", **auth_headers)
+
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     data = response.json()
     assert data["status"] == "ok"
 
 
 @pytest.mark.django_db
-def test_openlineage_no_connection(client):
-    url = f"/api/v1/openlineage/e80c8d93-5a35-4468-a3ce-bcfc7ccee438/secret/"
+def test_openlineage_no_connection(client, workspace_api_key):
+    url = f"/api/v1/openlineage/{uuid.uuid4()}/"
 
     body = {}
-
-    response = client.post(
-        url,
-        body,
-        content_type="application/json",
-    )
+    auth_headers = {
+        "HTTP_AUTHORIZATION": f"Bearer {workspace_api_key}",
+    }
+    response = client.post(url, body, content_type="application/json", **auth_headers)
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     data = response.json()
     assert data["status"] == "Connection not found"
 
 
 @pytest.mark.django_db
-def test_openlineage_invalid_secret(client, test_connection_openlineage):
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/incorrect/"
+def test_openlineage_invalid_api_key(client, test_connection_openlineage):
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
 
     body = {}
-
-    response = client.post(
-        url,
-        body,
-        content_type="application/json",
-    )
-    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    auth_headers = {
+        "HTTP_AUTHORIZATION": f"Bearer {123}",
+    }
+    response = client.post(url, body, content_type="application/json", **auth_headers)
+    assert response.status_code == 403, f"verb `get` failed on workspaces with status {response.status_code}"
     data = response.json()
-    assert data["status"] == "Invalid secret"
+    assert data["detail"] == "Authentication credentials were not provided."
 
 
 @pytest.mark.django_db
-def test_openlineage_not_active(client, test_connection_openlineage):
+def test_openlineage_not_active(client, test_connection_openlineage, workspace_api_key):
     test_connection_openlineage.is_active = False
     test_connection_openlineage.save()
 
-    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/{test_connection_openlineage.secrets['api_secret']}/"
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/"
 
     body = {}
-
-    response = client.post(
-        url,
-        body,
-        content_type="application/json",
-    )
+    auth_headers = {
+        "HTTP_AUTHORIZATION": f"Bearer {workspace_api_key}",
+    }
+    response = client.post(url, body, content_type="application/json", **auth_headers)
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     data = response.json()
     assert data["status"] == "Connection not active"

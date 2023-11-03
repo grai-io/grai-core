@@ -6,9 +6,10 @@ import uuid
 
 from django.urls import path
 from django_multitenant.utils import get_current_tenant
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from common.permissions.multitenant import Multitenant
 from connections.tasks import process_run
 from installations.github import Github
@@ -16,6 +17,7 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
 from rest_framework import routers
 from workspaces.models import Workspace
+from workspaces.permissions import HasBearerWorkspaceAPIKey
 
 from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
@@ -287,7 +289,9 @@ def dbt_cloud(request):
 
 
 @api_view(["POST"])
-def open_lineage(request, connection, secret: str):
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([HasBearerWorkspaceAPIKey & Multitenant])
+def open_lineage(request, connection: Connection):
     # To use with airflow, set config.openlineage.transport to '{"type": "http", "url": "http://localhost:8000", "endpoint": "api/v1/openlineage/<Connection UUID>/<api_secret>/"}'
 
     body = json.loads(request.body)
@@ -303,8 +307,8 @@ def open_lineage(request, connection, secret: str):
     if not connection.is_active:
         return Response({"status": "Connection not active"})
 
-    if connection.secrets.get("api_secret") != secret:
-        return Response({"status": "Invalid secret"})
+    # if connection.secrets.get("api_secret") != secret:
+    #     return Response({"status": "Invalid secret"})
 
     run = Run.objects.create(
         workspace=connection.workspace,
@@ -323,5 +327,5 @@ def open_lineage(request, connection, secret: str):
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
     path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
-    path("openlineage/<uuid:connection>/<str:secret>/", open_lineage),
+    path("openlineage/<uuid:connection>/", open_lineage),
 ]
