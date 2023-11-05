@@ -1,6 +1,8 @@
+from collections import Counter, defaultdict
+
 from grai_schemas.v1.mock import MockV1
 
-from grai_graph.graph import BaseSourceSegment, SourceSegment
+from grai_graph.graph import BaseSourceSegment, CoveringSourceSet, SourceSegment
 
 mocker = MockV1()
 
@@ -9,15 +11,17 @@ node_spec1 = mocker.node.id_node_spec(data_sources=[a, b])
 node_spec2 = mocker.node.id_node_spec(data_sources=[b])
 node_spec3 = mocker.node.id_node_spec(data_sources=[c])
 edge_spec = mocker.edge.id_edge_spec(source=node_spec2, destination=node_spec3)
+edge_spec2 = mocker.edge.id_edge_spec(source=node_spec3, destination=node_spec2)
+edge_spec3 = mocker.edge.id_edge_spec(source=node_spec1, destination=node_spec3)
 
 
 class TestSourceSegment:
     test_nodes = [mocker.node.node(spec=node) for node in [node_spec1, node_spec2, node_spec3]]
-    test_edges = [mocker.edge.edge(spec=edge) for edge in [edge_spec]]
+    test_edges = [mocker.edge.edge(spec=edge) for edge in [edge_spec, edge_spec2]]
     segment = SourceSegment(nodes=test_nodes, edges=test_edges)
 
     def test_cover(self):
-        result = ("b", "c")
+        result = (CoveringSourceSet(label="b", count=2), CoveringSourceSet(label="c", count=1))
         assert self.segment.covering_set == result
 
     def test_node_cover_map(self):
@@ -27,6 +31,16 @@ class TestSourceSegment:
     def test_cover_edge_map(self):
         result = {"b": ["c"]}
         assert self.segment.cover_edge_map == result
+
+    def test_cover_edge_map_is_acyclic(self):
+        for k, v in self.segment.cover_edge_map.items():
+            for item in v:
+                assert item not in self.segment.cover_edge_map
+
+    def test_cover_edge_map_is_most_frequent(self):
+        for k, v in self.segment.cover_edge_map.items():
+            for item in v:
+                assert self.segment.covering_frequency[k] >= self.segment.covering_frequency.get(item, 0)
 
     # def test_real_query(self):
     #     from grai_client.endpoints.v1.client import ClientV1
