@@ -1,3 +1,0 @@
-{
-    "base": "base",    "generics": "generics",    "human_ids": "human_ids",    "integrations": "integrations",    "package_definitions": "package_definitions",    "schema": "schema",    "serializers": "serializers",    "utilities": "utilities",    "v1": "v1"
-}

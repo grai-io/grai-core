@@ -1,3 +1,0 @@
-{% autoescape off %}
-{{ message }}
-{% endautoescape %}

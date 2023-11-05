@@ -1,3 +1,0 @@
-{
-    "adapters": "adapters",    "base": "base",    "loader": "loader",    "mock_tools": "mock_tools",    "models": "models",    "package_definitions": "package_definitions"
-}
