@@ -17,6 +17,7 @@ import HoverState from "components/utils/HoverState"
 import AppDrawerCollapse from "./AppDrawerCollapse"
 import AppDrawerItem from "./AppDrawerItem"
 import Profile, { User } from "./profile/Profile"
+import { Chat } from "@mui/icons-material"
 
 const pages = [
   {
@@ -49,6 +50,12 @@ const pages = [
     path: "reports",
     icon: <Reports />,
     alt: "Reports",
+  },
+  {
+    title: "Chat",
+    path: "chat",
+    icon: <Chat />,
+    alt: "Chat",
   },
 ]
 
