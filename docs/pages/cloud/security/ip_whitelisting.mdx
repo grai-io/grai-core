@@ -3,23 +3,18 @@ title: Grai Cloud IP Restrictions
 description: How to whitelist an IP address for your Grai Cloud instance
 ---
 
-
 import { Callout } from "nextra-theme-docs";
-import { Steps } from "nextra-theme-docs"
+import { Steps } from "nextra-theme-docs";
 import Image from "next/image";
-import React from 'react';
+import React from "react";
 
-
-# Security
-
+# IP Whitelisting
 
 Organizations commonly use a Virtual Private Cloud (VPC) to secure access to traffic from the internet.
 VPC's support various network access configurations and in some cases will require you to whitelist IP addresses which are allowed to access your servers.
-In this case you will need to whitelist Grai IPs so that connections can connect with any integrations you configure
-
+In this case you will need to whitelist Grai IPs so that connections can connect with any integrations you configure.
 
 Grai Cloud uses the following IP addresses:
-
 
 ```bash copy
 54.68.142.51/32
@@ -28,8 +23,9 @@ Grai Cloud uses the following IP addresses:
 ## How to whitelist an IP address
 
 <Callout type="warning" emoji="ℹ️">
-  If you're using a different cloud provider like GCP or Azure, please refer to their documentation for how to whitelist an IP address.
-  You can also contact us at <a href="mailto:dev@grai.io"></a>. We are happy to help!
+  If you're using a different cloud provider like GCP or Azure, please refer to
+  their documentation for how to whitelist an IP address. You can also contact
+  us at <a href="mailto:dev@grai.io"></a>. We are happy to help!
 </Callout>
 
 There are many different potential network configurations and the specifics of how to whitelist an IP address will depend on your organizations network configuration.
@@ -47,8 +43,7 @@ Make sure you know which VPC is protecting the services you want Grai to access 
 
 On the right hand panel of the VPC dashboard you'll find a Security section with a link to "Security Groups".
 
-
-<div style={{ display: 'flex', justifyContent: 'center' }}>
+<div style={{ display: "flex", justifyContent: "center" }}>
   <Image
     src="/images/docs/core/cloud/aws_vpc_security_group.png"
     alt="AWS VPC Security Group Location"
@@ -56,7 +51,6 @@ On the right hand panel of the VPC dashboard you'll find a Security section with
     height={300}
   />
 </div>
-
 
 Click into the Security Group you want to modify.
 You'll want to verify that the security group applies to the VPC you want to modify from the previous step.
@@ -66,7 +60,8 @@ You'll want to verify that the security group applies to the VPC you want to mod
 After selection the Security Group you want to modify, click the "Inbound Rules" tab and then click `Edit Inbound Rules`.
 
 Here you can add a new rule permitting traffic from Grai's IP address:
-* The easiest way to do this is to select `All TCP` from the dropdown and then enter Grai's IP address in the "Source" field.
-* Finally add the IP address above and click `Save Rules`.
+
+- The easiest way to do this is to select `All TCP` from the dropdown and then enter Grai's IP address in the "Source" field.
+- Finally add the IP address above and click `Save Rules`.
 
 </Steps>

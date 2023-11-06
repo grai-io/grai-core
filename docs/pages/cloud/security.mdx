@@ -5,13 +5,14 @@ description: Documentation for security configurations required when using Grai 
 
 # Cloud Security
 
-Grai Cloud is a managed instance of Grai and offers the same sets of security features as Grai.
-The primary difference is that Grai Cloud is managed by Grai and hosted on Grai's infrastructure.
+Grai Cloud is a managed instance of Grai running on Grai's infrastructure. Grai Cloud is designed to be secure by default, and Grai takes a number of steps to ensure that your data is secure.
 
-Users of Grai Cloud are responsible for configuring their own security settings and policies to insure we can access any needed services within your infrastructure.
-You can find more information about possible configuration settings here.
+When you connect Grai Cloud to your data stores and tools, you may need to configure your security settings to allow Grai access to your infrastructure. There are a number of ways to give Grai access to your infrastructure, and the best option will depend on your security requirements.
 
-## Multi-tenancy
+- [IP Whitelisting](/cloud/security/ip_whitelisting)
+
+## Dedicated Instances
+
+Grai is able to offer dedicated instance of Grai Cloud for customers with specific security requirements as part of our Enterprise offering.
 
 If you need a dedicated instance of Grai, please [contact us](https://calendly.com/grai-founders/intro) to discuss your requirements.
-Otherwise, Grai Cloud is a multi-tenant service and your data is logically separated from other customers.

@@ -1,7 +1,6 @@
 {
-    "index": {
-      "display": "hidden"
-    },
-    "ip_access": "IP Restrictions"
-
-  }
+  "index": {
+    "display": "hidden"
+  },
+  "ip_whitelisting": "IP Whitelisting"
+}
