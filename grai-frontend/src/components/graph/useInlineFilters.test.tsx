@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
-import useInlineFilters from "./useInlineFilters"
 import { MemoryRouter, Route, Routes } from "react-router-dom"
 import { act } from "testing"
+import useInlineFilters from "./useInlineFilters"
 
 const wrapper = ({ children }: { children: React.ReactElement }) => (
   <MemoryRouter>
