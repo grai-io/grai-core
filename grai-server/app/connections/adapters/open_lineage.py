@@ -8,6 +8,7 @@ from .base import IntegrationAdapter
 
 class OpenLineageAdapter(IntegrationAdapter):
     def get_integration(self) -> OpenLineageIntegration:
+        metadata = self.run.connection.metadata
         namespace = self.run.connection.namespace
 
         source = SourceV1.from_spec(
@@ -16,5 +17,10 @@ class OpenLineageAdapter(IntegrationAdapter):
                 "name": self.run.source.name,
             }
         )
-        integration = OpenLineageIntegration(self.run.input, source=source, namespace=namespace)
+        integration = OpenLineageIntegration(
+            self.run.input,
+            source=source,
+            namespace=namespace,
+            namespaces=json.loads(metadata["namespaces"]) if metadata.get("namespaces") else None,
+        )
         return integration
