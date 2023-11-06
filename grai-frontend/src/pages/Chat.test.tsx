@@ -7,6 +7,10 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getByText("GrAI Chat")).toBeInTheDocument()
   })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
 })
 
 test("not found", async () => {

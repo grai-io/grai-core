@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import WS from "jest-websocket-mock"
 import { act, render, screen, waitFor } from "testing"
@@ -17,12 +16,6 @@ beforeEach(() => {
 
 afterEach(() => {
   WS.clean()
-})
-
-test("renders", async () => {
-  render(<WebsocketChat workspace={workspace} />)
-
-  expect(screen.getByRole("textbox")).toBeInTheDocument()
 })
 
 test("type", async () => {

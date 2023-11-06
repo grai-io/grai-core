@@ -17,7 +17,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onInput }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Box sx={{ display: "flex", pt: 3 }}>
+      <Box sx={{ display: "flex", pt: 1 }}>
         <TextField
           value={value}
           onChange={event => setValue(event.target.value)}

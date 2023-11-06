@@ -45,12 +45,18 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({
       type: "chat.message",
       message,
       chat_id: chatId,
-    };
-    sendJsonMessage(msg);
-    setChats([...chats, { message, sender: true }]);
+    }
+    sendJsonMessage(msg)
+    setChats([...chats, { message, sender: true }])
   }
 
-  return <ChatWindow chats={chats} onInput={handleInput} />
+  return (
+    <ChatWindow
+      chats={chats}
+      onInput={handleInput}
+      workspaceId={workspace.id}
+    />
+  )
 }
 
 export default WebsocketChat
