@@ -53,6 +53,35 @@ test("renders filter chips", async () => {
   expect(combinedFilters.setFilters).toHaveBeenCalledWith([])
 })
 
+test("renders inlineFilter chips", async () => {
+  const user = userEvent.setup()
+
+  const combinedFilters = {
+    filters: [],
+    setFilters: jest.fn(),
+    inlineFilters: [
+      {
+        type: "table",
+        field: "name",
+        operator: "equals",
+        value: "test",
+      },
+    ],
+    setInlineFilters: jest.fn(),
+  }
+
+  render(<FilterMenu {...defaultProps} combinedFilters={combinedFilters} />, {
+    withRouter: true,
+  })
+
+  expect(screen.getByText("Filters")).toBeInTheDocument()
+  expect(screen.getByText("name equals test")).toBeInTheDocument()
+
+  await act(async () => await user.click(screen.getByTestId("CancelIcon")))
+
+  expect(combinedFilters.setInlineFilters).toHaveBeenCalledWith([])
+})
+
 test("select", async () => {
   render(<FilterMenu {...defaultProps} />, { withRouter: true })
 
