@@ -45,9 +45,22 @@ const FilterMenu: React.FC<FilterMenuProps> = ({
   const open = Boolean(anchorEl)
   const id = open ? "github-label" : undefined
 
+  const selectedFilters = options.filter(
+    option => combinedFilters.filters?.includes(option.value),
+  )
+
+  const handleRemoveFilter = (filter: string) =>
+    combinedFilters.setFilters(
+      combinedFilters.filters?.filter(f => f !== filter) ?? [],
+    )
+
   return (
     <>
-      <FilterButton onClick={handleClick} />
+      <FilterButton
+        selectedFilters={selectedFilters}
+        onClick={handleClick}
+        onRemoveFilter={handleRemoveFilter}
+      />
       <StyledPopper
         id={id}
         open={open}

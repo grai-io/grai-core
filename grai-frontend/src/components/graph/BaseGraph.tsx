@@ -150,18 +150,6 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         defaultViewport={defaultViewport}
       />
       {loading && <Loading />}
-
-      {/* <GraphDrawer
-        onRefresh={onRefresh}
-        loading={refreshLoading}
-        onMove={onMove}
-        search={search ?? ""}
-        onSearch={onSearch}
-        filters={filters}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters}
-        setInlineFilters={setInlineFilters}
-      /> */}
     </ReactFlowProvider>
   )
 }

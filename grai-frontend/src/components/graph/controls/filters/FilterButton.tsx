@@ -1,17 +1,24 @@
 import React from "react"
 import { FilterAlt } from "@mui/icons-material"
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Button, Chip, Stack, Typography } from "@mui/material"
+import { Option } from "./FilterAutocomplete"
 
 type FilterButtonProps = {
+  selectedFilters: Option[]
   onClick?: (event: React.MouseEvent<HTMLElement>) => void
+  onRemoveFilter?: (filter: string) => void
 }
 
-const FilterButton: React.FC<FilterButtonProps> = ({ onClick }) => (
+const FilterButton: React.FC<FilterButtonProps> = ({
+  selectedFilters,
+  onClick,
+  onRemoveFilter,
+}) => (
   <Button
     disableRipple
     onClick={onClick}
     sx={{
-      width: 350,
+      minWidth: 240,
       backgroundColor: "white",
       border: "1px solid #CBCBCB",
       borderRadius: "4px",
@@ -23,8 +30,19 @@ const FilterButton: React.FC<FilterButtonProps> = ({ onClick }) => (
     }}
   >
     <Box sx={{ display: "flex", width: "100%", textAlign: "left" }}>
-      <Typography sx={{ flexGrow: 1, color: "#B4B4B4" }}>Filters</Typography>
-      <FilterAlt sx={{ color: "#C2C2C2" }} />
+      <Typography sx={{ color: "#B4B4B4", mr: 2 }}>Filters</Typography>
+      <Stack direction="row" spacing={1}>
+        {selectedFilters?.map(filter => (
+          <Chip
+            key={filter.value}
+            label={filter.label}
+            size="small"
+            onDelete={() => onRemoveFilter && onRemoveFilter(filter.value)}
+          />
+        ))}
+      </Stack>
+      <Box sx={{ flexGrow: 1 }} />
+      <FilterAlt sx={{ color: "#C2C2C2", ml: 1 }} />
     </Box>
   </Button>
 )
