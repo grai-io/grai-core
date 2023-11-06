@@ -2,12 +2,27 @@ import React from "react"
 import { Avatar, Box, Grid, Typography } from "@mui/material"
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
-import { Chat } from "./ChatWindow"
+
+export type GroupedChats = {
+  sender: boolean
+  messages: string[]
+}
 
 const radius = theme.spacing(2.5)
 const rightBgColor = "rgba(131, 56, 236)"
 
 const classes = {
+  left: {
+    borderTopRightRadius: radius,
+    borderBottomRightRadius: radius,
+    backgroundColor: theme.palette.grey[100],
+  },
+  right: {
+    borderTopLeftRadius: radius,
+    borderBottomLeftRadius: radius,
+    backgroundColor: rightBgColor,
+    color: theme.palette.common.white,
+  },
   leftFirst: {
     borderTopLeftRadius: radius,
   },
@@ -23,13 +38,13 @@ const classes = {
 }
 
 type ChatMessageProps = {
-  chat: Chat
+  groupedChat: GroupedChats
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
-  const side = chat.sender ? "right" : "left"
+const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
+  const side = groupedChat.sender ? "right" : "left"
 
-  const messages = [chat.message]
+  const messages = groupedChat.messages
 
   const attachClass = (index: number) => {
     if (index === 0) {
@@ -43,7 +58,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
   return (
     <Grid container spacing={2}>
       {side === "left" && (
-        <Grid item>
+        <Grid
+          item
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexDirection: "column",
+          }}
+        >
           <Avatar
             sx={{
               backgroundColor: "white",
@@ -61,25 +83,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
           <Box
             key={i}
             sx={{
-              ...attachClass(i),
               textAlign: side === "right" ? "right" : "left",
             }}
           >
             <Typography
               align={"left"}
               sx={{
-                bgcolor: side === "right" ? rightBgColor : "grey.200",
-                color: side === "right" ? "white" : "black",
-                borderRadius: radius,
-                padding: theme.spacing(1),
-                marginBottom: 4,
+                px: 2,
+                py: 1,
+                mb: 0.5,
                 display: "inline-block",
                 wordBreak: "break-word",
                 fontFamily:
                   // eslint-disable-next-line max-len
                   '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
                 fontSize: "14px",
-                px: 2,
+                borderRadius: 1,
+                ...attachClass(i),
+                ...classes[side],
               }}
             >
               {msg}
@@ -88,7 +109,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
         ))}
       </Grid>
       {side === "right" && (
-        <Grid item>
+        <Grid
+          item
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexDirection: "column",
+          }}
+        >
           <Avatar />
         </Grid>
       )}
