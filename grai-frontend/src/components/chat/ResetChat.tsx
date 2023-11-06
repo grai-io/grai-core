@@ -1,8 +1,8 @@
+import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Box } from "@mui/material"
 import { useSnackbar } from "notistack"
-import React from "react"
 import { CreateChat, CreateChatVariables } from "./__generated__/CreateChat"
 
 export const CREATE_CHAT = gql`
