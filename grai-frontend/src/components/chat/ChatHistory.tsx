@@ -1,5 +1,6 @@
 import React from "react"
-import { List, ListItem } from "@mui/material"
+import { Box } from "@mui/material"
+import ChatMessage from "./ChatMessage"
 import { Chat } from "./ChatWindow"
 
 type ChatHistoryProps = {
@@ -7,20 +8,11 @@ type ChatHistoryProps = {
 }
 
 const ChatHistory: React.FC<ChatHistoryProps> = ({ chats }) => (
-  <List sx={{ flexGrow: 1, overflow: "auto", height: "200px" }}>
-    {chats.map((chat, index) => (
-      <ListItem
-        key={index}
-        disableGutters
-        sx={{
-          display: "flex",
-          justifyContent: chat.sender ? null : "flex-end",
-        }}
-      >
-        {chat.message}
-      </ListItem>
+  <Box sx={{ flexGrow: 1, overflow: "auto", height: "200px" }}>
+    {chats.map((chat, i) => (
+      <ChatMessage key={i} chat={chat} />
     ))}
-  </List>
+  </Box>
 )
 
 export default ChatHistory

@@ -4,14 +4,14 @@ import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import ChatWrapper from "components/chat/ChatWrapper"
 import Loading from "components/layout/Loading"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceChat,
   GetWorkspaceChatVariables,
 } from "./__generated__/GetWorkspaceChat"
 import NotFound from "./NotFound"
-import PageHeader from "components/layout/PageHeader"
-import PageContent from "components/layout/PageContent"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceChat($organisationName: String!, $workspaceName: String!) {

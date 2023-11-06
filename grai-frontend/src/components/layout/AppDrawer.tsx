@@ -1,4 +1,5 @@
 import React from "react"
+import { Chat } from "@mui/icons-material"
 import { Drawer, List, ListItem, ListItemButton } from "@mui/material"
 import { Link } from "react-router-dom"
 import useLocalState from "helpers/useLocalState"
@@ -17,7 +18,6 @@ import HoverState from "components/utils/HoverState"
 import AppDrawerCollapse from "./AppDrawerCollapse"
 import AppDrawerItem from "./AppDrawerItem"
 import Profile, { User } from "./profile/Profile"
-import { Chat } from "@mui/icons-material"
 
 const pages = [
   {
