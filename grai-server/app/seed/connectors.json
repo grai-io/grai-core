@@ -507,14 +507,9 @@
                 "docs_url": "https://docs.grai.io/integrations/airflow",
                 "fields": [
                     {
-                        "name": "api_secret",
-                        "required": true,
-                        "order": 0
-                    },
-                    {
                         "name": "namespaces",
                         "required": false,
-                        "order": 1
+                        "order": 0
                     }
                 ]
             },
@@ -666,14 +661,9 @@
                 "docs_url": "https://docs.grai.io/integrations/openlineage",
                 "fields": [
                     {
-                        "name": "api_secret",
-                        "required": true,
-                        "order": 0
-                    },
-                    {
                         "name": "namespaces",
                         "required": false,
-                        "order": 1
+                        "order": 0
                     }
                 ]
             },
