@@ -37,3 +37,25 @@ class Mutation:
             info,
             workspaceId,
         )
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createChat(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+    ) -> Chat:
+        def _create(
+            info: Info,
+            workspaceId: strawberry.ID,
+        ) -> DataWrapper[Chat]:
+            user = get_user(info)
+            workspace = get_workspace(info, workspaceId)
+
+            membership = workspace.memberships.get(user=user)
+
+            return UserChat.objects.create(membership=membership)
+
+        return await sync_to_async(_create)(
+            info,
+            workspaceId,
+        )
