@@ -432,7 +432,6 @@ class TestUpdateServer:
             workspace=test_workspace,
             source=test_source,
             metadata={},
-            secrets={"api_secret": "password1234"},
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
