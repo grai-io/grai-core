@@ -6,7 +6,7 @@ import ChatWindow from "./ChatWindow"
 const handleInput = jest.fn()
 
 test("renders", async () => {
-  render(<ChatWindow chats={[]} onInput={handleInput} />)
+  render(<ChatWindow chats={[]} onInput={handleInput} workspaceId="1" />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 })
@@ -14,7 +14,7 @@ test("renders", async () => {
 test("type", async () => {
   const user = userEvent.setup()
 
-  render(<ChatWindow chats={[]} onInput={handleInput} />)
+  render(<ChatWindow chats={[]} onInput={handleInput} workspaceId="1" />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
