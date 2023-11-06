@@ -1,9 +1,11 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box, Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import ChatWrapper from "components/chat/ChatWrapper"
 import Loading from "components/layout/Loading"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceChat,
@@ -40,14 +42,16 @@ const Chat: React.FC = () => {
   if (!workspace) return <NotFound />
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h6">GrAI Workspace Chat</Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <ChatWrapper workspace={workspace} />
+    <>
+      <PageHeader title="GrAI Chat" />
+      <Grid container sx={{ height: "calc(100vh - 144px)" }}>
+        <Grid item md={6}>
+          <PageContent sx={{ height: "100%" }}>
+            <ChatWrapper workspace={workspace} />
+          </PageContent>
         </Grid>
       </Grid>
-    </Box>
+    </>
   )
 }
 

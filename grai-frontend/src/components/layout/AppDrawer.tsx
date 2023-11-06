@@ -1,4 +1,5 @@
 import React from "react"
+import { Chat } from "@mui/icons-material"
 import { Drawer, List, ListItem, ListItemButton } from "@mui/material"
 import { Link } from "react-router-dom"
 import useLocalState from "helpers/useLocalState"
@@ -49,6 +50,12 @@ const pages = [
     path: "reports",
     icon: <Reports />,
     alt: "Reports",
+  },
+  {
+    title: "Chat",
+    path: "chat",
+    icon: <Chat />,
+    alt: "Chat",
   },
 ]
 

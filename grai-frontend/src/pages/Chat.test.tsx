@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import Chat, { GET_WORKSPACE } from "./Chat"
 
@@ -6,7 +5,11 @@ test("renders", async () => {
   render(<Chat />)
 
   await waitFor(() => {
-    expect(screen.getByText("GrAI Workspace Chat")).toBeInTheDocument()
+    expect(screen.getByText("GrAI Chat")).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })
 
@@ -31,7 +34,7 @@ test("not found", async () => {
   render(<Chat />, { mocks })
 
   await waitFor(() => {
-    expect(screen.queryByText("GrAI Workspace Chat")).not.toBeInTheDocument()
+    expect(screen.queryByText("GrAI Chat")).not.toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -56,7 +59,7 @@ test("error", async () => {
   render(<Chat />, { mocks })
 
   await waitFor(() => {
-    expect(screen.queryByText("GrAI Workspace Chat")).not.toBeInTheDocument()
+    expect(screen.queryByText("GrAI Chat")).not.toBeInTheDocument()
   })
 
   await waitFor(() => {
