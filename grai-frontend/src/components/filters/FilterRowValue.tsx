@@ -18,12 +18,14 @@ type FilterRowValueProps = {
   operator: Operator | null
   filter: Filter
   onChange: (filter: Filter) => void
+  compact?: boolean
 }
 
 const FilterRowValue: React.FC<FilterRowValueProps> = ({
   operator,
   filter,
   onChange,
+  compact,
 }) => {
   const handleValueChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -55,6 +57,9 @@ const FilterRowValue: React.FC<FilterRowValueProps> = ({
         inputProps={{
           "data-testid": "value",
         }}
+        size={compact ? "small" : undefined}
+        placeholder={compact ? "Value" : undefined}
+        sx={{ backgroundColor: "white" }}
       />
     )
 
@@ -72,7 +77,13 @@ const FilterRowValue: React.FC<FilterRowValueProps> = ({
           ),
         )}
         onChange={handleValueChange}
-        renderInput={params => <TextField {...params} />}
+        renderInput={params => (
+          <TextField
+            {...params}
+            sx={{ backgroundColor: "white" }}
+            placeholder={compact ? "Value" : undefined}
+          />
+        )}
         renderOption={(props, option, { selected }) => (
           <li {...props}>
             <Checkbox
@@ -84,6 +95,8 @@ const FilterRowValue: React.FC<FilterRowValueProps> = ({
             {typeof option === "string" ? option : option?.label}
           </li>
         )}
+        size={compact ? "small" : undefined}
+        disablePortal={compact}
         data-testid="autocomplete-value"
       />
     )
@@ -96,7 +109,15 @@ const FilterRowValue: React.FC<FilterRowValueProps> = ({
       options={operator.options}
       value={arrayFirst(filter.value)}
       onChange={handleValueChange}
-      renderInput={params => <TextField {...params} />}
+      renderInput={params => (
+        <TextField
+          {...params}
+          sx={{ backgroundColor: "white" }}
+          placeholder={compact ? "Value" : undefined}
+        />
+      )}
+      size={compact ? "small" : undefined}
+      disablePortal={compact}
       data-testid="autocomplete-value"
     />
   )

@@ -4,12 +4,27 @@ import { ReactFlowProvider } from "reactflow"
 import { act, render, screen, waitFor } from "testing"
 import GraphControls from "./GraphControls"
 
+const combinedFilters = {
+  filters: [],
+  setFilters: jest.fn(),
+  inlineFilters: [],
+  setInlineFilters: jest.fn(),
+}
+
 const onSearch = jest.fn()
 
 test("renders", async () => {
-  render(<GraphControls errors={false} search={null} onSearch={onSearch} />, {
-    withRouter: true,
-  })
+  render(
+    <GraphControls
+      errors={false}
+      search={null}
+      onSearch={onSearch}
+      combinedFilters={combinedFilters}
+    />,
+    {
+      withRouter: true,
+    },
+  )
 
   expect(screen.getByTestId("SearchIcon")).toBeInTheDocument()
   expect(screen.queryByText("Limit Graph")).toBeFalsy()
@@ -27,6 +42,7 @@ test("renders options", async () => {
         options={{ steps: { value: 1, setValue: (input: number) => {} } }}
         search={null}
         onSearch={onSearch}
+        combinedFilters={combinedFilters}
       />
     </ReactFlowProvider>,
     {
@@ -40,7 +56,12 @@ test("renders errors", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphControls errors search={null} onSearch={onSearch} />
+      <GraphControls
+        errors
+        search={null}
+        onSearch={onSearch}
+        combinedFilters={combinedFilters}
+      />
     </ReactFlowProvider>,
     {
       withRouter: true,

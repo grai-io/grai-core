@@ -1,4 +1,5 @@
 import React from "react"
+import { Box } from "@mui/material"
 import FilterRowHeader from "components/filters/FilterRowHeader"
 import FilterRow from "./FilterRow"
 import { Filter, Source } from "./filters"
@@ -9,6 +10,7 @@ type FilterRowsProps = {
   namespaces: string[]
   tags: string[]
   sources: Source[]
+  compact?: boolean
 }
 
 const FilterRows: React.FC<FilterRowsProps> = ({
@@ -17,6 +19,7 @@ const FilterRows: React.FC<FilterRowsProps> = ({
   namespaces,
   tags,
   sources,
+  compact,
 }) => {
   const handleChangeFilters = (index: number) => (filter: Filter) => {
     const newFilters = [...filters]
@@ -32,18 +35,21 @@ const FilterRows: React.FC<FilterRowsProps> = ({
 
   return (
     <>
-      <FilterRowHeader />
-      {filters.map((filter, index) => (
-        <FilterRow
-          key={index}
-          filter={filter}
-          onChange={handleChangeFilters(index)}
-          onRemove={handleRemoveFilter(index)}
-          namespaces={namespaces}
-          tags={tags}
-          sources={sources}
-        />
-      ))}
+      {compact !== true && <FilterRowHeader />}
+      <Box sx={{ mt: -1 }}>
+        {filters.map((filter, index) => (
+          <FilterRow
+            key={index}
+            filter={filter}
+            onChange={handleChangeFilters(index)}
+            onRemove={handleRemoveFilter(index)}
+            namespaces={namespaces}
+            tags={tags}
+            sources={sources}
+            compact={compact}
+          />
+        ))}
+      </Box>
     </>
   )
 }

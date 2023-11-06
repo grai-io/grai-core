@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
 
 const handleInput = jest.fn()
@@ -18,11 +18,11 @@ test("type", async () => {
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
-  user.type(screen.getByRole("textbox"), "Hello")
+  await act(async () => user.type(screen.getByRole("textbox"), "Hello"))
 
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Hello"))
 
-  user.type(screen.getByRole("textbox"), "{enter}")
+  await act(async () => await user.type(screen.getByRole("textbox"), "{enter}"))
 
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""))
 

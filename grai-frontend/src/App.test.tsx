@@ -6,10 +6,6 @@ test("renders", async () => {
   render(<App />)
 
   await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
-  })
-
-  await waitFor(() => {
     expect(screen.getByText(/Welcome back!/i)).toBeInTheDocument()
   })
 })

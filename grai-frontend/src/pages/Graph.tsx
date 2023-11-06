@@ -9,8 +9,7 @@ import GraphComponent, {
   ResultError,
   Table,
 } from "components/graph/GraphComponent"
-import useFilters from "components/graph/useFilters"
-import useInlineFilters from "components/graph/useInlineFilters"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdges,
@@ -66,8 +65,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
     zoom: 1,
   })
 
-  const { filters, setFilters } = useFilters()
-  const { inlineFilters, setInlineFilters } = useInlineFilters()
+  const { combinedFilters, filters, inlineFilters } = useCombinedFilters()
 
   const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
@@ -135,10 +133,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
         onMove={setViewport}
         onRefresh={handleRefresh}
         refreshLoading={loading}
-        filters={filters ?? []}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters ?? []}
-        setInlineFilters={setInlineFilters}
+        combinedFilters={combinedFilters}
         defaultViewport={viewport}
       />
     </div>
