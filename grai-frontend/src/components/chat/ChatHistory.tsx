@@ -7,7 +7,7 @@ type ChatHistoryProps = {
 }
 
 const ChatHistory: React.FC<ChatHistoryProps> = ({ chats }) => (
-  <List>
+  <List sx={{ flexGrow: 1, overflow: "auto", height: "200px" }}>
     {chats.map((chat, index) => (
       <ListItem
         key={index}

@@ -1,7 +1,7 @@
 import React from "react"
-import { Card } from "@mui/material"
 import ChatHistory from "./ChatHistory"
 import ChatInput from "./ChatInput"
+import { Box } from "@mui/material"
 
 export type Chat = {
   message: string
@@ -14,10 +14,10 @@ type ChatWindowProps = {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ chats, onInput }) => (
-  <Card sx={{ mt: 3, p: 3 }}>
+  <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
     <ChatHistory chats={chats} />
     <ChatInput onInput={onInput} />
-  </Card>
+  </Box>
 )
 
 export default ChatWindow
