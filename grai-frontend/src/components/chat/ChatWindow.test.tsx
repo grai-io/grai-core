@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
@@ -6,7 +5,7 @@ import ChatWindow from "./ChatWindow"
 const handleInput = jest.fn()
 
 test("renders", async () => {
-  render(<ChatWindow chats={[]} onInput={handleInput} workspaceId="1" />)
+  render(<ChatWindow messages={[]} onInput={handleInput} workspaceId="1" />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 })
@@ -14,7 +13,7 @@ test("renders", async () => {
 test("type", async () => {
   const user = userEvent.setup()
 
-  render(<ChatWindow chats={[]} onInput={handleInput} workspaceId="1" />)
+  render(<ChatWindow messages={[]} onInput={handleInput} workspaceId="1" />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 

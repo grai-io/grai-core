@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useApolloClient } from "@apollo/client"
 import { baseURL } from "client"
 import useWebSocket from "react-use-websocket"
@@ -45,30 +45,33 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
   const { sendJsonMessage, lastMessage } = useWebSocket(socketUrl)
 
   /* istanbul ignore next */
-  const addMessage = (message: Message) =>
-    cache.modify({
-      id: cache.identify({
-        id: chat.id,
-        __typename: "Chat",
-      }),
-      fields: {
-        messages: (existingMessages = { data: [] }) => ({
-          data: existingMessages.data
-            ? existingMessages.data.concat({
-                id: self.crypto.randomUUID(),
-                ...message,
-                created_at: new Date().toISOString(),
-                __typename: "Message",
-              })
-            : [],
+  const addMessage = useCallback(
+    (message: Message) =>
+      cache.modify({
+        id: cache.identify({
+          id: chat.id,
+          __typename: "Chat",
         }),
-      },
-    })
+        fields: {
+          messages: (existingMessages = { data: [] }) => ({
+            data: existingMessages.data
+              ? existingMessages.data.concat({
+                  id: crypto.randomUUID(),
+                  ...message,
+                  created_at: new Date().toISOString(),
+                  __typename: "Message",
+                })
+              : [],
+          }),
+        },
+      }),
+    [cache, chat.id],
+  )
 
   useEffect(() => {
     if (lastMessage !== null) {
       const message = lastMessage.timeStamp
-      if (message != savedLastMessage) {
+      if (message !== savedLastMessage) {
         addMessage({
           message: JSON.parse(lastMessage.data).message,
           role: "system",
@@ -76,7 +79,7 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
         setSavedLastMessage(message)
       }
     }
-  }, [lastMessage, addMessage])
+  }, [lastMessage, addMessage, savedLastMessage])
 
   const handleInput = (message: string) => {
     const msg = {

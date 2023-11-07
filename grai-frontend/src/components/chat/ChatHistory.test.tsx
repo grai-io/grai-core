@@ -2,7 +2,7 @@ import { render, screen } from "testing"
 import ChatHistory from "./ChatHistory"
 
 test("renders", async () => {
-  const chats = [
+  const messages = [
     {
       message: "first message",
       sender: true,
@@ -13,12 +13,12 @@ test("renders", async () => {
     },
   ]
 
-  render(<ChatHistory chats={chats} />)
+  render(<ChatHistory messages={messages} />)
 
   expect(screen.getByText("first message")).toBeInTheDocument()
   expect(screen.getByText("second message")).toBeInTheDocument()
 })
 
 test("renders empty", async () => {
-  render(<ChatHistory chats={[]} />)
+  render(<ChatHistory messages={[]} />)
 })
