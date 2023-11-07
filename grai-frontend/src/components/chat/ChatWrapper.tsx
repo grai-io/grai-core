@@ -59,7 +59,7 @@ const ChatWrapper: React.FC<ChatWrapperProps> = ({ workspace }) => {
     }, [])
     .map(message => ({
       message: message.message,
-      sender: message.role === "USER",
+      sender: message.role === "user",
     }))
   const chatId = data.fetchOrCreateChats.data.at(-1)?.id
 
