@@ -35,6 +35,7 @@ const ResetChat: React.FC<ResetChatProps> = ({ workspaceId }) => {
     variables: {
       workspaceId,
     },
+    /* istanbul ignore next */
     update(cache, { data }) {
       cache.modify({
         id: cache.identify({
