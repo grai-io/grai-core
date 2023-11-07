@@ -60,7 +60,6 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         data: dict = json.loads(text_data)
         socket_message_type = data.get("type", None)
-        print(data)
         match socket_message_type:
             case "chat.message":
                 self.chat_message(data)
@@ -79,7 +78,6 @@ class ChatConsumer(WebsocketConsumer):
 
         # Insure the conversation exists
         if payload.chat_id not in self.active_chats:
-            print("LOOK AT ME NOW")
             chat, created = UserChat.objects.get_or_create(membership=self.membership, id=payload.chat_id)
             self.active_chats.add(chat.id)
 
