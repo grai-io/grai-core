@@ -3,62 +3,28 @@
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 const { withSentryConfig } = require("@sentry/nextjs");
+const redirects = require('./redirects');
 
-const nextConfig = require("nextra")({
+const nextra = require("nextra")({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
 });
 
-module.exports = nextConfig({
-  // i18n doesn't work with static site generation
-  // output: 'export',
-
-  // i18n: {
-  //   locales: ['en-US'],
-  //   defaultLocale: 'en-US',
-  //   domains: [
-  //     {
-  //       domain: "docs.grai.io",
-  //       defaultLocale: "en-US",
-  //     },
-  //   ]
-  // },
+const nextConfig = {
   images: {
     unoptimized: true,
   },
+
   async redirects() {
-    return [
-      {
-        source: "/connectors/:slug",
-        destination: "/integrations/:slug",
-        permanent: true,
-      },
-      {
-        source: "/contributor-guidelines/",
-        destination: "/community/contributor-guidelines",
-        permanent: true,
-      },
-      {
-        source: "/examples/enhanced-dbt/",
-        destination: "/examples/enhanced-dbt",
-        permanent: true,
-      },
-      {
-        source: "/introduction/",
-        destination: "/introduction",
-        permanent: true,
-      },
-      {
-        source: "/web-app/connections/",
-        destination: "/integrations/support-status",
-        permanent: true,
-      },
-    ];
+    return redirects;
   },
+};
+
+const nextraConfig = nextra(nextConfig);
+
+const sentryConfig = withSentryConfig(nextraConfig, {
+  silent: true,
+  hideSourceMaps: false,
 });
 
-module.exports = withSentryConfig(
-  module.exports,
-  { silent: true },
-  { hideSourceMaps: true }
-);
+module.exports = sentryConfig;
