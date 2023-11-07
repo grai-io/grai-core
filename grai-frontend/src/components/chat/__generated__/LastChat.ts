@@ -28,6 +28,7 @@ export interface LastChat_workspace_last_chat {
 
 export interface LastChat_workspace {
   __typename: "Workspace";
+  id: any;
   last_chat: LastChat_workspace_last_chat;
 }
 
