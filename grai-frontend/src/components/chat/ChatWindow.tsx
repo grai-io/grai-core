@@ -4,24 +4,24 @@ import ChatHistory from "./ChatHistory"
 import ChatInput from "./ChatInput"
 import ResetChat from "./ResetChat"
 
-export type Chat = {
+export type Message = {
   message: string
   sender: boolean
 }
 
 type ChatWindowProps = {
-  chats: Chat[]
+  messages: Message[]
   onInput: (message: string) => void
   workspaceId: string
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
-  chats,
+  messages,
   onInput,
   workspaceId,
 }) => (
   <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-    <ChatHistory chats={chats} />
+    <ChatHistory messages={messages} />
     <ResetChat workspaceId={workspaceId} />
     <ChatInput onInput={onInput} />
   </Box>

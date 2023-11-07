@@ -9,6 +9,14 @@ export const CREATE_CHAT = gql`
   mutation CreateChat($workspaceId: ID!) {
     createChat(workspaceId: $workspaceId) {
       id
+      messages {
+        data {
+          id
+          message
+          role
+          created_at
+        }
+      }
     }
   }
 `
@@ -26,6 +34,17 @@ const ResetChat: React.FC<ResetChatProps> = ({ workspaceId }) => {
   >(CREATE_CHAT, {
     variables: {
       workspaceId,
+    },
+    update(cache, { data }) {
+      cache.modify({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fields: {
+          last_chat: () => data?.createChat ?? null,
+        },
+      })
     },
   })
 
