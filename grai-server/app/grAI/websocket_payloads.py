@@ -1,7 +1,7 @@
 import uuid
 from enum import Enum
-from typing import Literal
-
+from typing import Literal, Annotated
+from uuid import UUID
 from pydantic import BaseModel, ValidationError, validator
 
 
@@ -18,8 +18,8 @@ class ChatErrorMessages(Enum):
 class ChatEvent(BaseModel):
     type: Literal["chat.message"] = "chat.message"
     message: str
-    chat_id: str
+    chat_id: UUID
 
     @validator("chat_id")
     def chat_id_is_uuid(cls, v):
-        return v if v == "" else str(uuid.uuid4())
+        return uuid.uuid4() if v == "" else v
