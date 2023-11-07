@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
+import { useApolloClient } from "@apollo/client"
 import { baseURL } from "client"
 import useWebSocket from "react-use-websocket"
 import ChatWindow from "./ChatWindow"
-import { useApolloClient } from "@apollo/client"
 
 const socketURL =
   window._env_?.REACT_APP_SERVER_WS_URL ??

@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import WebsocketChat from "components/chat/WebsocketChat"
 import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -11,7 +12,6 @@ import {
   GetWorkspaceChatVariables,
 } from "./__generated__/GetWorkspaceChat"
 import NotFound from "./NotFound"
-import WebsocketChat from "components/chat/WebsocketChat"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceChat($organisationName: String!, $workspaceName: String!) {
