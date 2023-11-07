@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect } from "react"
 import { useApolloClient } from "@apollo/client"
 import { baseURL } from "client"
 import useWebSocket from "react-use-websocket"
@@ -36,8 +36,6 @@ type WebsocketChatProps = {
 }
 
 const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
-  const [savedLastMessage, setSavedLastMessage] = useState<number | null>(null)
-
   const { cache } = useApolloClient()
 
   const socketUrl = `${socketURL}/ws/chat/${workspace.id}/`
@@ -69,17 +67,13 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
   )
 
   useEffect(() => {
-    if (lastMessage !== null) {
-      const message = lastMessage.timeStamp
-      if (message !== savedLastMessage) {
-        addMessage({
-          message: JSON.parse(lastMessage.data).message,
-          role: "system",
-        })
-        setSavedLastMessage(message)
-      }
+    if (lastMessage) {
+      addMessage({
+        message: JSON.parse(lastMessage.data).message,
+        role: "system",
+      })
     }
-  }, [lastMessage, addMessage, savedLastMessage])
+  }, [lastMessage, addMessage])
 
   const handleInput = (message: string) => {
     const msg = {
