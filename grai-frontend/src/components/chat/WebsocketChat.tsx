@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react"
-import { useApolloClient } from "@apollo/client"
+import { gql, useApolloClient } from "@apollo/client"
 import { baseURL } from "client"
 import useWebSocket from "react-use-websocket"
+import { NewMessage } from "./__generated__/NewMessage"
 import ChatWindow from "./ChatWindow"
 
 const socketURL =
@@ -42,7 +43,6 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
 
   const { sendJsonMessage, lastMessage } = useWebSocket(socketUrl)
 
-  /* istanbul ignore next */
   const addMessage = useCallback(
     (message: Message) =>
       cache.modify({
@@ -51,16 +51,26 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
           __typename: "Chat",
         }),
         fields: {
-          messages: (existingMessages = { data: [] }) => ({
-            data: existingMessages.data
-              ? existingMessages.data.concat({
-                  id: crypto.randomUUID(),
-                  ...message,
-                  created_at: new Date().toISOString(),
-                  __typename: "Message",
-                })
-              : [],
-          }),
+          /* istanbul ignore next */
+          messages(existingMessages = { data: [] }) {
+            const newMessage = cache.writeFragment<NewMessage>({
+              data: {
+                id: crypto.randomUUID(),
+                ...message,
+                created_at: new Date().toISOString(),
+                __typename: "Message",
+              },
+              fragment: gql`
+                fragment NewMessage on Message {
+                  id
+                  message
+                  role
+                  created_at
+                }
+              `,
+            })
+            return { data: [...existingMessages.data, newMessage] }
+          },
         },
       }),
     [cache, chat.id],
@@ -79,7 +89,7 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
     const msg = {
       type: "chat.message",
       message,
-      chat_id: chat?.id,
+      chat_id: chat.id,
     }
     sendJsonMessage(msg)
     addMessage({ message, role: "user" })

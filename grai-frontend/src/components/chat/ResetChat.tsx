@@ -4,6 +4,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { CreateChat, CreateChatVariables } from "./__generated__/CreateChat"
+import { NewChat } from "./__generated__/NewChat"
 
 export const CREATE_CHAT = gql`
   mutation CreateChat($workspaceId: ID!) {
@@ -35,7 +36,6 @@ const ResetChat: React.FC<ResetChatProps> = ({ workspaceId }) => {
     variables: {
       workspaceId,
     },
-    /* istanbul ignore next */
     update(cache, { data }) {
       cache.modify({
         id: cache.identify({
@@ -43,7 +43,29 @@ const ResetChat: React.FC<ResetChatProps> = ({ workspaceId }) => {
           __typename: "Workspace",
         }),
         fields: {
-          last_chat: () => data?.createChat ?? null,
+          /* istanbul ignore next */
+          last_chat(existingChat) {
+            if (!data?.createChat) return existingChat
+
+            const newChat = cache.writeFragment<NewChat>({
+              data: data?.createChat,
+              fragment: gql`
+                fragment NewChat on Chat {
+                  id
+                  messages {
+                    data {
+                      id
+                      message
+                      role
+                      created_at
+                    }
+                  }
+                }
+              `,
+            })
+
+            return newChat
+          },
         },
       })
     },
