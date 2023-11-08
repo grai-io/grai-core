@@ -37,7 +37,6 @@ test("no workspaces", async () => {
         variables: {
           organisationName: "TestOrganisation",
           name: "demo",
-          sample_data: false,
         },
       },
       result: {

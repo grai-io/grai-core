@@ -178,6 +178,9 @@ class Mutation:
 
         workspace = await aget_workspace(info, id)
 
+        workspace.sample_data = True
+        await workspace.asave()
+
         return await sync_to_async(_load_workspace_sample_data)(info, workspace)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
