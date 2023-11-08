@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { ReactFlowProvider } from "reactflow"
 import { act, render, screen, waitFor } from "testing"

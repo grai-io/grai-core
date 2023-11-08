@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import ReactFlow, {
   Edge,
@@ -26,7 +25,7 @@ test("renders", async () => {
           data={{}}
         />
       </svg>
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
   )
 })
 
@@ -51,7 +50,7 @@ test("renders highlight", async () => {
           data={data}
         />
       </svg>
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
   )
 })
 
@@ -84,7 +83,7 @@ test("renders errors", async () => {
           data={data}
         />
       </svg>
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
   )
 })
 

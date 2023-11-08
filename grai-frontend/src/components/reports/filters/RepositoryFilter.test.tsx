@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, fireEvent, render, screen, waitFor, within } from "testing"
 import RepositoryFilter from "./RepositoryFilter"

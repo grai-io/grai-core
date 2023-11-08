@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -23,14 +22,15 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByTestId("current-password"), "password")
+      await user.type(screen.getByTestId("current-password"), "password"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("new-password"), "password2")
+    async () =>
+      await user.type(screen.getByTestId("new-password"), "password2"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => expect(screen.getByText("New Page")))
@@ -60,14 +60,15 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByTestId("current-password"), "password")
+      await user.type(screen.getByTestId("current-password"), "password"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("new-password"), "password2")
+    async () =>
+      await user.type(screen.getByTestId("new-password"), "password2"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

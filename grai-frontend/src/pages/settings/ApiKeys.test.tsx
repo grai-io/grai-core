@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import ApiKeys, { GET_API_KEYS } from "./ApiKeys"

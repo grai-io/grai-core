@@ -1,4 +1,3 @@
-import React from "react"
 import { Table, TableFooter } from "@mui/material"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
