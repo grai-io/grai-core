@@ -12,7 +12,7 @@ const nextra = require("nextra")({
 
 const nextConfig = {
   images: {
-    unoptimized: true,
+    unoptimized: false,
   },
 
   async redirects() {
