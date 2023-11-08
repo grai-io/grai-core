@@ -20,8 +20,9 @@ class ConnectorAdmin(admin.ModelAdmin):
 class RunInline(admin.TabularInline):
     model = Run
     extra = 0
-    fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+    fields = ["action", "status", "metadata", "created_at", "started_at", "finished_at", "user"]
     readonly_fields = [
+        "action",
         "status",
         "metadata",
         "created_at",
