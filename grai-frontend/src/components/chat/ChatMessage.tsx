@@ -55,6 +55,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
     }
     return ""
   }
+
   return (
     <Grid container spacing={2} sx={{ mb: 2 }}>
       {side === "left" && (

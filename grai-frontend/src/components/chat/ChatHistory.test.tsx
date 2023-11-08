@@ -11,6 +11,14 @@ test("renders", async () => {
       message: "second message",
       sender: false,
     },
+    {
+      message: "third message",
+      sender: false,
+    },
+    {
+      message: "fourth message",
+      sender: false,
+    },
   ]
 
   render(<ChatHistory messages={messages} />)
