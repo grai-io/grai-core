@@ -57,6 +57,7 @@ class SampleData:
                         ' "https://www.googleapis.com/robot/v1/metadata/x509/grai-352%40grai-demo.iam.gserviceaccount.com" }'
                     )
                 },
+                validated=True,
             )
         )
 
@@ -80,6 +81,7 @@ class SampleData:
                     "user": "demo",
                 },
                 secrets={"password": "zfYD%qW2VOfUmK1Y"},
+                validated=True,
             )
         )
 
