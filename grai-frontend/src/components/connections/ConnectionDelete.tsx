@@ -43,7 +43,6 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteConnection] = useMutation<
     DeleteConnection,
     DeleteConnectionVariables
@@ -56,7 +55,10 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          connections: (existingConnections = { data: [] }, { readField }) => ({
+          connections: /* istanbul ignore next */ (
+            existingConnections = { data: [] },
+            { readField },
+          ) => ({
             data: existingConnections.data
               ? existingConnections.data.filter(
                   (keyRef: any) =>

@@ -46,7 +46,6 @@ const FilterSave: React.FC<FilterSaveProps> = ({
   })
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [createFilter, { loading, error }] = useMutation<
     CreateFilterInline,
     CreateFilterInlineVariables
@@ -58,6 +57,7 @@ const FilterSave: React.FC<FilterSaveProps> = ({
           __typename: "Workspace",
         }),
         fields: {
+          /* istanbul ignore next */
           filters(existingFilters = { data: [] }) {
             if (!data?.createFilter) return existingFilters
 

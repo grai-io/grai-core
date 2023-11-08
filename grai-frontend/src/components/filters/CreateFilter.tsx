@@ -40,7 +40,6 @@ const CreateFilter: React.FC<CreateFilterProps> = ({
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
 
-  /* istanbul ignore next */
   const [createFilter, { loading, error }] = useMutation<
     CreateFilterType,
     CreateFilterVariables
@@ -52,6 +51,7 @@ const CreateFilter: React.FC<CreateFilterProps> = ({
           __typename: "Workspace",
         }),
         fields: {
+          /* istanbul ignore next */
           filters(existingFilters = { data: [] }) {
             if (!data?.createFilter) return existingFilters
 
