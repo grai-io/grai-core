@@ -88,6 +88,7 @@ class RunAdmin(admin.ModelAdmin):
         "id",
         "connection",
         "source",
+        "action",
         "status",
         "workspace",
         "started_at",
@@ -97,6 +98,7 @@ class RunAdmin(admin.ModelAdmin):
     search_fields = ["id"]
 
     list_filter = (
+        "action",
         "status",
         ("started_at", DateFieldListFilter),
         ("connection", admin.RelatedOnlyFieldListFilter),
