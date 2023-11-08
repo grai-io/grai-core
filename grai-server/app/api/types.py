@@ -1053,6 +1053,31 @@ class Workspace:
 
         return Pagination[Chat](queryset=queryset, pagination=pagination)
 
+    @strawberry.field
+    async def chat(
+        self,
+        info: Info,
+        id: strawberry.ID,
+    ) -> Chat:
+        user = get_user(info)
+
+        return await ChatModel.objects.aget(membership__workspace=self, membership__user=user, id=id)
+
+    @strawberry.field
+    async def last_chat(
+        self,
+        info: Info,
+    ) -> Chat:
+        user = get_user(info)
+        membership = await self.memberships.aget(user=user)
+
+        chat = await ChatModel.objects.filter(membership=membership).order_by("-created_at").afirst()
+
+        if not chat:
+            chat = await ChatModel.objects.acreate(membership=membership)
+
+        return chat
+
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)
 class MembershipFilter:

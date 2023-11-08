@@ -2,7 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import ChatWrapper from "components/chat/ChatWrapper"
+import WebsocketChat from "components/chat/WebsocketChat"
 import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -17,6 +17,17 @@ export const GET_WORKSPACE = gql`
   query GetWorkspaceChat($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
+      last_chat {
+        id
+        messages {
+          data {
+            id
+            message
+            role
+            created_at
+          }
+        }
+      }
     }
   }
 `
@@ -47,7 +58,10 @@ const Chat: React.FC = () => {
       <Grid container sx={{ height: "calc(100vh - 144px)" }}>
         <Grid item md={6}>
           <PageContent sx={{ height: "100%" }}>
-            <ChatWrapper workspace={workspace} />
+            <WebsocketChat
+              workspace={workspace}
+              chat={data.workspace.last_chat}
+            />
           </PageContent>
         </Grid>
       </Grid>
