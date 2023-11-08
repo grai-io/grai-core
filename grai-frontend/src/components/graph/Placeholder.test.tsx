@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import Placeholder from "./Placeholder"
 

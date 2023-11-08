@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -96,7 +95,7 @@ test("no workspace", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByText("Sorry something has gone wrong")
+      screen.getByText("Sorry something has gone wrong"),
     ).toBeInTheDocument()
   })
 })
@@ -174,12 +173,12 @@ test("renders and delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   // await waitFor(() => {

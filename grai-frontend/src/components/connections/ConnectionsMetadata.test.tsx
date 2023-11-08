@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectionsMetadata from "./ConnectionsMetadata"
@@ -52,8 +51,8 @@ test("normal field", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /Field 1/i }),
-        "field value"
-      )
+        "field value",
+      ),
   )
 })
 
@@ -85,7 +84,10 @@ test("number field", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByRole("spinbutton", { name: /Field 1/i }), "1")
+      await user.type(
+        screen.getByRole("spinbutton", { name: /Field 1/i }),
+        "1",
+      ),
   )
 })
 
@@ -116,7 +118,8 @@ test("secret field", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByLabelText("Field 1"), "field value")
+    async () =>
+      await user.type(screen.getByLabelText("Field 1"), "field value"),
   )
 })
 

@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -19,7 +18,7 @@ test("renders", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
-      })
+      }),
     ).toHaveValue("test@example.com")
   })
 
@@ -27,7 +26,7 @@ test("renders", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
-      })
+      }),
     ).toHaveValue("test")
   })
 
@@ -35,7 +34,7 @@ test("renders", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
-      })
+      }),
     ).toHaveValue("example")
   })
 })
@@ -51,7 +50,7 @@ test("submit", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
-      })
+      }),
     ).toHaveValue("test@example.com")
   })
 
@@ -59,7 +58,7 @@ test("submit", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
-      })
+      }),
     ).toHaveValue("test")
   })
 
@@ -67,21 +66,24 @@ test("submit", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
-      })
+      }),
     ).toHaveValue("example")
   })
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
+      await user.type(
+        screen.getByRole("textbox", { name: /First Name/i }),
+        "a",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
@@ -109,7 +111,7 @@ test("error", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
-      })
+      }),
     ).toHaveValue("test@example.com")
   })
 
@@ -117,7 +119,7 @@ test("error", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
-      })
+      }),
     ).toHaveValue("test")
   })
 
@@ -125,21 +127,24 @@ test("error", async () => {
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
-      })
+      }),
     ).toHaveValue("example")
   })
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
+      await user.type(
+        screen.getByRole("textbox", { name: /First Name/i }),
+        "a",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

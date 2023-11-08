@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen } from "testing"
 import CompleteSignup from "./CompleteSignup"
 
@@ -11,7 +10,7 @@ test("renders", async () => {
   expect(
     screen.getByRole("heading", {
       name: /Welcome to Grai, let's get started/i,
-    })
+    }),
   ).toBeTruthy()
 })
 

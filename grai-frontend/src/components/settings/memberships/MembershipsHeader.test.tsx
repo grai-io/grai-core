@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
@@ -26,7 +25,7 @@ test("open", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Invite user/i }))
+      await user.click(screen.getByRole("button", { name: /Invite user/i })),
   )
 
   await act(async () => await user.click(screen.getByTestId("CloseIcon")))

@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -16,13 +15,13 @@ test("renders", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("name"), "Test User")
+    async () => await user.type(screen.getByTestId("name"), "Test User"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await waitFor(() => {
@@ -31,7 +30,7 @@ test("renders", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /get started/i }))
+      await user.click(screen.getByRole("button", { name: /get started/i })),
   )
 
   await waitFor(() => {
@@ -64,13 +63,13 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("name"), "Test User")
+    async () => await user.type(screen.getByTestId("name"), "Test User"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await waitFor(() => {
@@ -79,7 +78,7 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /get started/i }))
+      await user.click(screen.getByRole("button", { name: /get started/i })),
   )
 
   await waitFor(() => {

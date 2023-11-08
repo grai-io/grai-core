@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -39,12 +38,12 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "Test Alert2"
-      )
+        "Test Alert2",
+      ),
   )
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email2@grai.io")
+    async () => await user.type(screen.getByRole("combobox"), "email2@grai.io"),
   )
 
   await act(async () => await user.keyboard("{enter}"))
@@ -52,7 +51,7 @@ test("submit", async () => {
   await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
   await waitFor(() => {
@@ -94,18 +93,18 @@ test("error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "Test Alert2"
-      )
+        "Test Alert2",
+      ),
   )
 
   await waitFor(() => {
     expect(screen.getByRole("textbox", { name: /name/i })).toHaveValue(
-      "Test AlertTest Alert2"
+      "Test AlertTest Alert2",
     )
   })
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email2@grai.io")
+    async () => await user.type(screen.getByRole("combobox"), "email2@grai.io"),
   )
 
   await act(async () => await user.keyboard("{enter}"))
@@ -113,7 +112,7 @@ test("error", async () => {
   await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
   await waitFor(() => {
