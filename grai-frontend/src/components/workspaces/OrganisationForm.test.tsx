@@ -36,7 +36,6 @@ test("error", async () => {
         variables: {
           name: "demo",
           organisationName: "TestOrganisation",
-          sample_data: false,
         },
       },
       result: {

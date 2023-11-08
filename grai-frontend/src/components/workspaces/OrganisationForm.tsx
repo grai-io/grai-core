@@ -11,16 +11,8 @@ import {
 import { Workspace } from "./CreateOrganisation"
 
 export const CREATE_WORKSPACE = gql`
-  mutation CreateWorkspace(
-    $organisationName: String!
-    $name: String!
-    $sample_data: Boolean!
-  ) {
-    createWorkspace(
-      organisationName: $organisationName
-      name: $name
-      sample_data: $sample_data
-    ) {
+  mutation CreateWorkspace($organisationName: String!, $name: String!) {
+    createWorkspace(organisationName: $organisationName, name: $name) {
       id
       name
       organisation {
@@ -34,7 +26,6 @@ export const CREATE_WORKSPACE = gql`
 type FormValues = {
   organisationName: string
   name: string
-  sample_data: boolean
 }
 
 type OrganisationFormProps = {
@@ -45,7 +36,6 @@ const OrganisationForm: React.FC<OrganisationFormProps> = ({ onCreate }) => {
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
     name: "demo",
-    sample_data: false,
   })
 
   const [createWorkspace, { loading, error }] = useMutation<
@@ -55,7 +45,7 @@ const OrganisationForm: React.FC<OrganisationFormProps> = ({ onCreate }) => {
 
   const handleSubmit = () =>
     createWorkspace({
-      variables: values,
+      variables: { ...values },
     })
       .then(data => data.data?.createWorkspace)
       .then(workspace => workspace && onCreate && onCreate(workspace))

@@ -272,6 +272,10 @@ async def test_load_workspace_sample_data(test_context):
         "id": str(workspace.id),
     }
 
+    await workspace.arefresh_from_db()
+
+    assert workspace.sample_data is True
+
 
 @pytest.mark.django_db
 async def test_create_membership(test_context):
