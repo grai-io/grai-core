@@ -48,7 +48,6 @@ const SourceDelete: React.FC<SourceDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteSource] = useMutation<DeleteSource, DeleteSourceVariables>(
     DELETE_SOURCE,
     {
@@ -60,7 +59,10 @@ const SourceDelete: React.FC<SourceDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
-            sources: (existingSources = { data: [] }, { readField }) => ({
+            sources: /* istanbul ignore next */ (
+              existingSources = { data: [] },
+              { readField },
+            ) => ({
               data: existingSources.data.filter(
                 (keyRef: any) =>
                   data?.deleteSource.id !== readField("id", keyRef),

@@ -35,6 +35,10 @@ test("delete", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
+
+  await waitFor(() => {
+    expect(screen.getByText("Filter deleted")).toBeInTheDocument()
+  })
 })
 
 test("error", async () => {

@@ -157,7 +157,6 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
     setValues(values)
   }
 
-  /* istanbul ignore next */
   const [createConnection, { loading: loadingCreate, error: errorCreate }] =
     useMutation<CreateConnection, CreateConnectionVariables>(
       CREATE_CONNECTION,
@@ -169,6 +168,7 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
               __typename: "Workspace",
             }),
             fields: {
+              /* istanbul ignore next */
               connections(existingConnections = { data: [] }) {
                 if (!data?.createConnection) return existingConnections
 
@@ -202,6 +202,7 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
               __typename: "Workspace",
             }),
             fields: {
+              /* istanbul ignore next */
               sources(existingSources = { data: [] }) {
                 if (!data?.createConnection) return existingSources
 

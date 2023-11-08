@@ -42,7 +42,6 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteMembership] = useMutation<
     DeleteMembership,
     DeleteMembershipVariables
@@ -55,10 +54,13 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          memberships: (existingMemberships = { data: [] }, { readField }) => ({
+          memberships: /* istanbul ignore next */ (
+            existingMemberships = { data: [] },
+            { readField },
+          ) => ({
             data: existingMemberships.data.filter(
               (keyRef: any) =>
-                data?.deleteMembership.id !== readField("id", keyRef)
+                data?.deleteMembership.id !== readField("id", keyRef),
             ),
           }),
         },
@@ -84,7 +86,7 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
           error &&
           enqueueSnackbar(`Failed to delete membership ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 
