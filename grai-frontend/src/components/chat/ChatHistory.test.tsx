@@ -1,6 +1,8 @@
 import { render, screen } from "testing"
 import ChatHistory from "./ChatHistory"
 
+const onInput = jest.fn()
+
 test("renders", async () => {
   const messages = [
     {
@@ -21,12 +23,12 @@ test("renders", async () => {
     },
   ]
 
-  render(<ChatHistory messages={messages} />)
+  render(<ChatHistory messages={messages} choices={[]} onInput={onInput} />)
 
   expect(screen.getByText("first message")).toBeInTheDocument()
   expect(screen.getByText("second message")).toBeInTheDocument()
 })
 
 test("renders empty", async () => {
-  render(<ChatHistory messages={[]} />)
+  render(<ChatHistory messages={[]} choices={[]} onInput={onInput} />)
 })

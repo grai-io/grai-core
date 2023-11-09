@@ -21,6 +21,8 @@ from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.types import Connector, ConnectorFilter
+from grAI.models import Message as MessageModel
+from grAI.models import MessageRoles
 from grAI.models import UserChat as ChatModel
 from grAI.types import Chat
 from installations.models import Branch as BranchModel
@@ -1075,6 +1077,13 @@ class Workspace:
 
         if not chat:
             chat = await ChatModel.objects.acreate(membership=membership)
+
+            await MessageModel.objects.acreate(
+                chat=chat,
+                message="Hello, I'm the GrAI assistant. How can I help you?",
+                visible=True,
+                role=MessageRoles.AGENT.value,
+            )
 
         return chat
 

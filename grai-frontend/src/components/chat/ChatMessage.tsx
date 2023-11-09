@@ -88,7 +88,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
             }}
           >
             <Typography
-              align={"left"}
               sx={{
                 px: 2,
                 py: 1,
