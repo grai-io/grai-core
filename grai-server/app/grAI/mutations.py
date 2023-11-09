@@ -26,7 +26,7 @@ class Mutation:
                     chat=chat,
                     message=message,
                     visible=True,
-                    role=MessageRoles.AGENT,
+                    role=MessageRoles.AGENT.value,
                 )
 
             user = get_user(info)

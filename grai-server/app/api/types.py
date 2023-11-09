@@ -1082,7 +1082,7 @@ class Workspace:
                 chat=chat,
                 message="Hello, I'm the GrAI assistant. How can I help you?",
                 visible=True,
-                role=MessageRoles.AGENT,
+                role=MessageRoles.AGENT.value,
             )
 
         return chat
