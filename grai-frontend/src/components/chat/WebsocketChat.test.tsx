@@ -25,6 +25,65 @@ afterEach(() => {
   WS.clean()
 })
 
+test("renders", async () => {
+  const chat = {
+    id: "1",
+    messages: {
+      data: [
+        {
+          id: "1",
+          message: "H",
+          role: "user",
+          created_at: "2021-04-20T00:00:00.000000Z",
+        },
+      ],
+    },
+  }
+
+  render(<WebsocketChat workspace={workspace} chat={chat} />)
+
+  expect(
+    screen.queryByRole("button", {
+      name: "Is there a customer table in the prod namespace?",
+    }),
+  ).not.toBeInTheDocument()
+})
+
+test("click choice", async () => {
+  const user = userEvent.setup()
+
+  const chat = {
+    id: "1",
+    messages: {
+      data: [
+        {
+          id: "1",
+          message: "H",
+          role: "system",
+          created_at: "2021-04-20T00:00:00.000000Z",
+        },
+      ],
+    },
+  }
+
+  render(<WebsocketChat workspace={workspace} chat={chat} />)
+
+  expect(
+    screen.getByRole("button", {
+      name: "Is there a customer table in the prod namespace?",
+    }),
+  ).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.click(
+        screen.getByRole("button", {
+          name: "Is there a customer table in the prod namespace?",
+        }),
+      ),
+  )
+})
+
 test("type", async () => {
   const user = userEvent.setup()
 

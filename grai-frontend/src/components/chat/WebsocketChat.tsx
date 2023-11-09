@@ -98,9 +98,18 @@ const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace, chat }) => {
     sender: message.role === "user",
   }))
 
+  const choices = messages.every(m => !m.sender)
+    ? [
+        "Is there a customer table in the prod namespace?",
+        "Which tables have an email field?",
+        "Produce a list of tables that aren't used by any application",
+      ]
+    : []
+
   return (
     <ChatWindow
       messages={messages}
+      choices={choices}
       onInput={handleInput}
       workspaceId={workspace.id}
     />
