@@ -8,7 +8,6 @@ import SampleData, { Workspace } from "./SampleData"
 
 type PageLayoutProps = {
   children?: ReactNode
-  padding?: boolean
   gettingStarted?: boolean
   sampleData?: boolean
   workspace?: Workspace
@@ -17,7 +16,6 @@ type PageLayoutProps = {
 
 const PageLayout: React.FC<PageLayoutProps> = ({
   children,
-  padding,
   gettingStarted,
   sampleData,
   workspace,
@@ -33,7 +31,6 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           <ErrorBoundary>
             <Box
               sx={{
-                padding: padding ? 3 : undefined,
                 flexGrow: 1,
                 backgroundColor: "#F8F8F8",
                 height: "100%",

@@ -71,7 +71,12 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
         >
           <ListItemIcon sx={{ mr: "16px" }}>
             {alert ? (
-              <Badge color="secondary" variant="dot" overlap="circular">
+              <Badge
+                color="secondary"
+                variant="dot"
+                overlap="circular"
+                data-testid="app-drawer-item-alert"
+              >
                 <Icon selected={selected}>{icon}</Icon>
               </Badge>
             ) : (

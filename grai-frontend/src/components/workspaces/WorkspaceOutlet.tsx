@@ -73,7 +73,6 @@ const WorkspaceOutlet: React.FC = () => {
 
   const gettingStarted =
     data && (data?.workspace.connections.meta.total ?? 0) === 0
-
   const sampleData = data?.workspace.sample_data
 
   if (!data?.workspace)

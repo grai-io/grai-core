@@ -43,6 +43,7 @@ type ChatContextType = {
   workspace: Workspace
 }
 
+/* istanbul ignore next */
 export const ChatContext = createContext<ChatContextType>({
   unread: false,
   messages: [],

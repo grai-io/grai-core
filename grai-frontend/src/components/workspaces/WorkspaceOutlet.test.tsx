@@ -1,8 +1,8 @@
 import { render } from "testing"
-import PageLayoutOutlet from "./PageLayoutOutlet"
+import WorkspaceOutlet from "./WorkspaceOutlet"
 
 test("renders", async () => {
-  render(<PageLayoutOutlet />, {
+  render(<WorkspaceOutlet />, {
     withRouter: true,
   })
 })
