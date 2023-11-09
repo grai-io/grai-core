@@ -1,0 +1,56 @@
+---
+title: "Dagster"
+description: Grai integration for Dagster to automatically access metadata.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { DagsterLogoHorizontal } from "../../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../../components/InlineLogo";
+
+<InlineLogo logo={<DagsterLogoHorizontal height={170}  width={340}/>} title="" />
+
+The Dagster integration uses OpenLineage to collect and send metadata to Grai.
+Complete documentation for deploying OpenLineage with Dagster can be found [here](https://pypi.org/project/openlineage-dagster/).
+
+
+## Web App
+
+You'll need to create a new Grai source for Dagster through the web app
+
+<Image
+  src="/images/docs/core/integrations/openlineage.png"
+  height={600}
+  width={1200}
+  alt="dagster Integration"
+/>
+
+### Fields
+
+| Field      | Value                                                               | Example   |
+| ---------- | ------------------------------------------------------------------- | --------- |
+| source     | The name of the source, see [sources](/concepts/sources)            | Dagster   |
+| Name       | Name for connection                                                 | production   |
+| Namespace  | Namespace for the connection, see [namespaces](/concepts/namespace) | default   |
+| namespaces | Optional                                                            |           |
+
+### Webhook
+
+<Callout type="info" emoji="ℹ️">
+  In order to authenticate your webhook, you will need to create an API key in
+  the Grai web app.
+</Callout>
+
+Grai will open an endpoint at `/api/v1/openlineage/<connection_id>/` which can be used to receive OpenLineage events.
+
+The official [OpenLineage Dagster docs](https://pypi.org/project/openlineage-dagster/) have more information on how to configure your instance of Dagster to send OpenLineage events to Grai.
+However, you can use these values to finish your configuration:
+
+An example config:
+
+```env
+OPENLINEAGE_URL - https://api.grai.io/api/v1/openlineage/<connection_id>/
+OPENLINEAGE_API_KEY - "<your_grai_api_key>"
+```
+
+If you're self-hosting Grai, you'll need to replace the URL with your own instance.

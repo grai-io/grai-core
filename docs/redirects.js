@@ -1,7 +1,12 @@
 module.exports = [
     {
-        source: "/web-app/connections",
-        destination: "/integrations/support-status",
+        source: "/integrations/support-status",
+        destination: "/integrations",
+        permanent: true,
+    },
+    {
+        source: "/integrations/other-sources",
+        destination: "/integrations",
         permanent: true,
     },
     {
@@ -82,6 +87,11 @@ module.exports = [
     {
         source: "/connectors/:slug",
         destination: "/integrations/:slug",
+        permanent: true,
+    },
+    {
+        source: "/web-app/connections",
+        destination: "/integrations/support-status",
         permanent: true,
     },
 ];

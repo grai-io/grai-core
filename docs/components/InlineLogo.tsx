@@ -6,15 +6,14 @@ type InlineLogoProps = {
 };
 
 const InlineLogo: React.FC<InlineLogoProps> = ({ logo, title }) => (
-  <div style={{ display: "flex", paddingTop: 16 }}>
+  <div style={{ display: "flex", alignItems: "center", paddingTop: 16 }}>
     {logo}
     <h1
-      style={{ marginLeft: 12, marginTop: 2 }}
+      style={{ marginLeft: 12 }}
       className="nx-mt-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
     >
       {title}
     </h1>
   </div>
 );
-
 export default InlineLogo;
