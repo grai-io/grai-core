@@ -20,8 +20,9 @@ class ConnectorAdmin(admin.ModelAdmin):
 class RunInline(admin.TabularInline):
     model = Run
     extra = 0
-    fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+    fields = ["action", "status", "metadata", "created_at", "started_at", "finished_at", "user"]
     readonly_fields = [
+        "action",
         "status",
         "metadata",
         "created_at",
@@ -88,6 +89,7 @@ class RunAdmin(admin.ModelAdmin):
         "id",
         "connection",
         "source",
+        "action",
         "status",
         "workspace",
         "started_at",
@@ -97,6 +99,7 @@ class RunAdmin(admin.ModelAdmin):
     search_fields = ["id"]
 
     list_filter = (
+        "action",
         "status",
         ("started_at", DateFieldListFilter),
         ("connection", admin.RelatedOnlyFieldListFilter),
