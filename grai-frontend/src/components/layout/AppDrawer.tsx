@@ -2,6 +2,7 @@ import React from "react"
 import { Chat } from "@mui/icons-material"
 import { Drawer, List, ListItem, ListItemButton } from "@mui/material"
 import { Link } from "react-router-dom"
+import useChat from "helpers/useChat"
 import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import {
@@ -19,53 +20,55 @@ import AppDrawerCollapse from "./AppDrawerCollapse"
 import AppDrawerItem from "./AppDrawerItem"
 import Profile, { User } from "./profile/Profile"
 
-const pages = [
-  {
-    title: "Graph",
-    path: "graph",
-    icon: <Graph />,
-    alt: "Graph",
-    className: "graph-page",
-  },
-  {
-    title: "Nodes",
-    path: "nodes",
-    icon: <Nodes />,
-    alt: "Nodes",
-  },
-  {
-    title: "Edges",
-    path: "edges",
-    icon: <Edge />,
-    alt: "Edges",
-  },
-  {
-    title: "Sources",
-    path: "sources",
-    icon: <Connections />,
-    alt: "Sources",
-  },
-  {
-    title: "Reports",
-    path: "reports",
-    icon: <Reports />,
-    alt: "Reports",
-  },
-  {
-    title: "Chat",
-    path: "chat",
-    icon: <Chat />,
-    alt: "Chat",
-  },
-]
-
 type AppDrawerProps = {
   profile?: User
 }
 
 const AppDrawer: React.FC<AppDrawerProps> = ({ profile }) => {
   const { routePrefix } = useWorkspace()
+  const { unread } = useChat()
   const [expand, setExpand] = useLocalState("app-drawer", true)
+
+  const pages = [
+    {
+      title: "Graph",
+      path: "graph",
+      icon: <Graph />,
+      alt: "Graph",
+      className: "graph-page",
+    },
+    {
+      title: "Nodes",
+      path: "nodes",
+      icon: <Nodes />,
+      alt: "Nodes",
+    },
+    {
+      title: "Edges",
+      path: "edges",
+      icon: <Edge />,
+      alt: "Edges",
+    },
+    {
+      title: "Sources",
+      path: "sources",
+      icon: <Connections />,
+      alt: "Sources",
+    },
+    {
+      title: "Reports",
+      path: "reports",
+      icon: <Reports />,
+      alt: "Reports",
+    },
+    {
+      title: "Chat",
+      path: "chat",
+      icon: <Chat />,
+      alt: "Chat",
+      alert: unread,
+    },
+  ]
 
   const drawerWidth = expand ? 224 : 81
 
@@ -113,6 +116,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile }) => {
                 path={page.path}
                 icon={page.icon}
                 className={page.className}
+                alert={page.alert}
               />
             ))}
           </List>

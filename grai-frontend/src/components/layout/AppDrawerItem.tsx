@@ -1,5 +1,6 @@
 import React from "react"
 import {
+  Badge,
   Box,
   ListItem,
   ListItemButton,
@@ -10,12 +11,31 @@ import { Link, useLocation } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import TooltipWrap from "components/utils/TooltipWrap"
 
+const Icon: React.FC<{ selected: boolean; children: JSX.Element }> = ({
+  selected,
+  children,
+}) => (
+  <Box
+    className="child-icon"
+    sx={{
+      backgroundColor: selected ? "#8338EC80" : null,
+      color: selected ? "white" : "#747A82",
+      borderRadius: "8px",
+      height: 48,
+      p: "12px",
+    }}
+  >
+    {children}
+  </Box>
+)
+
 type AppDrawerItemProps = {
   title: string
   path: string
   icon: JSX.Element
   className?: string
   expand: boolean
+  alert?: boolean
 }
 
 const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
@@ -24,6 +44,7 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
   icon,
   className,
   expand,
+  alert,
 }) => {
   const location = useLocation()
   const { routePrefix } = useWorkspace()
@@ -48,20 +69,19 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
             },
           }}
         >
-          <ListItemIcon>
-            <Box
-              className="child-icon"
-              sx={{
-                backgroundColor: selected ? "#8338EC80" : null,
-                color: selected ? "white" : "#747A82",
-                borderRadius: "8px",
-                height: 48,
-                mr: "16px",
-                p: "12px",
-              }}
-            >
-              {icon}
-            </Box>
+          <ListItemIcon sx={{ mr: "16px" }}>
+            {alert ? (
+              <Badge
+                color="secondary"
+                variant="dot"
+                overlap="circular"
+                data-testid="app-drawer-item-alert"
+              >
+                <Icon selected={selected}>{icon}</Icon>
+              </Badge>
+            ) : (
+              <Icon selected={selected}>{icon}</Icon>
+            )}
           </ListItemIcon>
           {expand && (
             <ListItemText
