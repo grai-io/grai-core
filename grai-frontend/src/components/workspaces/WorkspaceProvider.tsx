@@ -16,7 +16,11 @@ export const WorkspaceContext = createContext<WorkspaceContextType>({
   workspaceNavigate: () => {},
 })
 
-const WorkspaceProvider: React.FC = () => {
+type WorkspaceProviderProps = {
+  children?: React.ReactNode
+}
+
+const WorkspaceProvider: React.FC<WorkspaceProviderProps> = ({ children }) => {
   const { organisationName, workspaceName } = useParams()
   const navigate = useNavigate()
 
@@ -32,7 +36,7 @@ const WorkspaceProvider: React.FC = () => {
 
   return (
     <WorkspaceContext.Provider value={value}>
-      <Outlet />
+      {children ?? <Outlet />}
     </WorkspaceContext.Provider>
   )
 }

@@ -13,7 +13,7 @@ import { HelmetProvider } from "react-helmet-async"
 import { MemoryRouter, Route, Routes, Location } from "react-router-dom"
 import defaultTheme from "theme"
 import GuestRoute from "components/auth/GuestRoute"
-import WorkspaceProvider from "components/utils/WorkspaceProvider"
+import WorkspaceProvider from "components/workspaces/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
 

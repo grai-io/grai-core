@@ -1,90 +1,35 @@
 import React, { ReactNode } from "react"
-import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import ErrorBoundary from "components/utils/ErrorBoundary"
-import {
-  GetWorkspacePageLayout,
-  GetWorkspacePageLayoutVariables,
-} from "./__generated__/GetWorkspacePageLayout"
 import AppDrawer from "./AppDrawer"
 import GettingStarted from "./GettingStarted"
-import Loading from "./Loading"
-import SampleData from "./SampleData"
-
-export const GET_WORKSPACE = gql`
-  query GetWorkspacePageLayout(
-    $organisationName: String!
-    $workspaceName: String!
-  ) {
-    workspace(organisationName: $organisationName, name: $workspaceName) {
-      id
-      name
-      sample_data
-      organisation {
-        id
-      }
-      runs(filters: { action: TESTS }) {
-        meta {
-          filtered
-        }
-      }
-      nodes(filters: { node_type: { equals: "Table" } }) {
-        meta {
-          filtered
-        }
-      }
-      connections {
-        meta {
-          total
-        }
-      }
-    }
-    profile {
-      id
-      username
-      first_name
-      last_name
-    }
-  }
-`
+import { User } from "./profile/Profile"
+import SampleData, { Workspace } from "./SampleData"
 
 type PageLayoutProps = {
   children?: ReactNode
-  loading?: boolean
   padding?: boolean
+  gettingStarted?: boolean
+  sampleData?: boolean
+  workspace?: Workspace
+  profile?: User
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({
   children,
-  loading,
   padding,
+  gettingStarted,
+  sampleData,
+  workspace,
+  profile,
 }) => {
-  const { organisationName, workspaceName } = useWorkspace()
-
-  const { data } = useQuery<
-    GetWorkspacePageLayout,
-    GetWorkspacePageLayoutVariables
-  >(GET_WORKSPACE, {
-    variables: {
-      organisationName,
-      workspaceName,
-    },
-  })
-
-  const hasConnections =
-    !data || (data?.workspace.connections.meta.total ?? 0) > 0
-
-  const sampleData = data?.workspace.sample_data
-
   return (
     <>
-      {!hasConnections && <GettingStarted />}
-      {sampleData && <SampleData workspace={data.workspace} />}
+      {gettingStarted && <GettingStarted />}
+      {sampleData && workspace && <SampleData workspace={workspace} />}
       <Box sx={{ display: "flex" }}>
-        <AppDrawer profile={data?.profile} />
+        <AppDrawer profile={profile} />
         <Box sx={{ width: "100%" }}>
-          {loading && <Loading />}
           <ErrorBoundary>
             <Box
               sx={{
@@ -93,7 +38,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                 backgroundColor: "#F8F8F8",
                 height: "100%",
                 minHeight:
-                  hasConnections && !sampleData
+                  !gettingStarted && !sampleData
                     ? "100vh"
                     : "calc(100vh - 64px)",
               }}

@@ -2,6 +2,7 @@ import userEvent from "@testing-library/user-event"
 import WS from "jest-websocket-mock"
 import { act, render, screen, waitFor } from "testing"
 import WebsocketChat from "./WebsocketChat"
+import ChatProvider from "./ChatProvider"
 
 const chat = {
   id: "1",
@@ -40,7 +41,11 @@ test("renders", async () => {
     },
   }
 
-  render(<WebsocketChat workspace={workspace} chat={chat} />)
+  render(
+    <ChatProvider chat={chat} workspace={workspace}>
+      <WebsocketChat />
+    </ChatProvider>,
+  )
 
   expect(
     screen.queryByRole("button", {
@@ -66,7 +71,11 @@ test("click choice", async () => {
     },
   }
 
-  render(<WebsocketChat workspace={workspace} chat={chat} />)
+  render(
+    <ChatProvider chat={chat} workspace={workspace}>
+      <WebsocketChat />
+    </ChatProvider>,
+  )
 
   expect(
     screen.getByRole("button", {
@@ -87,7 +96,11 @@ test("click choice", async () => {
 test("type", async () => {
   const user = userEvent.setup()
 
-  render(<WebsocketChat workspace={workspace} chat={chat} />)
+  render(
+    <ChatProvider chat={chat} workspace={workspace}>
+      <WebsocketChat />
+    </ChatProvider>,
+  )
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
@@ -103,7 +116,11 @@ test("type", async () => {
 })
 
 test("receive", async () => {
-  render(<WebsocketChat workspace={workspace} chat={chat} />)
+  render(
+    <ChatProvider chat={chat} workspace={workspace}>
+      <WebsocketChat />
+    </ChatProvider>,
+  )
 
   await server.connected
 

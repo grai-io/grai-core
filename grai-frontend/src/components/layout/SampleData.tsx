@@ -6,7 +6,7 @@ interface Organisation {
   id: string
 }
 
-interface Workspace {
+export interface Workspace {
   organisation: Organisation
 }
 
