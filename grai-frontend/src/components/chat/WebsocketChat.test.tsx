@@ -1,8 +1,8 @@
 import userEvent from "@testing-library/user-event"
 import WS from "jest-websocket-mock"
 import { act, render, screen, waitFor } from "testing"
-import WebsocketChat from "./WebsocketChat"
 import ChatProvider from "./ChatProvider"
+import WebsocketChat from "./WebsocketChat"
 
 const chat = {
   id: "1",
