@@ -165,9 +165,8 @@ const Routes: React.FC = () => (
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Route>
-            <Route path="post-install" element={<PostInstall />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="post-install" element={<PostInstall />} />
           <Route path="email-verification" element={<VerifyEmail />} />
         </Route>
       </Route>
