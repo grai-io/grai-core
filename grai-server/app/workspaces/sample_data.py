@@ -191,11 +191,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "3b4099a4-4e31-48a3-9eb0-3fb8a59e47ea",
-                            "name": "PUBLIC.raw_customers.id",
+                            "name": "grai_bigquery_demo.raw_customers.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.id",
-                        "message": "Node `default/PUBLIC.raw_customers.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.customers.id", "namespace": "prod"},
                         "node_name": "prod/prod.customers.id",
                         "type": "Uniqueness",
@@ -203,11 +203,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "2a99fe55-4e26-4f78-894e-75de5cfa8b41",
-                            "name": "PUBLIC.raw_customers.first_name",
+                            "name": "grai_bigquery_demo.raw_customers.first_name",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.first_name",
-                        "message": "Node `default/PUBLIC.raw_customers.first_name` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.first_name",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.first_name` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.customers.first_name", "namespace": "prod"},
                         "node_name": "prod/prod.customers.first_name",
                         "type": "Nullable",
@@ -215,11 +215,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "d30de184-0edf-4adc-9c67-a160b859e675",
-                            "name": "PUBLIC.raw_customers.last_name",
+                            "name": "grai_bigquery_demo.raw_customers.last_name",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.last_name",
-                        "message": "Node `default/PUBLIC.raw_customers.last_name` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.last_name",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.last_name` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.customers.last_name", "namespace": "prod"},
                         "node_name": "prod/prod.customers.last_name",
                         "type": "Nullable",
@@ -227,11 +227,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "1790e1e7-0590-4099-ae94-4e86f2eafb81",
-                            "name": "PUBLIC.raw_orders.id",
+                            "name": "grai_bigquery_demo.raw_orders.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.id",
-                        "message": "Node `default/PUBLIC.raw_orders.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.orders.id", "namespace": "prod"},
                         "node_name": "prod/prod.orders.id",
                         "type": "Uniqueness",
@@ -239,11 +239,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "2bff18b4-12c3-4ffb-8661-6d496f470e05",
-                            "name": "PUBLIC.raw_orders.user_id",
+                            "name": "grai_bigquery_demo.raw_orders.user_id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.user_id",
-                        "message": "Node `default/PUBLIC.raw_orders.user_id` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.user_id",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.user_id` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.user_id", "namespace": "prod"},
                         "node_name": "prod/prod.orders.user_id",
                         "type": "Nullable",
@@ -251,11 +251,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "b572f36a-21dc-45cc-855f-a204f65db0f6",
-                            "name": "PUBLIC.raw_orders.order_date",
+                            "name": "grai_bigquery_demo.raw_orders.order_date",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.order_date",
-                        "message": "Node `default/PUBLIC.raw_orders.order_date` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.order_date",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.order_date` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.order_date", "namespace": "prod"},
                         "node_name": "prod/prod.orders.order_date",
                         "type": "Nullable",
@@ -264,11 +264,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "79a35cf2-7a31-460f-8497-00cbac8c8b05",
-                            "name": "PUBLIC.raw_orders.status",
+                            "name": "grai_bigquery_demo.raw_orders.status",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.status",
-                        "message": "Node `default/PUBLIC.raw_orders.status` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.status",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.status` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.status", "namespace": "prod"},
                         "node_name": "prod/prod.orders.status",
                         "type": "Nullable",
@@ -277,11 +277,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "d41c38c7-2cc3-411c-8a96-2b933e9f1557",
-                            "name": "PUBLIC.raw_payments.id",
+                            "name": "grai_bigquery_demo.raw_payments.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.id",
-                        "message": "Node `default/PUBLIC.raw_payments.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.payments.id", "namespace": "prod"},
                         "node_name": "prod/prod.payments.id",
                         "type": "Uniqueness",
@@ -290,11 +290,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "831cbbab-ce8f-44d1-a3cf-562e921888a2",
-                            "name": "PUBLIC.raw_payments.order_id",
+                            "name": "grai_bigquery_demo.raw_payments.order_id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.order_id",
-                        "message": "Node `default/PUBLIC.raw_payments.order_id` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.order_id",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.order_id` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.payments.order_id", "namespace": "prod"},
                         "node_name": "prod/prod.payments.order_id",
                         "type": "Nullable",
@@ -303,11 +303,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "7e5d5764-2377-4c75-968c-a46aa2fb634e",
-                            "name": "PUBLIC.raw_payments.payment_method",
+                            "name": "grai_bigquery_demo.raw_payments.payment_method",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.payment_method",
-                        "message": "Node `default/PUBLIC.raw_payments.payment_method` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.payment_method",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.payment_method` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.payments.payment_method", "namespace": "prod"},
                         "node_name": "prod/prod.payments.payment_method",
                         "type": "Nullable",
@@ -326,11 +326,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "3b4099a4-4e31-48a3-9eb0-3fb8a59e47ea",
-                            "name": "PUBLIC.raw_customers.id",
+                            "name": "grai_bigquery_demo.raw_customers.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.id",
-                        "message": "Node `default/PUBLIC.raw_customers.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.customers.id", "namespace": "prod"},
                         "node_name": "prod/prod.customers.id",
                         "type": "Uniqueness",
@@ -339,11 +339,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "2a99fe55-4e26-4f78-894e-75de5cfa8b41",
-                            "name": "PUBLIC.raw_customers.first_name",
+                            "name": "grai_bigquery_demo.raw_customers.first_name",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.first_name",
-                        "message": "Node `default/PUBLIC.raw_customers.first_name` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.first_name",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.first_name` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.customers.first_name", "namespace": "prod"},
                         "node_name": "prod/prod.customers.first_name",
                         "type": "Nullable",
@@ -352,11 +352,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "d30de184-0edf-4adc-9c67-a160b859e675",
-                            "name": "PUBLIC.raw_customers.last_name",
+                            "name": "grai_bigquery_demo.raw_customers.last_name",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_customers.last_name",
-                        "message": "Node `default/PUBLIC.raw_customers.last_name` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_customers.last_name",
+                        "message": "Node `default/grai_bigquery_demo.raw_customers.last_name` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.customers.last_name", "namespace": "prod"},
                         "node_name": "prod/prod.customers.last_name",
                         "type": "Nullable",
@@ -365,11 +365,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "1790e1e7-0590-4099-ae94-4e86f2eafb81",
-                            "name": "PUBLIC.raw_orders.id",
+                            "name": "grai_bigquery_demo.raw_orders.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.id",
-                        "message": "Node `default/PUBLIC.raw_orders.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.orders.id", "namespace": "prod"},
                         "node_name": "prod/prod.orders.id",
                         "type": "Uniqueness",
@@ -378,11 +378,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "2bff18b4-12c3-4ffb-8661-6d496f470e05",
-                            "name": "PUBLIC.raw_orders.user_id",
+                            "name": "grai_bigquery_demo.raw_orders.user_id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.user_id",
-                        "message": "Node `default/PUBLIC.raw_orders.user_id` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.user_id",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.user_id` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.user_id", "namespace": "prod"},
                         "node_name": "prod/prod.orders.user_id",
                         "type": "Nullable",
@@ -391,11 +391,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "b572f36a-21dc-45cc-855f-a204f65db0f6",
-                            "name": "PUBLIC.raw_orders.order_date",
+                            "name": "grai_bigquery_demo.raw_orders.order_date",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.order_date",
-                        "message": "Node `default/PUBLIC.raw_orders.order_date` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.order_date",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.order_date` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.order_date", "namespace": "prod"},
                         "node_name": "prod/prod.orders.order_date",
                         "type": "Nullable",
@@ -404,11 +404,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "79a35cf2-7a31-460f-8497-00cbac8c8b05",
-                            "name": "PUBLIC.raw_orders.status",
+                            "name": "grai_bigquery_demo.raw_orders.status",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_orders.status",
-                        "message": "Node `default/PUBLIC.raw_orders.status` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_orders.status",
+                        "message": "Node `default/grai_bigquery_demo.raw_orders.status` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.orders.status", "namespace": "prod"},
                         "node_name": "prod/prod.orders.status",
                         "type": "Nullable",
@@ -417,11 +417,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "d41c38c7-2cc3-411c-8a96-2b933e9f1557",
-                            "name": "PUBLIC.raw_payments.id",
+                            "name": "grai_bigquery_demo.raw_payments.id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.id",
-                        "message": "Node `default/PUBLIC.raw_payments.id` expected not to be unique",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.id",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.id` expected not to be unique",
                         "node": {"id": "None", "name": "prod.payments.id", "namespace": "prod"},
                         "node_name": "prod/prod.payments.id",
                         "type": "Uniqueness",
@@ -430,11 +430,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "831cbbab-ce8f-44d1-a3cf-562e921888a2",
-                            "name": "PUBLIC.raw_payments.order_id",
+                            "name": "grai_bigquery_demo.raw_payments.order_id",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.order_id",
-                        "message": "Node `default/PUBLIC.raw_payments.order_id` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.order_id",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.order_id` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.payments.order_id", "namespace": "prod"},
                         "node_name": "prod/prod.payments.order_id",
                         "type": "Nullable",
@@ -443,11 +443,11 @@ class SampleData:
                     {
                         "failing_node": {
                             "id": "7e5d5764-2377-4c75-968c-a46aa2fb634e",
-                            "name": "PUBLIC.raw_payments.payment_method",
+                            "name": "grai_bigquery_demo.raw_payments.payment_method",
                             "namespace": "default",
                         },
-                        "failing_node_name": "default/PUBLIC.raw_payments.payment_method",
-                        "message": "Node `default/PUBLIC.raw_payments.payment_method` expected not to be nullable",
+                        "failing_node_name": "default/grai_bigquery_demo.raw_payments.payment_method",
+                        "message": "Node `default/grai_bigquery_demo.raw_payments.payment_method` expected not to be nullable",
                         "node": {"id": "None", "name": "prod.payments.payment_method", "namespace": "prod"},
                         "node_name": "prod/prod.payments.payment_method",
                         "type": "Nullable",
