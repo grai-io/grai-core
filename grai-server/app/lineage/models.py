@@ -96,24 +96,24 @@ class Node(TenantModel):
         ]
 
 
-class NodeEmbeddings(models.Model):
-    embedding = VectorField(dimensions=1536)
-    node = models.OneToOneField(
-        Node,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-
-    class Meta:
-        indexes = [
-            HnswIndex(
-                name="node_embedding_index",
-                fields=["embedding"],
-                m=64,
-                ef_construction=128,  # should be at least 2x m.
-                opclasses=["vector_ip_ops"],
-            )
-        ]
+# class NodeEmbeddings(models.Model):
+#     embedding = VectorField(dimensions=1536)
+#     node = models.OneToOneField(
+#         Node,
+#         on_delete=models.CASCADE,
+#         primary_key=True,
+#     )
+#
+#     class Meta:
+#         indexes = [
+#             HnswIndex(
+#                 name="node_embedding_index",
+#                 fields=["embedding"],
+#                 m=64,
+#                 ef_construction=128,  # should be at least 2x m.
+#                 opclasses=["vector_ip_ops"],
+#             )
+#         ]
 
 
 class Edge(TenantModel):
