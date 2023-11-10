@@ -86,7 +86,7 @@ class NodeEmbeddingManager(models.Manager):
         return result
 
 
-class NodeManager(NodeEmbeddingManager, CacheManager):
+class NodeManager(CacheManager):  # (NodeEmbeddingManager, CacheManager):
     pass
 
 

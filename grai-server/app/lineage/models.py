@@ -55,8 +55,8 @@ class Node(TenantModel):
         super().save(*args, **kwargs)
         self.cache_model()
 
-        if self.workspace.ai_enabled and settings.HAS_OPENAI:
-            update_node_vector_index.delay(self.id)
+        # if self.workspace.ai_enabled and settings.HAS_OPENAI:
+        #     update_node_vector_index.delay(self.id)
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
