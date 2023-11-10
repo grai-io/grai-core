@@ -29,7 +29,7 @@ class BaseMessage(ABC):
 
     def __init__(self, content, model):
         self.content = content
-        self.encoding = tiktoken.encoding_for_model(model)
+        self.encoding = tiktoken.encoding_for_model(model).encode(self.content)
         self.token_length = len(self.encoding)
 
     def representation(self):
@@ -288,10 +288,6 @@ class BaseConversation:
         summary_message = {"role": "assistant", "content": response.choices[0].message.content}
         return summary_message
 
-    def token_length(self, messages: list):
-        length = [len(self.encoding.encode(message)) for message in messages]
-        return sum(length), length
-
     @property
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
@@ -313,7 +309,6 @@ class BaseConversation:
         result = None
         stop = False
         while not stop:
-            tokens, lengths = self.token_length(messages)
             try:
                 response = self.model(messages=messages)
             except openai.InvalidRequestError:
