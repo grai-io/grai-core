@@ -28,7 +28,7 @@ test("submit", async () => {
             username: "",
             first_name: "",
             last_name: "",
-            __typename: "User",
+            __typename: "Profile",
           },
         },
       },

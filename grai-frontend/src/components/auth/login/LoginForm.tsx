@@ -14,7 +14,7 @@ import useAuth from "../useAuth"
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
-      ... on User {
+      ... on Profile {
         id
         username
         first_name
@@ -61,7 +61,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onDeviceRequest }) => {
       .then(res => {
         if (!res) return
 
-        if (res.__typename === "User") {
+        if (res.__typename === "Profile") {
           posthog.identify(res.id, { email: res.username })
           hubspot.push(["identify", { email: res.username }])
           setLoggedIn(true)

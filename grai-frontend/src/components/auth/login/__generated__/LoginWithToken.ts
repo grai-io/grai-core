@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface LoginWithToken_loginWithToken {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
   username: string | null;
   first_name: string;
