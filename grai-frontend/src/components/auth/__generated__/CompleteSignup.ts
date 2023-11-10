@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface CompleteSignup_completeSignup {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
 }
 
