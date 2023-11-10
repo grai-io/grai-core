@@ -3,8 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
-import useFilters from "components/graph/useFilters"
-import useInlineFilters from "components/graph/useInlineFilters"
+import useCombinedFilters from "components/graph/useCombinedFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
@@ -60,8 +59,8 @@ type TableLineageProps = {
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
-  const { filters, setFilters } = useFilters(`tables-${table.id}-graph-filters`)
-  const { inlineFilters, setInlineFilters } = useInlineFilters(
+  const { combinedFilters } = useCombinedFilters(
+    `tables-${table.id}-graph-filters`,
     `tables-${table.id}-graph-inline-filters`,
   )
 
@@ -101,10 +100,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
             setValue,
           },
         }}
-        filters={filters ?? []}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters ?? []}
-        setInlineFilters={setInlineFilters}
+        combinedFilters={combinedFilters}
       />
     </Box>
   )

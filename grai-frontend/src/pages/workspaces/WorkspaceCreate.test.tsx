@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -14,7 +13,7 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Create a workspace/i })
+      screen.getByRole("heading", { name: /Create a workspace/i }),
     ).toBeInTheDocument()
   })
 })
@@ -26,7 +25,7 @@ test("renders no organisation", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Create a workspace/i })
+      screen.getByRole("heading", { name: /Create a workspace/i }),
     ).toBeInTheDocument()
   })
 
@@ -47,14 +46,14 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "TestWorkspace"
-      )
+        "TestWorkspace",
+      ),
   )
 
   await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /next/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
   await waitFor(() => {
@@ -92,12 +91,12 @@ test("submit error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "TestWorkspace"
-      )
+        "TestWorkspace",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /next/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
   await waitFor(() => {

@@ -81,7 +81,10 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
 
   return (
     <>
-      <WizardSubtitle title="Set a schedule for this connection" />
+      <WizardSubtitle
+        title="Set schedule"
+        subTitle="Set a schedule for this connection"
+      />
       {error && <GraphError error={error} />}
       <Grid container sx={{ pt: 3 }}>
         <Grid item md={8}>
@@ -147,22 +150,26 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
           {values?.type === "cron" && (
             <SetCron values={values} setValues={setValues} />
           )}
+          <WizardBottomBar opts={opts}>
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              sx={{
+                minWidth: 120,
+                backgroundColor: "#FC6016",
+                boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
+              }}
+              loading={loading}
+              onClick={handleSubmit}
+            >
+              Finish
+            </LoadingButton>
+          </WizardBottomBar>
         </Grid>
         <Grid item md={4}>
           <ScheduleHelp />
         </Grid>
       </Grid>
-      <WizardBottomBar opts={opts}>
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120 }}
-          loading={loading}
-          onClick={handleSubmit}
-        >
-          Finish
-        </LoadingButton>
-      </WizardBottomBar>
     </>
   )
 }

@@ -1,10 +1,12 @@
-import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, waitFor, screen } from "testing"
+import { render, waitFor, screen, act } from "testing"
 import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 
+const onSelect = jest.fn()
+
 test("renders", async () => {
-  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
+  render(<ConnectorSelect onSelect={onSelect} />, { withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
@@ -68,10 +70,10 @@ test("renders other", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={() => {}} />, { mocks, withRouter: true })
+  render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("other")).toBeInTheDocument()
+    expect(screen.getByText("others")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -91,9 +93,46 @@ test("error", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={() => {}} />, { mocks, withRouter: true })
+  render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(
+    async () => await user.type(screen.getByRole("textbox"), "PostgreSQL"),
+  )
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+})
+
+test("filter", async () => {
+  const user = userEvent.setup()
+
+  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("tab", { name: /hello world/i })),
+  )
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })

@@ -1,8 +1,9 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import SourceDelete, { DELETE_SOURCE } from "./SourceDelete"
+
+const onClose = jest.fn()
 
 const source = {
   id: "1",
@@ -42,7 +43,7 @@ const source = {
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<SourceDelete source={source} onClose={() => {}} />)
+  render(<SourceDelete source={source} onClose={onClose} />)
 
   await act(
     async () =>
@@ -53,7 +54,7 @@ test("renders", async () => {
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<SourceDelete source={source} onClose={() => {}} />)
+  render(<SourceDelete source={source} onClose={onClose} />)
 
   await act(
     async () =>
@@ -82,7 +83,7 @@ test("delete empty source", async () => {
     },
   }
 
-  render(<SourceDelete source={source} onClose={() => {}} />)
+  render(<SourceDelete source={source} onClose={onClose} />)
 
   await act(
     async () =>
@@ -111,7 +112,7 @@ test("delete many runs", async () => {
     },
   }
 
-  render(<SourceDelete source={source} onClose={() => {}} />)
+  render(<SourceDelete source={source} onClose={onClose} />)
 
   await act(
     async () =>
@@ -127,7 +128,7 @@ test("delete many runs", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<SourceDelete source={source} onClose={() => {}} />, {
+  render(<SourceDelete source={source} onClose={onClose} />, {
     mocks: [
       {
         request: {

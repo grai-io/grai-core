@@ -10,11 +10,12 @@ import {
   Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import ConnectorIcon from "./ConnectorIcon"
 
 export interface Connector {
   id: string
   name: string
-  icon?: string | null | ReactNode
+  icon: string | null | ReactNode
   status?: string
   metadata: any
   to?: string
@@ -31,9 +32,18 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
 }) => {
   const navigate = useNavigate()
 
+  const comingSoon = connector.status === "coming_soon"
+
   return (
     <Box>
-      <Card variant="outlined">
+      <Card
+        variant="outlined"
+        sx={{
+          borderRadius: "20px",
+          border: comingSoon ? "1px solid rgba(0, 0, 0, 0.08)" : undefined,
+          height: "88px",
+        }}
+      >
         <CardActionArea
           onClick={() => {
             if (connector.to) {
@@ -42,59 +52,55 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
             }
             onSelect(connector)
           }}
-          className="connector-card"
+          sx={{ height: "100%" }}
         >
           <List>
-            <ListItem>
-              <ListItemIcon sx={{ minWidth: 45 }}>
-                {connector.icon &&
-                  (typeof connector.icon === "string" ? (
-                    <img
-                      src={connector.icon}
-                      alt={`${connector.name} logo`}
-                      style={{ height: 28, width: 28 }}
-                    />
-                  ) : (
-                    connector.icon
-                  ))}
+            <ListItem sx={{ pl: "20px" }}>
+              <ListItemIcon sx={{ minWidth: 48 }}>
+                {connector.icon && <ConnectorIcon connector={connector} />}
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography variant="body2">{connector.name}</Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: 500,
+                      color: comingSoon ? "#AFAFAF" : undefined,
+                    }}
+                  >
+                    {connector.name}
+                  </Typography>
                 }
               />
             </ListItem>
           </List>
         </CardActionArea>
       </Card>
-      {connector.status !== "general_release" && (
-        <Box
-          sx={{
-            position: "relative",
-            top: -75,
-            right: -155,
-            width: 130,
-            textAlign: "center",
-            // height: 100,
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: "divider",
-            borderRadius: 1,
-            backgroundColor: theme => theme.palette.grey[100],
-          }}
-        >
-          <Typography
-            variant="body2"
+      {connector.status &&
+        ["coming_soon", "alpha"].includes(connector.status) && (
+          <Box
             sx={{
-              m: 0.3,
-              color: theme => theme.palette.grey[500],
-              textTransform: "uppercase",
+              position: "relative",
+              top: -105,
+              right: comingSoon ? -220 : -275,
+              width: "fit-content",
+              textAlign: "center",
+              px: "12px",
+              py: "6px",
+              borderRadius: "100px",
+              background: "#f4edff",
             }}
           >
-            {connector.status?.replace("_", " ")}
-          </Typography>
-        </Box>
-      )}
+            <Typography
+              variant="body2"
+              sx={{
+                textTransform: "capitalize",
+              }}
+            >
+              {connector.status?.replace("_", " ")}
+            </Typography>
+          </Box>
+        )}
     </Box>
   )
 }

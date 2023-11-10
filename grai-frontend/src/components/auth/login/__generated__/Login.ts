@@ -7,8 +7,8 @@
 // GraphQL mutation operation: Login
 // ====================================================
 
-export interface Login_login_User {
-  __typename: "User";
+export interface Login_login_Profile {
+  __typename: "Profile";
   id: any;
   username: string | null;
   first_name: string;
@@ -26,7 +26,7 @@ export interface Login_login_DeviceDataWrapper {
   data: Login_login_DeviceDataWrapper_data[];
 }
 
-export type Login_login = Login_login_User | Login_login_DeviceDataWrapper;
+export type Login_login = Login_login_Profile | Login_login_DeviceDataWrapper;
 
 export interface Login {
   login: Login_login;

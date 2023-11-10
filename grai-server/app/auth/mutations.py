@@ -17,8 +17,8 @@ from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user
 from api.pagination import DataWrapper
-from api.types import BasicResult, User
-from users.types import Device
+from api.types import BasicResult
+from users.types import Device, Profile
 
 from .validation import send_validation_email, verification_generator
 
@@ -36,7 +36,7 @@ class Mutation:
         info: Info,
         username: str,
         password: str,
-    ) -> Union[User, DataWrapper[Device]]:
+    ) -> Union[Profile, DataWrapper[Device]]:
         user = await sync_to_async(authenticate)(username=username, password=password)
 
         if user is None:
@@ -55,7 +55,7 @@ class Mutation:
 
         await sync_to_async(login)(info.context.request, user)
 
-        return User(
+        return Profile(
             id=user.id,
             username=user.username,
             first_name=user.first_name,
@@ -72,7 +72,7 @@ class Mutation:
         password: str,
         deviceId: strawberry.ID,
         token: str,
-    ) -> User:
+    ) -> Profile:
         user = await sync_to_async(authenticate)(username=username, password=password)
 
         if user is None:
@@ -101,7 +101,7 @@ class Mutation:
         username: str,
         name: str,
         password: str,
-    ) -> User:
+    ) -> Profile:
         UserModel = get_user_model()
 
         split_name = name.rpartition(" ")
@@ -116,7 +116,7 @@ class Mutation:
         return user
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
+    async def updateProfile(self, info: Info, first_name: str, last_name: str) -> Profile:
         user = get_user(info)
 
         user.first_name = first_name
@@ -127,7 +127,7 @@ class Mutation:
         return user
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def updatePassword(self, info: Info, old_password: str, password: str) -> User:
+    async def updatePassword(self, info: Info, old_password: str, password: str) -> Profile:
         user = get_user(info)
 
         if not check_password(old_password, user.password):
@@ -173,7 +173,7 @@ class Mutation:
         return BasicResult(success=True)
 
     @strawberry.mutation
-    async def resetPassword(self, token: str, uid: str, password: str) -> User:
+    async def resetPassword(self, token: str, uid: str, password: str) -> Profile:
         UserModel = get_user_model()
 
         try:
@@ -190,7 +190,7 @@ class Mutation:
             raise Exception("User not found")
 
     @strawberry.mutation
-    async def completeSignup(self, token: str, uid: str, first_name: str, last_name: str, password: str) -> User:
+    async def completeSignup(self, token: str, uid: str, first_name: str, last_name: str, password: str) -> Profile:
         UserModel = get_user_model()
 
         try:
@@ -212,7 +212,7 @@ class Mutation:
             raise Exception("User not found")
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def verifyEmail(self, info: Info, uid: str, token: str) -> User:
+    async def verifyEmail(self, info: Info, uid: str, token: str) -> Profile:
         user = get_user(info)
 
         if not str(user.pk) == uid:

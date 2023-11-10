@@ -5,35 +5,43 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.pagination import DataWrapper
 
-from .models import UserChat
+from .models import Message, MessageRoles, UserChat
 from .types import Chat
 
 
 @strawberry.type
 class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def fetchOrCreateChats(
+    async def createChat(
         self,
         info: Info,
         workspaceId: strawberry.ID,
-    ) -> DataWrapper[Chat]:
-        def _fetch_or_create(
+    ) -> Chat:
+        def _create(
             info: Info,
             workspaceId: strawberry.ID,
         ) -> DataWrapper[Chat]:
+            def add_message(message: str):
+                Message.objects.create(
+                    chat=chat,
+                    message=message,
+                    visible=True,
+                    role=MessageRoles.AGENT.value,
+                )
+
             user = get_user(info)
             workspace = get_workspace(info, workspaceId)
 
             membership = workspace.memberships.get(user=user)
 
-            chats = UserChat.objects.filter(membership=membership).all()
+            chat = UserChat.objects.create(membership=membership)
 
-            if len(chats) == 0:
-                chats = [UserChat.objects.create(membership=membership)]
+            add_message("Chat restarted")
+            add_message("Hello, I'm the GrAI assistant. How can I help you?")
 
-            return DataWrapper(chats)
+            return chat
 
-        return await sync_to_async(_fetch_or_create)(
+        return await sync_to_async(_create)(
             info,
             workspaceId,
         )

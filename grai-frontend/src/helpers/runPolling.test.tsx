@@ -1,4 +1,3 @@
-import React from "react"
 import { render } from "testing"
 import runPolling from "./runPolling"
 

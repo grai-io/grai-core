@@ -47,7 +47,6 @@ const CreateAlertDialog: React.FC<CreateAlertDialogProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [createAlert, { loading, error }] = useMutation<
     CreateAlert,
     CreateAlertVariables
@@ -59,6 +58,7 @@ const CreateAlertDialog: React.FC<CreateAlertDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
+          /* istanbul ignore next */
           alerts(existingApiKeys = { data: [] }) {
             if (!data?.createAlert) return existingApiKeys
 

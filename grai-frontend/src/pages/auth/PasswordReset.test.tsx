@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen } from "testing"
 import PasswordReset from "./PasswordReset"
 
@@ -11,7 +10,7 @@ test("renders", async () => {
   expect(
     screen.getByRole("heading", {
       name: /Choose a new password/i,
-    })
+    }),
   ).toBeTruthy()
 })
 

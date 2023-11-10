@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -14,10 +13,12 @@ const connection = {
   },
 }
 
+const onClose = jest.fn()
+
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={onClose} />)
 
   await act(
     async () =>
@@ -28,7 +29,7 @@ test("renders", async () => {
 test("renders no name", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={onClose} />)
 
   await act(
     async () =>
@@ -39,7 +40,7 @@ test("renders no name", async () => {
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={onClose} />)
 
   await act(
     async () =>
@@ -65,7 +66,7 @@ test("delete one run", async () => {
     },
   }
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={onClose} />)
 
   await act(
     async () =>
@@ -91,7 +92,7 @@ test("delete two runs", async () => {
     },
   }
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={onClose} />)
 
   await act(
     async () =>
@@ -107,7 +108,7 @@ test("delete two runs", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectionDelete connection={connection} onClose={() => {}} />, {
+  render(<ConnectionDelete connection={connection} onClose={onClose} />, {
     mocks: [
       {
         request: {

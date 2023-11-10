@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import RunStatus from "./RunStatus"
@@ -31,7 +30,9 @@ test("navigate", async () => {
 })
 
 test("onClick", async () => {
-  render(<RunStatus run={run} onClick={() => {}} />, {
+  const onClick = jest.fn()
+
+  render(<RunStatus run={run} onClick={onClick} />, {
     withRouter: true,
   })
 

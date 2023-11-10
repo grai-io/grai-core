@@ -11,15 +11,30 @@ interface FilterFieldProps<T extends Field>
   extends Omit<
     AutocompleteProps<T, false, false, false, "div">,
     "renderInput"
-  > {}
+  > {
+  placeholder?: string
+  compact?: boolean
+}
 
-const FilterField = <T extends Field>(props: FilterFieldProps<T>) => (
+const FilterField = <T extends Field>({
+  compact,
+  placeholder,
+  ...rest
+}: FilterFieldProps<T>) => (
   <Autocomplete
-    {...props}
+    {...rest}
     openOnFocus
     autoSelect
-    renderInput={params => <TextField {...params} />}
+    renderInput={params => (
+      <TextField
+        {...params}
+        sx={{ backgroundColor: "white" }}
+        size={compact ? "small" : undefined}
+        placeholder={placeholder}
+      />
+    )}
     getOptionDisabled={option => option.disabled ?? false}
+    disablePortal={compact}
   />
 )
 

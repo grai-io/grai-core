@@ -1,0 +1,72 @@
+---
+title: "dbt"
+description: Grai integration for dbt to automatically access metadata.
+---
+
+import { DbtLogoIcon } from "../../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../../components/InlineLogo";
+
+<InlineLogo logo={<DbtLogoIcon />} title="dbt" />
+
+The dbt integration updates metadata from your dbt manifest into the data lineage graph.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/dbt.png"
+  height={600}
+  width={1200}
+  alt="dbt integration"
+/>
+
+### Fields
+
+| Field     | Value                                                               | Example |
+| --------- | ------------------------------------------------------------------- | ------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
+| Namespace | Namespace for the connection, see [namespaces](/concepts/namespace) | default |
+
+## Python Library
+
+The dbt integration can be run as a standalone python library to extract data lineage from a dbt manifest.
+If you want more information about working with dbt cloud see the [dbt cloud integration](/integrations/dbt-cloud).
+
+The library is available via pip
+
+
+```shell copy
+pip install grai_source_dbt
+```
+
+More information about the API is available [here](/api-docs/grai_source_dbt/base).
+
+### Example
+
+The library is split into a few distinct functions but if you only wish to extract nodes/edges from dbt you can do
+so from the base DbtIntegration class.
+
+```python copy
+  from grai_source_dbt import DbtIntegration
+  from grai_schemas.v1.source import SourceV1
+
+  source = SourceV1(name="my-source", type="my-type")
+
+  integration = DbtIntegration(source=source, namespace="dbt", manifest_data="my-manifest.json")
+
+  nodes, edges = integration.get_nodes_and_edges()
+```
+
+## dbt Manifest Version Support
+
+| Manifest Version | Status |
+| :--------------: | :----: |
+|        v1        |   ✅   |
+|        v2        |   ✅   |
+|        v3        |   ✅   |
+|        v4        |   ✅   |
+|        v5        |   ✅   |
+|        v6        |   ✅   |
+|        v7        |   ✅   |
+|        v8        |   ✅   |
+|        v9        |   ✅   |

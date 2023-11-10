@@ -52,7 +52,7 @@ const defaultValues = {
 }
 
 const expiryDateToString = (
-  expiry_date: Values["expiry_date"]
+  expiry_date: Values["expiry_date"],
 ): string | null => {
   if (!expiry_date || expiry_date === "none" || expiry_date === "custom")
     return null
@@ -77,7 +77,6 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   const [key, setKey] = useState<string>()
   const [values, setValues] = useState<Values>(defaultValues)
 
-  /* istanbul ignore next */
   const [createApiKey, { loading, error }] = useMutation<
     CreateApiKey,
     CreateApiKeyVariables
@@ -89,6 +88,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
+          /* istanbul ignore next */
           api_keys(existingApiKeys = { data: [] }) {
             if (!data?.createApiKey) return existingApiKeys
 

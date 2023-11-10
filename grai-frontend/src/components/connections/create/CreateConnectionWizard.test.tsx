@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { GraphQLError } from "graphql"
@@ -18,29 +17,13 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Select integration/i }),
+  ).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
-})
-
-test("close", async () => {
-  const user = userEvent.setup()
-
-  render(<CreateConnectionWizard workspaceId="1" />, {
-    routes: ["/:organisationName/:workspaceName/sources"],
-  })
-
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
-
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await waitFor(() => {
-    expect(screen.queryByText("Select an integration")).toBeFalsy()
-  })
-
-  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 const connectorsMock = {
@@ -90,7 +73,9 @@ const connectorsMock = {
 }
 
 const submit = async (user: UserEvent, container: HTMLElement) => {
-  expect(screen.getByText("Select an integration")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Select integration/i }),
+  ).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /PostgreSQL/i })).toBeTruthy()
@@ -101,11 +86,13 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
       await user.click(screen.getByRole("button", { name: /PostgreSQL/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.queryByText("Select an integration")).toBeFalsy()
-  })
+  expect(
+    screen.queryByRole("heading", { name: /Select integration/i }),
+  ).not.toBeInTheDocument()
 
-  expect(screen.getByText("Connect to PostgreSQL")).toBeInTheDocument()
+  expect(
+    screen.getByRole("heading", { name: /Setup connection/i }),
+  ).toBeInTheDocument()
 
   await act(
     async () =>

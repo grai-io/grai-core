@@ -36,7 +36,6 @@ const FilterDelete: React.FC<FilterDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteFilter] = useMutation<DeleteFilter, DeleteFilterVariables>(
     DELETE_FILTER,
     {
@@ -48,16 +47,19 @@ const FilterDelete: React.FC<FilterDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
-            filters: (existingFilters = { data: [] }, { readField }) => ({
+            filters: /* istanbul ignore next */ (
+              existingFilters = { data: [] },
+              { readField },
+            ) => ({
               data: existingFilters.data.filter(
                 (keyRef: any) =>
-                  data?.deleteFilter.id !== readField("id", keyRef)
+                  data?.deleteFilter.id !== readField("id", keyRef),
               ),
             }),
           },
         })
       },
-    }
+    },
   )
 
   const handleDelete = () => {
@@ -74,7 +76,7 @@ const FilterDelete: React.FC<FilterDeleteProps> = ({
           error &&
           enqueueSnackbar(`Failed to delete filter ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 

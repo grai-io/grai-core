@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import StepsControl from "./StepsControl"
@@ -13,7 +12,7 @@ test("renders", async () => {
         value,
         setValue,
       }}
-    />
+    />,
   )
 
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
@@ -32,7 +31,7 @@ test("plus", async () => {
         value,
         setValue,
       }}
-    />
+    />,
   )
 
   expect(value).toEqual(1)
@@ -57,7 +56,7 @@ test("minus", async () => {
         value,
         setValue,
       }}
-    />
+    />,
   )
 
   expect(value).toEqual(2)
@@ -82,7 +81,7 @@ test("change", async () => {
         value,
         setValue,
       }}
-    />
+    />,
   )
 
   expect(value).toEqual(1)

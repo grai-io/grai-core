@@ -5,6 +5,7 @@ from typing import Type
 from django.utils import timezone
 
 from celery import shared_task
+from grai_schemas.integrations.errors import NoConnectionError, IncorrectPasswordError, MissingPermissionError
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
@@ -147,17 +148,31 @@ def execute_run(run: Run):
             )
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
-    except Exception as e:
-        run.metadata = {"error": str(e), "traceback": traceback.format_exc()}
-        run.status = "error"
-        run.finished_at = timezone.now()
-        run.save()
 
-        if run.commit and run.trigger:
-            github = get_github_api(run)
-            github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
+    except NoConnectionError:
+        error_run(run, {"error": "No connection"})
+
+    except IncorrectPasswordError:
+        error_run(run, {"error": "Incorrect password"})
+
+    except MissingPermissionError:
+        error_run(run, {"error": "Missing permission"})
+
+    except Exception as e:
+        error_run(run, {"error": str(e), "traceback": traceback.format_exc()})
 
         raise e
+
+
+def error_run(run: Run, metadata: dict):
+    run.metadata = metadata
+    run.status = "error"
+    run.finished_at = timezone.now()
+    run.save()
+
+    if run.commit and run.trigger:
+        github = get_github_api(run)
+        github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
 
 
 class NoConnectorError(Exception):

@@ -1,4 +1,3 @@
-import React from "react"
 import { render, waitFor } from "testing"
 import Register from "./Register"
 

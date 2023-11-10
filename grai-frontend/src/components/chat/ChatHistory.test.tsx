@@ -1,9 +1,10 @@
-import React from "react"
 import { render, screen } from "testing"
 import ChatHistory from "./ChatHistory"
 
+const onInput = jest.fn()
+
 test("renders", async () => {
-  const chats = [
+  const messages = [
     {
       message: "first message",
       sender: true,
@@ -12,20 +13,22 @@ test("renders", async () => {
       message: "second message",
       sender: false,
     },
+    {
+      message: "third message",
+      sender: false,
+    },
+    {
+      message: "fourth message",
+      sender: false,
+    },
   ]
 
-  render(<ChatHistory chats={chats} />)
-
-  expect(screen.getByRole("list")).toBeInTheDocument()
+  render(<ChatHistory messages={messages} choices={[]} onInput={onInput} />)
 
   expect(screen.getByText("first message")).toBeInTheDocument()
   expect(screen.getByText("second message")).toBeInTheDocument()
 })
 
 test("renders empty", async () => {
-  render(<ChatHistory chats={[]} />)
-
-  expect(screen.getByRole("list")).toBeInTheDocument()
-
-  expect(screen.getByRole("list")).toHaveTextContent("")
+  render(<ChatHistory messages={[]} choices={[]} onInput={onInput} />)
 })

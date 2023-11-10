@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface ResetPassword_resetPassword {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
 }
 

@@ -25,7 +25,7 @@ async def test_login(test_basic_context):
     mutation = """
         mutation Login($username: String!, $password: String!) {
             login(username: $username, password: $password) {
-                ... on User {
+                ... on Profile {
                     id
                     username
                     first_name
@@ -108,7 +108,7 @@ async def test_login_bad_password(test_basic_context):
     mutation = """
         mutation Login($username: String!, $password: String!) {
             login(username: $username, password: $password) {
-                ... on User {
+                ... on Profile {
                     id
                     username
                     first_name

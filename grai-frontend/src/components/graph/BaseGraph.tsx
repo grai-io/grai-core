@@ -10,12 +10,11 @@ import ReactFlow, {
   Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import { Filter } from "components/filters/filters"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
-import { ControlOptions } from "./controls/GraphControls"
-import GraphDrawer from "./drawer/GraphDrawer"
+import GraphControls, { ControlOptions } from "./controls/GraphControls"
 import TestEdge from "./TestEdge"
+import { CombinedFilters } from "./useCombinedFilters"
 
 const nodeTypes = {
   baseNode: BaseNode,
@@ -66,10 +65,7 @@ type BaseGraphProps = {
   onMove?: (viewport: Viewport) => void
   onRefresh?: () => void
   refreshLoading?: boolean
-  filters: string[]
-  setFilters: (filters: string[]) => void
-  inlineFilters: Filter[]
-  setInlineFilters: (filters: Filter[]) => void
+  combinedFilters: CombinedFilters
   defaultViewport?: Viewport
 }
 
@@ -86,10 +82,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   onMove,
   onRefresh,
   refreshLoading,
-  filters,
-  setFilters,
-  inlineFilters,
-  setInlineFilters,
+  combinedFilters,
   defaultViewport,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
@@ -130,14 +123,15 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
   return (
     <ReactFlowProvider>
-      {/* <GraphControls
+      <GraphControls
         errors={!!errors}
         options={controlOptions}
         search={search}
         onSearch={onSearch}
         onRefresh={onRefresh}
         loading={refreshLoading}
-      /> */}
+        combinedFilters={combinedFilters}
+      />
 
       <ReactFlow
         minZoom={0.1}
@@ -156,18 +150,6 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         defaultViewport={defaultViewport}
       />
       {loading && <Loading />}
-
-      <GraphDrawer
-        onRefresh={onRefresh}
-        loading={refreshLoading}
-        onMove={onMove}
-        search={search ?? ""}
-        onSearch={onSearch}
-        filters={filters}
-        setFilters={setFilters}
-        inlineFilters={inlineFilters}
-        setInlineFilters={setInlineFilters}
-      />
     </ReactFlowProvider>
   )
 }

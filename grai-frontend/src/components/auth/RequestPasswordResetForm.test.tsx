@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -17,13 +16,13 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+        "email@grai.io",
+      ),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /submit/i }))
+      await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
   await waitFor(() => {
@@ -54,13 +53,13 @@ test("error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+        "email@grai.io",
+      ),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /submit/i }))
+      await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
   await waitFor(() => {

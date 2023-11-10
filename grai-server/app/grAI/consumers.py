@@ -15,6 +15,8 @@ from grAI.models import Message, MessageRoles, UserChat
 from grAI.websocket_payloads import ChatErrorMessages, ChatEvent
 from users.models import User
 from workspaces.models import Membership
+import logging
+from uuid import UUID
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -23,8 +25,8 @@ class ChatConsumer(WebsocketConsumer):
     """
 
     def __init__(self, *args, **kwargs):
-        self.conversations: dict[str, BaseConversation] = {}
-        self.active_chats: set = set()
+        self.conversations: dict[UUID, BaseConversation] = {}
+        self.active_chats: set[UUID] = set()
         super().__init__(*args, **kwargs)
 
     @cached_property
@@ -58,7 +60,6 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         data: dict = json.loads(text_data)
         socket_message_type = data.get("type", None)
-
         match socket_message_type:
             case "chat.message":
                 self.chat_message(data)

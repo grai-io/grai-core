@@ -1,6 +1,6 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
-import { Grid, IconButton } from "@mui/material"
+import { Box, Grid, IconButton } from "@mui/material"
 import FilterField from "./FilterField"
 import FilterRowValue from "./FilterRowValue"
 import {
@@ -19,6 +19,7 @@ type FilterRowProps = {
   namespaces: string[]
   tags: string[]
   sources: Source[]
+  compact?: boolean
 }
 
 const FilterRow: React.FC<FilterRowProps> = ({
@@ -28,6 +29,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   namespaces,
   tags,
   sources,
+  compact,
 }) => {
   const properties = getProperties(namespaces, tags, sources)
 
@@ -53,50 +55,64 @@ const FilterRow: React.FC<FilterRowProps> = ({
   }
 
   return (
-    <Grid container spacing={1} sx={{ mt: 0.5 }}>
-      <Grid item md={3}>
-        <FilterField<Property>
-          options={properties}
-          value={property}
-          onChange={(event, newValue) =>
-            onChange({ ...filter, type: newValue?.value ?? null })
-          }
-          data-testid="autocomplete-property"
-        />
+    <Box
+      sx={{
+        backgroundColor: compact ? "#F7F7F7" : undefined,
+        p: 1,
+        borderRadius: "12px",
+        mt: 1,
+        display: "flex",
+      }}
+    >
+      <Grid container>
+        <Grid item md={3} sx={{ pr: "6px" }}>
+          <FilterField<Property>
+            options={properties}
+            value={property}
+            onChange={(event, newValue) =>
+              onChange({ ...filter, type: newValue?.value ?? null })
+            }
+            compact={compact}
+            data-testid="autocomplete-property"
+          />
+        </Grid>
+        <Grid item md={3} sx={{ pr: "6px" }}>
+          <FilterField<Field>
+            placeholder="Field"
+            disabled={!property}
+            options={property?.fields ?? []}
+            value={field}
+            onChange={handleFieldChange}
+            compact={compact}
+            data-testid="autocomplete-field"
+          />
+        </Grid>
+        <Grid item md={3} sx={{ pr: "6px" }}>
+          <FilterField<Operator>
+            placeholder="Operator"
+            disabled={!field}
+            options={field?.operators ?? []}
+            value={operator}
+            onChange={(event, newValue) =>
+              onChange({ ...filter, operator: newValue?.value ?? null })
+            }
+            compact={compact}
+            data-testid="autocomplete-operator"
+          />
+        </Grid>
+        <Grid item md={3}>
+          <FilterRowValue
+            operator={operator}
+            filter={filter}
+            onChange={onChange}
+            compact={compact}
+          />
+        </Grid>
       </Grid>
-      <Grid item md={3}>
-        <FilterField<Field>
-          disabled={!property}
-          options={property?.fields ?? []}
-          value={field}
-          onChange={handleFieldChange}
-          data-testid="autocomplete-field"
-        />
-      </Grid>
-      <Grid item md={3}>
-        <FilterField<Operator>
-          disabled={!field}
-          options={field?.operators ?? []}
-          value={operator}
-          onChange={(event, newValue) =>
-            onChange({ ...filter, operator: newValue?.value ?? null })
-          }
-          data-testid="autocomplete-operator"
-        />
-      </Grid>
-      <Grid item md={2}>
-        <FilterRowValue
-          operator={operator}
-          filter={filter}
-          onChange={onChange}
-        />
-      </Grid>
-      <Grid item md={1}>
-        <IconButton onClick={onRemove} data-testid="filter-row-remove">
-          <Close />
-        </IconButton>
-      </Grid>
-    </Grid>
+      <IconButton onClick={onRemove} data-testid="filter-row-remove">
+        <Close />
+      </IconButton>
+    </Box>
   )
 }
 
