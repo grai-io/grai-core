@@ -15,14 +15,27 @@ const ChatInput: React.FC<ChatInputProps> = ({ onInput }) => {
     setValue("")
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if ( event.key === 'Enter' && event.shiftKey ) {
+      const new_value =
+      setValue(value + "\n")
+      event.preventDefault()
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit()
+    }
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
-      <Box sx={{ display: "flex", pt: 1 }}>
+      <Box sx={{ display: "flex", pt: 1, alignItems: "flex-end" }}>
         <TextField
           value={value}
           onChange={event => setValue(event.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Type a message"
           fullWidth
+          multiline
           sx={{ flexGrow: 1 }}
         />
         <Button
