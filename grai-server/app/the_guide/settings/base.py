@@ -402,6 +402,22 @@ if OPENAI_API_KEY is not None and OPENAI_ORG_ID is not None:
 else:
     HAS_OPENAI = False
 
+
+if HAS_OPENAI:
+    pass
+    # TODO: Need to bake the encodings into the docker image otherwise it gets fetched every time
+    TIKTOKEN_CACHE_DIR = "/TIKTOKEN_CACHE_DIR"
+    # if not os.path.exists(TIKTOKEN_CACHE_DIR):
+    #     os.makedirs(TIKTOKEN_CACHE_DIR)
+
+    # os.environ["TIKTOKEN_CACHE_DIR"] = TIKTOKEN_CACHE_DIR
+    # import tiktoken
+    # # download the OpenAI preferred model encoder
+    # try:
+    #     tiktoken.encoding_for_model(OPENAI_PREFERRED_MODEL)
+    # except:
+    #     logging.error("Could not download OpenAI preferred model encoder with tiktoken")
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Grai Server",
     "DESCRIPTION": "Grai Server API",

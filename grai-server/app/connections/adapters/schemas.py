@@ -1,7 +1,7 @@
 import pprint
 from typing import Any, List, Literal, Optional, Sequence, Type
 from uuid import UUID
-
+from django.db.models.query import QuerySet
 from django.db.models import Q
 from grai_schemas.v1.edge import EdgeSpec, EdgeV1, SourcedEdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.node import (
@@ -222,3 +222,8 @@ def edge_model_to_edge_v1_schema(model: Edge, schema_type: Literal["EdgeV1"]) ->
 def sequence_model_to_sequence_v1_schema(models: list | tuple, schema_type: str) -> list | tuple:
     iter = (model_to_schema(model, schema_type) for model in models)
     return type(models)(iter)
+
+
+@model_to_schema.register
+def queryset_to_sequence_v1_schema(models: QuerySet, schema_type: str) -> list:
+    return [model_to_schema(model, schema_type) for model in models]

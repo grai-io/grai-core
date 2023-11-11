@@ -2,7 +2,7 @@ import json
 import uuid
 from abc import ABC, abstractmethod
 from functools import partial
-from typing import Callable, Any
+from typing import Callable, Any, Literal, Union, Annotated
 
 import openai
 from django.conf import settings
@@ -17,35 +17,66 @@ import operator
 import logging
 from connections.adapters.schemas import model_to_schema
 import tiktoken
+from pydantic import BaseModel
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 MAX_RETURN_LIMIT = 20
 
+RoleType = Union[Literal["user"], Literal["system"], Literal["assistant"]]
 
-class BaseMessage(ABC):
+
+class BaseMessage(BaseModel):
     role: str
-
-    def __init__(self, content, model):
-        self.content = content
-        self.encoding = tiktoken.encoding_for_model(model).encode(self.content)
-        self.token_length = len(self.encoding)
+    content: str
+    token_length: int | None = None
 
     def representation(self):
         return {"role": self.role, "content": self.content}
 
 
 class UserMessage(BaseMessage):
-    role = "user"
+    role: Literal["user"] = "user"
 
 
 class SystemMessage(BaseMessage):
-    role = "system"
+    role: Literal["system"] = "system"
 
 
 class AIMessage(BaseMessage):
-    role = "assistant"
+    role: Literal["assistant"] = "assistant"
+
+
+class FunctionMessage(BaseMessage):
+    role: Literal["function"] = "function"
+    name: str
+
+    def representation(self):
+        return {"role": self.role, "content": self.content, "name": self.name}
+
+
+class ChatMessage(BaseModel):
+    message: Union[UserMessage, SystemMessage, AIMessage, FunctionMessage]
+
+
+class ChatMessages(BaseModel):
+    messages: list[BaseMessage]
+
+    def to_gpt(self):
+        return [message.representation() for message in self.messages]
+
+    def __getitem__(self, index):
+        return self.messages[index]
+
+    def __len__(self):
+        return len(self.messages)
+
+    def append(self, item):
+        self.messages.append(item)
+
+    def extend(self, items):
+        self.messages.extend(items)
 
 
 class API(ABC):
@@ -97,17 +128,27 @@ class NodeLookupAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
-    def call(self, **kwargs) -> (list[Node], str | None):
-        validation = self.schema_model(**kwargs)
-        q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.nodes)
-        query = reduce(operator.or_, q_objects)
-        result_set = Node.objects.filter(workspace=self.workspace).filter(query).order_by("-created_at").all()
+    def response_message(self, result_set: list[Node]) -> str | None:
         total_results = len(result_set)
         if total_results > self.query_limit:
             message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
+        elif total_results == 0:
+            message = "No results found matching these query conditions."
         else:
             message = None
-        return model_to_schema(result_set[: self.query_limit], "NodeV1"), message
+
+        return message
+
+    def call(self, **kwargs) -> (list[Node], str | None):
+        try:
+            validation = self.schema_model(**kwargs)
+        except:
+            return [], "Invalid input. Please check your input and try again."
+        q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.nodes)
+        query = reduce(operator.or_, q_objects)
+        result_set = Node.objects.filter(workspace=self.workspace).filter(query).order_by("-created_at").all()
+        response_items = model_to_schema(result_set[: self.query_limit], "NodeV1")
+        return response_items, self.response_message(result_set)
 
 
 class FuzzyMatchQuery(BaseModel):
@@ -123,17 +164,27 @@ class FuzzyMatchNodesAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
+    def response_message(self, result_set: list[Node]) -> str | None:
+        total_results = len(result_set)
+        if total_results > self.query_limit:
+            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
+        elif total_results == 0:
+            message = "No results found matching these query conditions."
+        else:
+            message = None
+
+        return message
+
     def call(self, string: str) -> (list, str | None):
         result_set = (
             Node.objects.filter(workspace=self.workspace).filter(name__contains=string).order_by("-created_at").all()
         )
-        return [{"name": node.name, "namespace": node.namespace} for node in result_set], ""
+        response_items = [{"name": node.name, "namespace": node.namespace} for node in result_set]
+
+        return response_items, self.response_message(result_set)
 
 
 class EdgeLookupSchema(BaseModel):
-    name: str | None = Field(description="The name of the edge to lookup", default=None)
-    namespace: str | None = Field(description="The namespace of the edge to lookup", default=None)
-    is_active: bool | None = Field(description="Whether or not the edge is active", default=True)
     source: uuid.UUID | None = Field(description="The primary key of the source node on an edge", default=None)
     destination: uuid.UUID | None = Field(
         description="The primary key of the destination node on an edge", default=None
@@ -159,17 +210,23 @@ class EdgeLookupAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
-    def call(self, **kwargs) -> (list[Edge], str | None):
-        validation = self.schema_model(**kwargs)
-        q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.nodes)
-        query = reduce(operator.or_, q_objects)
-        result_set = Edge.objects.filter(workspace=self.workspace).filter(query).all()[: self.query_limit]
+    def response_message(self, result_set: list[Edge]) -> str | None:
         total_results = len(result_set)
         if total_results > self.query_limit:
             message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
+        elif total_results == 0:
+            message = "No results found matching these query conditions."
         else:
             message = None
-        return model_to_schema(result_set[: self.query_limit], "EdgeV1"), message
+
+        return message
+
+    def call(self, **kwargs) -> (list[Edge], str | None):
+        validation = self.schema_model(**kwargs)
+        q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.edges)
+        query = reduce(operator.or_, q_objects)
+        result_set = Edge.objects.filter(workspace=self.workspace).filter(query).all()[: self.query_limit]
+        return model_to_schema(result_set[: self.query_limit], "EdgeV1"), self.response_message(result_set)
 
 
 class EdgeFuzzyLookupSchema(BaseModel):
@@ -230,6 +287,11 @@ class InvalidAPI(API):
         return result
 
 
+class FakeEncoder:
+    def encode(self, text):
+        return [1, 2, 3, 4]
+
+
 class BaseConversation:
     def __init__(
         self,
@@ -244,7 +306,7 @@ class BaseConversation:
             functions = []
 
         self.model_type = model_type
-        self.encoding = tiktoken.encoding_for_model(self.model_type)
+        self.encoder = FakeEncoder()  # tiktoken.encoding_for_model(self.model_type)
         self.chat_id = chat_id
         self.cache_id = f"grAI:chat_id:{chat_id}"
         self.system_context = prompt
@@ -252,16 +314,17 @@ class BaseConversation:
         self.api_functions = {func.id: func for func in functions}
         self.verbose = verbose
 
-        self.prompt_message = {"role": "system", "content": self.system_context}
+        self.prompt_message = SystemMessage(content=self.system_context)
         self.hydrate_chat()
 
     @property
-    def cached_messages(self) -> list:
-        return cache.get(self.cache_id)
+    def cached_messages(self) -> list[BaseMessage]:
+        messages = [ChatMessage(message=message).message for message in cache.get(self.cache_id)]
+        return messages
 
     @cached_messages.setter
-    def cached_messages(self, values):
-        cache.set(self.cache_id, values)
+    def cached_messages(self, values: list[BaseMessage]):
+        cache.set(self.cache_id, [v.dict() for v in values])
 
     def hydrate_chat(self):
         logging.info(f"Hydrating chat history for conversations: {self.chat_id}")
@@ -269,23 +332,28 @@ class BaseConversation:
 
         if messages is None:
             logging.info(f"Loading chat history for chat {self.chat_id} from database")
-            model_messages = Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
-            messages = [{"role": m.role, "content": m.message} for m in model_messages]
-            self.cached_messages = messages
+            messages_iter = (
+                {"role": m.role, "content": m.message, "token_length": len(self.encoder.encode(m.message))}
+                for m in Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
+            )
+            messages_list = [ChatMessage(message=message).message for message in messages_iter]
+            self.cached_messages = messages_list
 
-    def summarize(self, messages):
+    def summarize(self, messages: list[BaseMessage]) -> AIMessage:
         summary_prompt = """
         Please summarize this conversation encoding the most important information a future agent would need to continue
         working on the problem with me. Please insure you do not call any functions providing an exclusively
         text based summary of the conversation to this point with all relevant context for the next agent.
         """
-        message = {"role": "user", "content": summary_prompt}
-
+        message = UserMessage(content=summary_prompt)
+        summary_messages = ChatMessages(messages=[*messages, message])
         logging.info(f"Summarizing conversation for chat: {self.chat_id}")
-        response = openai.ChatCompletion.create(model=self.model_type, user=self.user, messages=[*messages, message])
+        response = openai.ChatCompletion.create(
+            model=self.model_type, user=self.user, messages=summary_messages.to_gpt()
+        )
 
         # this is hacky for now
-        summary_message = {"role": "assistant", "content": response.choices[0].message.content}
+        summary_message = AIMessage(content=response.choices[0].message.content)
         return summary_message
 
     @property
@@ -304,18 +372,19 @@ class BaseConversation:
 
     def request(self, user_input: str) -> str:
         logging.info(f"Responding to request for: {self.chat_id}")
-        messages = [self.prompt_message, *self.cached_messages, {"role": "user", "content": user_input}]
+        messages = ChatMessages(messages=[self.prompt_message, *self.cached_messages, UserMessage(content=user_input)])
 
         result = None
         stop = False
         while not stop:
             try:
-                response = self.model(messages=messages)
+                response = self.model(messages=messages.to_gpt())
             except openai.InvalidRequestError:
                 # If it hits the token limit try to summarize
                 summary = self.summarize(messages[:-1])
-                messages = [self.prompt_message, summary, messages[-1]]
-                response = self.model(messages=messages)
+
+                messages = ChatMessages(messages=[self.prompt_message, summary, messages[-1]])
+                response = self.model(messages=messages.to_gpt())
 
             if result:
                 for choice in response.choices:
@@ -326,7 +395,7 @@ class BaseConversation:
                 result = response.choices[0]
 
             if stop := result.finish_reason == "stop":
-                messages.append({"role": "assistant", "content": result.message.content})
+                messages.append(AIMessage(content=result.message.content))
             elif result.finish_reason == "function_call":
                 func_id = result.message.function_call.name
                 func_kwargs = json.loads(result.message.function_call.arguments)
@@ -334,17 +403,17 @@ class BaseConversation:
                 response = api.response(**func_kwargs)
 
                 if isinstance(api, InvalidAPI):
-                    messages.append({"role": "system", "content": response})
+                    messages.append(SystemMessage(content=response))
                 else:
-                    messages.append({"role": "function", "name": func_id, "content": response})
+                    messages.append(FunctionMessage(name=func_id, content=response))
             elif result.finish_reason == "length":
                 summary = self.summarize(messages[:-1])
-                messages = [self.prompt_message, summary, messages[-1]]
+                messages = ChatMessages(messages=[self.prompt_message, summary, messages[-1]])
             else:
                 # valid values include length, content_filter, null
                 raise NotImplementedError(f"No stop reason for {result.finish_reason}")
 
-        self.cached_messages = messages
+        self.cached_messages = messages.messages
         return result.message.content
 
 
@@ -360,7 +429,7 @@ def get_chat_conversation(
     """
     functions = [
         NodeLookupAPI(workspace=workspace),
-        EdgeLookupAPI(workspace=workspace),
+        # EdgeLookupAPI(workspace=workspace),
         FuzzyMatchNodesAPI(workspace=workspace),
     ]
 
