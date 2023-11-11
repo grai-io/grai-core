@@ -1,5 +1,5 @@
 import os
-
+from datetime import timedelta
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
@@ -12,6 +12,13 @@ app = Celery("the_guide")
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
+
+app.conf.beat_schedule = {
+    # "lineage:Node:bulk_update_embeddings": {
+    #     "task": "lineage.tasks.bulk_update_embeddings",
+    #     "schedule": timedelta(minutes=5),
+    # },
+}
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()

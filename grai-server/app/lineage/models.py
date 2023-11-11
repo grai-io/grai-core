@@ -1,26 +1,21 @@
-import json
-import pathlib
 import uuid
-from datetime import date, datetime, timezone
-from enum import Enum
-from typing import Any
-from uuid import UUID
 
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 from grai_schemas.serializers import GraiEncoder
-from pydantic import BaseModel
+
 
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
-from .managers import CacheManager, SourceManager
+from .managers import CacheManager, SourceManager, NodeManager
+from pgvector.django import VectorField, HnswIndex
+from django.conf import settings
+from lineage.tasks import update_node_vector_index
 
 
-# Create your models here.
 class Node(TenantModel):
-    objects = CacheManager()
+    objects = NodeManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.TextField(default="default")
@@ -60,6 +55,9 @@ class Node(TenantModel):
         super().save(*args, **kwargs)
         self.cache_model()
 
+        # if self.workspace.ai_enabled and settings.HAS_OPENAI:
+        #     update_node_vector_index.delay(self.id)
+
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
         self.cache_model(delete=True)
@@ -96,6 +94,26 @@ class Node(TenantModel):
                 name="lineage_node_type",
             ),
         ]
+
+
+# class NodeEmbeddings(models.Model):
+#     embedding = VectorField(dimensions=1536)
+#     node = models.OneToOneField(
+#         Node,
+#         on_delete=models.CASCADE,
+#         primary_key=True,
+#     )
+#
+#     class Meta:
+#         indexes = [
+#             HnswIndex(
+#                 name="node_embedding_index",
+#                 fields=["embedding"],
+#                 m=64,
+#                 ef_construction=128,  # should be at least 2x m.
+#                 opclasses=["vector_ip_ops"],
+#             )
+#         ]
 
 
 class Edge(TenantModel):

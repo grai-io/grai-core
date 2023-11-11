@@ -2,7 +2,7 @@ import os
 import subprocess
 import warnings
 from pathlib import Path
-
+import logging
 import openai
 from decouple import config
 
@@ -368,36 +368,55 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 OPENAI_API_KEY = config("OPENAI_API_KEY", None)
 OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
-OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo-1106")
 
 openai.organization = OPENAI_ORG_ID
 openai.api_key = OPENAI_API_KEY
 
-try:
-    models = [item["id"] for item in openai.Model.list()["data"]]
-except openai.error.AuthenticationError as e:
-    HAS_OPENAI = False
-else:
-    if len(models) == 0:
-        message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
-        warnings.warn(message)
-
+if OPENAI_API_KEY is not None and OPENAI_ORG_ID is not None:
+    try:
+        models = [item["id"] for item in openai.Model.list()["data"]]
+    except openai.error.AuthenticationError as e:
+        warnings.warn("Could not authenticate with OpenAI API key and organization id.")
         HAS_OPENAI = False
-        OPENAI_PREFERRED_MODEL = ""
-    elif OPENAI_PREFERRED_MODEL not in models:
-        default_model = models[0]
-        message = (
-            f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
-            f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
-            f"In the mean time we've defaulted to {default_model}."
-        )
-        warnings.warn(message)
-
-        HAS_OPENAI = True
-        OPENAI_PREFERRED_MODEL = default_model
     else:
-        HAS_OPENAI = True
+        if len(models) == 0:
+            message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
+            warnings.warn(message)
 
+            HAS_OPENAI = False
+            OPENAI_PREFERRED_MODEL = ""
+        elif OPENAI_PREFERRED_MODEL not in models:
+            default_model = models[0]
+            message = (
+                f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
+                f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
+                f"In the mean time we've defaulted to {default_model}."
+            )
+            warnings.warn(message)
+
+            HAS_OPENAI = True
+            OPENAI_PREFERRED_MODEL = default_model
+        else:
+            HAS_OPENAI = True
+else:
+    HAS_OPENAI = False
+
+
+if HAS_OPENAI:
+    pass
+    # TODO: Need to bake the encodings into the docker image otherwise it gets fetched every time
+    TIKTOKEN_CACHE_DIR = "/TIKTOKEN_CACHE_DIR"
+    # if not os.path.exists(TIKTOKEN_CACHE_DIR):
+    #     os.makedirs(TIKTOKEN_CACHE_DIR)
+
+    # os.environ["TIKTOKEN_CACHE_DIR"] = TIKTOKEN_CACHE_DIR
+    # import tiktoken
+    # # download the OpenAI preferred model encoder
+    # try:
+    #     tiktoken.encoding_for_model(OPENAI_PREFERRED_MODEL)
+    # except:
+    #     logging.error("Could not download OpenAI preferred model encoder with tiktoken")
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Grai Server",

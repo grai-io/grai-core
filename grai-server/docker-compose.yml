@@ -38,6 +38,8 @@ services:
       - DB_HOST=db
       - REDIS_HOST=redis
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_ORG_ID=${OPENAI_ORG_ID}
     depends_on:
       - redis
       - db
@@ -53,6 +55,8 @@ services:
       - DB_HOST=db
       - REDIS_HOST=redis
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_ORG_ID=${OPENAI_ORG_ID}
     depends_on:
       - redis
       - db
@@ -67,7 +71,7 @@ services:
       - the_guide
 
   db:
-    image: postgres:14.3-alpine
+    image: ankane/pgvector:latest
     shm_size: 1g
     environment:
       - POSTGRES_USER=grai
