@@ -3,9 +3,13 @@ from enum import Enum
 from typing import Type
 
 from django.utils import timezone
+from grai_schemas.integrations.errors import (
+    IncorrectPasswordError,
+    MissingPermissionError,
+    NoConnectionError,
+)
 
 from celery import shared_task
-from grai_schemas.integrations.errors import NoConnectionError, IncorrectPasswordError, MissingPermissionError
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
@@ -149,17 +153,17 @@ def execute_run(run: Run):
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
 
-    except NoConnectionError:
-        error_run(run, {"error": "No connection"})
+    except NoConnectionError as e:
+        error_run(run, {"error": "No connection", "message": str(e)})
 
-    except IncorrectPasswordError:
-        error_run(run, {"error": "Incorrect password"})
+    except IncorrectPasswordError as e:
+        error_run(run, {"error": "Incorrect password", "message": str(e)})
 
-    except MissingPermissionError:
-        error_run(run, {"error": "Missing permission"})
+    except MissingPermissionError as e:
+        error_run(run, {"error": "Missing permission", "message": str(e)})
 
     except Exception as e:
-        error_run(run, {"error": str(e), "traceback": traceback.format_exc()})
+        error_run(run, {"error": "Unknown", "message": str(e), "traceback": traceback.format_exc()})
 
         raise e
 
