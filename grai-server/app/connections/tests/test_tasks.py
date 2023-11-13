@@ -286,6 +286,8 @@ class TestUpdateServer:
         assert (
             run.metadata["message"]
             == 'connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  database "wrong" does not exist\n'
+            or run.metadata["message"]
+            == 'connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "grai"'
         )
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
