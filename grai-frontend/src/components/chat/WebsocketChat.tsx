@@ -8,7 +8,7 @@ const WebsocketChat: React.FC = () => {
   const choices = messages.every(m => !m.sender)
     ? [
         "Is there a customer table in the prod namespace?",
-        "Which tables have an email field?",
+        "Which fields are on the customers table?",
         "Produce a list of tables that aren't used by any application",
       ]
     : []

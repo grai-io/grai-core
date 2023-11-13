@@ -1,7 +1,8 @@
 import React from "react"
-import { Avatar, Box, Grid, Typography } from "@mui/material"
+import { Avatar, Box } from "@mui/material"
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
+import Markdown from "components/utils/Markdown"
 
 export type GroupedChats = {
   sender: boolean
@@ -57,29 +58,33 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
   }
 
   return (
-    <Grid container spacing={2} sx={{ mb: 2 }}>
-      {side === "left" && (
-        <Grid
-          item
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            flexDirection: "column",
-          }}
-        >
-          <Avatar
-            sx={{
-              backgroundColor: "white",
-              borderColor: rightBgColor,
-              borderWidth: 2,
-              borderStyle: "solid",
-            }}
-          >
-            <GraiIconSmall />
-          </Avatar>
-        </Grid>
-      )}
-      <Grid item xs={11}>
+    <Box sx={{ display: "flex", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flexDirection: "column",
+          width: "48px",
+          mr: 1,
+        }}
+      >
+        <Box>
+          {side === "left" && (
+            <Avatar
+              sx={{
+                backgroundColor: "white",
+                borderColor: rightBgColor,
+                borderWidth: 2,
+                borderStyle: "solid",
+              }}
+            >
+              <GraiIconSmall />
+            </Avatar>
+          )}
+        </Box>
+      </Box>
+
+      <Box sx={{ width: "100%" }}>
         {messages.map((msg, i) => (
           <Box
             key={i}
@@ -87,7 +92,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
               textAlign: side === "right" ? "right" : "left",
             }}
           >
-            <Typography
+            <Box
               sx={{
                 px: 2,
                 py: 1,
@@ -103,24 +108,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
                 ...classes[side],
               }}
             >
-              {msg}
-            </Typography>
+              <Markdown message={msg} />
+            </Box>
           </Box>
         ))}
-      </Grid>
-      {side === "right" && (
-        <Grid
-          item
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            flexDirection: "column",
-          }}
-        >
-          <Avatar />
-        </Grid>
-      )}
-    </Grid>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flexDirection: "column",
+          width: "48px",
+          ml: 1,
+        }}
+      >
+        {side === "right" && <Avatar />}
+      </Box>
+    </Box>
   )
 }
 

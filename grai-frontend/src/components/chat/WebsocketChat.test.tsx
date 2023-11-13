@@ -26,6 +26,8 @@ afterEach(() => {
   WS.clean()
 })
 
+jest.mock("remark-gfm", () => () => {})
+
 test("renders", async () => {
   const chat = {
     id: "1",

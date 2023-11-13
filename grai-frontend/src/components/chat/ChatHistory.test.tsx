@@ -1,6 +1,8 @@
 import { render, screen } from "testing"
 import ChatHistory from "./ChatHistory"
 
+jest.mock("remark-gfm", () => () => {})
+
 const onInput = jest.fn()
 
 test("renders", async () => {
