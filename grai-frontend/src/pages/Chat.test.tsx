@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from "testing"
 import Chat from "./Chat"
 
+jest.mock("remark-gfm", () => () => {})
+
 test("renders", async () => {
   render(<Chat />)
 

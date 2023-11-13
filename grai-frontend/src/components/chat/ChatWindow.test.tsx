@@ -2,6 +2,8 @@ import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
 
+jest.mock("remark-gfm", () => () => {})
+
 const handleInput = jest.fn()
 
 test("renders", async () => {

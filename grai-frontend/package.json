@@ -116,7 +116,10 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color|reactflow|react-json-view-lite)"
-    ]
+      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color|reactflow|react-json-view-lite|react-syntax-highlighter|remark-gfm)"
+    ],
+    "moduleNameMapper": {
+      "react-markdown": "<rootDir>/__test__/mocks/react-markdown.js"
+    }
   }
 }

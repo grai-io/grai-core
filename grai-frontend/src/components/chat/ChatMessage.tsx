@@ -2,7 +2,7 @@ import React from "react"
 import { Avatar, Box, Grid } from "@mui/material"
 import Markdown from "react-markdown"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { dark } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { dark } from "react-syntax-highlighter/dist/cjs/styles/prism"
 import remarkGfm from "remark-gfm"
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
@@ -109,7 +109,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
               }}
             >
               <Markdown
-                children={msg}
                 remarkPlugins={remarkPlugins}
                 components={{
                   p: ({ children }) => <>{children}</>,
@@ -131,7 +130,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
                     )
                   },
                 }}
-              />
+              >
+                {msg}
+              </Markdown>
             </Box>
           </Box>
         ))}
