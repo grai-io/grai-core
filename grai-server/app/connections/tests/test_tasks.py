@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import date
-from unittest import mock
+from grai_schemas.integrations.errors import NoConnectionError
 
 import pytest
 from decouple import config
@@ -217,13 +217,16 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        with pytest.raises(Exception) as e_info:
-            process_run(str(run.id))
+        process_run(str(run.id))
 
+        run.refresh_from_db()
+
+        assert run.status == "error"
+        assert run.metadata["error"] == "No connection"
         assert (
-            str(e_info.value)
+            run.metadata["message"]
             == 'could not translate host name "a" to address: nodename nor servname provided, or not known\n'
-            or str(e_info.value)
+            or run.metadata["message"]
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
@@ -784,13 +787,16 @@ class TestConnectionSchedule:
             source=test_source,
         )
 
-        with pytest.raises(Exception) as e_info:
-            run_connection_schedule(str(connection.id))
+        run_connection_schedule(str(connection.id))
 
+        run = connection.runs.last()
+
+        assert run.status == "error"
+        assert run.metadata["error"] == "No connection"
         assert (
-            str(e_info.value)
+            run.metadata["message"]
             == 'could not translate host name "a" to address: nodename nor servname provided, or not known\n'
-            or str(e_info.value)
+            or run.metadata["message"]
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
