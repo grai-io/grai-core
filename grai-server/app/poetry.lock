@@ -2331,13 +2331,13 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-postgres"
-version = "0.2.3"
+version = "0.2.4"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_postgres-0.2.3-py3-none-any.whl", hash = "sha256:eb36f9dae83a086f57f65f0d413e9b148f49186903eb7d2d6b037ad2a08b98af"},
-    {file = "grai_source_postgres-0.2.3.tar.gz", hash = "sha256:22dad430061332832ba02966f57e61b49e80934494fac866a14d797fa94f2941"},
+    {file = "grai_source_postgres-0.2.4-py3-none-any.whl", hash = "sha256:01f28c75faf55058c4ed5787670eae2409f4b172985ed3c654e1a29cfda98eb5"},
+    {file = "grai_source_postgres-0.2.4.tar.gz", hash = "sha256:03d6a0fd32b5510c4aa150f9e5cd8843cc6286b3f43968f41e03ea480ebf8ec4"},
 ]
 
 [package.dependencies]
@@ -5974,4 +5974,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "79ce3926c7fbb13f96c194c5c815129099edf9da1977ca239a8a70c8dcc7fe82"
+content-hash = "62e5851613e71d0dc337e9b204dffccfd42e83b4244a30e01e178739b36fe1b1"

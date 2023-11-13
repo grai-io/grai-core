@@ -206,6 +206,10 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
+        run.refresh_from_db()
+
+        assert run.status == "success"
+
     def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -228,6 +232,60 @@ class TestUpdateServer:
             == 'could not translate host name "a" to address: nodename nor servname provided, or not known\n'
             or run.metadata["message"]
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
+        )
+
+    def test_run_update_server_postgres_wrong_password(self, test_workspace, test_postgres_connector, test_source):
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_postgres_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "host": config("DB_HOST", "localhost"),
+                "port": 5432,
+                "dbname": "wrong",
+                "user": "grai",
+            },
+            secrets={"password": "wrong"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
+        run.refresh_from_db()
+
+        assert run.status == "error"
+        assert run.metadata["error"] == "Incorrect password"
+        assert (
+            run.metadata["message"]
+            == 'connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "grai"\n'
+        )
+
+    def test_run_update_server_postgres_no_database(self, test_workspace, test_postgres_connector, test_source):
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_postgres_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "host": config("DB_HOST", "localhost"),
+                "port": 5432,
+                "dbname": "wrong",
+                "user": "grai",
+            },
+            secrets={"password": "grai"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
+        run.refresh_from_db()
+
+        assert run.status == "error"
+        assert run.metadata["error"] == "Missing permission"
+        assert (
+            run.metadata["message"]
+            == 'connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  database "wrong" does not exist\n'
         )
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
