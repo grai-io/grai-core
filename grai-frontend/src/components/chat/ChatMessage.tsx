@@ -1,12 +1,11 @@
 import React from "react"
-import { Avatar, Box, Grid, Typography } from "@mui/material"
+import { Avatar, Box, Grid } from "@mui/material"
 import Markdown from "react-markdown"
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism"
+import remarkGfm from "remark-gfm"
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
-
 
 export type GroupedChats = {
   sender: boolean
@@ -50,7 +49,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
   const side = groupedChat.sender ? "right" : "left"
 
   const messages = groupedChat.messages
-  const remarkPlugins = [remarkGfm];
+  const remarkPlugins = [remarkGfm]
 
   const attachClass = (index: number) => {
     if (index === 0) {
@@ -93,7 +92,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
               textAlign: side === "right" ? "right" : "left",
             }}
           >
-            <Typography
+            <Box
               sx={{
                 px: 2,
                 py: 1,
@@ -113,9 +112,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
                 children={msg}
                 remarkPlugins={remarkPlugins}
                 components={{
+                  p: ({ children }) => <>{children}</>,
                   code: ({ children, className, node, ref, ...rest }) => {
-
                     const match = /language-(\w+)/.exec(className || "")
+
                     return match ? (
                       <SyntaxHighlighter
                         {...rest}
@@ -132,7 +132,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
                   },
                 }}
               />
-            </Typography>
+            </Box>
           </Box>
         ))}
       </Grid>
