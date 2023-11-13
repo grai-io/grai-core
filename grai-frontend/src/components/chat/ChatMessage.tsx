@@ -1,11 +1,8 @@
 import React from "react"
 import { Avatar, Box, Grid } from "@mui/material"
-import Markdown from "react-markdown"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { dark } from "react-syntax-highlighter/dist/cjs/styles/prism"
-import remarkGfm from "remark-gfm"
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
+import Markdown from "components/utils/Markdown"
 
 export type GroupedChats = {
   sender: boolean
@@ -49,7 +46,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
   const side = groupedChat.sender ? "right" : "left"
 
   const messages = groupedChat.messages
-  const remarkPlugins = [remarkGfm]
 
   const attachClass = (index: number) => {
     if (index === 0) {
@@ -108,31 +104,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ groupedChat }) => {
                 ...classes[side],
               }}
             >
-              <Markdown
-                remarkPlugins={remarkPlugins}
-                components={{
-                  p: ({ children }) => <>{children}</>,
-                  code: ({ children, className, node, ref, ...rest }) => {
-                    const match = /language-(\w+)/.exec(className || "")
-
-                    return match ? (
-                      <SyntaxHighlighter
-                        {...rest}
-                        PreTag="div"
-                        children={String(children).replace(/\n$/, "")}
-                        language={match[1]}
-                        style={dark}
-                      />
-                    ) : (
-                      <code {...rest} className={className}>
-                        {children}
-                      </code>
-                    )
-                  },
-                }}
-              >
-                {msg}
-              </Markdown>
+              <Markdown message={msg} />
             </Box>
           </Box>
         ))}
