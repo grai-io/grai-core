@@ -260,7 +260,7 @@ class TestUpdateServer:
             run.metadata["message"]
             == 'connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "grai"\n'
             or run.metadata["message"]
-            == 'connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "grai"'
+            == 'connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "grai"\n'
         )
 
     def test_run_update_server_postgres_no_database(self, test_workspace, test_postgres_connector, test_source):
@@ -289,7 +289,7 @@ class TestUpdateServer:
             run.metadata["message"]
             == 'connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  database "wrong" does not exist\n'
             or run.metadata["message"]
-            == 'connection to server at "127.0.0.1", port 5432 failed: FATAL:  database "wrong" does not exist'
+            == 'connection to server at "127.0.0.1", port 5432 failed: FATAL:  database "wrong" does not exist\n'
         )
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
