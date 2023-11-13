@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import ChatInput from "./ChatInput"
-import userEvent from "@testing-library/user-event"
 
 const onInput = jest.fn()
 
