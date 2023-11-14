@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
-from grai_schemas.v1.generics import SQL, Code
+from grai_schemas.v1.generics import Code
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
