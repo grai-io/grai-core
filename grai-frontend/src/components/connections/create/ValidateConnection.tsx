@@ -82,8 +82,13 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   if (runError)
     return (
       <Alert severity="error">
-        <AlertTitle>Validation Failed</AlertTitle>
-        {data.workspace.run.metadata.error}
+        <AlertTitle>
+          Validation Failed
+          {data.workspace.run.metadata.error !== "Unknown"
+            ? ` - ${data.workspace.run.metadata.error}`
+            : ""}
+        </AlertTitle>
+        {data.workspace.run.metadata.message}
       </Alert>
     )
 
