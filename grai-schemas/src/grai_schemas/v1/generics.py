@@ -1,5 +1,5 @@
 import abc
-from typing import Annotated, Dict, Literal, Optional, Union
+from typing import Annotated, Dict, Literal, Optional, Set, Union, get_args
 from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel, Metadata
@@ -244,6 +244,12 @@ Languages = Union[
     Kotlin,
     UnknownLanguage,
 ]
+LANGUAGE_LABELS: Set[str] = set()
+for model in get_args(Languages):
+    field_type = model.__annotations__["language_name"]
+    LANGUAGE_LABELS.update(get_args(field_type))
+
+
 ProgrammingLanguageTypes = Annotated[Languages, Field(discriminator="language_name")]
 
 
@@ -256,8 +262,12 @@ class Code(BaseModel):
 
     @root_validator(pre=True)
     def validate_root(cls, values):
-        if isinstance(values.get("language", None), str):
-            values["language"] = {"language_name": values["language"]}
+        language = values.get("language", None)
+        if isinstance(language, str):
+            if language not in LANGUAGE_LABELS:
+                values["language"] = {"language_name": "Unknown", "original_language_name": language}
+            else:
+                values["language"] = {"language_name": language}
         return values
 
     @validator("has_code", pre=True, always=True)

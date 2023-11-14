@@ -66,3 +66,12 @@ class TestCode:
     @pytest.mark.parametrize("language_name, expected", languages)
     def test_all_languages_are_programming_languages(self, language_name, expected):
         assert isinstance(Code(language={"language_name": language_name}).language, ProgrammingLanguage)
+
+    def test_default_language(self):
+        assert Code().language == UnknownLanguage()
+
+    def test_invalid_language(self):
+        result = Code(language="invalid")
+        assert isinstance(result.language, UnknownLanguage)
+        assert result.language.language_name == "Unknown"
+        assert result.language.original_language_name == "invalid"
