@@ -1,6 +1,12 @@
 import React, { useEffect } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Alert, AlertTitle, CircularProgress } from "@mui/material"
+import {
+  Alert,
+  AlertTitle,
+  CircularProgress,
+  Link,
+  Typography,
+} from "@mui/material"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunValidation,
@@ -89,6 +95,17 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
             : ""}
         </AlertTitle>
         {data.workspace.run.metadata.message}
+        {data.workspace.run.metadata.error === "No connection" && (
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            You may need to whitelist the Grai Cloud IP address, see{" "}
+            <Link
+              href="https://docs.grai.io/cloud/security/ip_whitelisting"
+              target="_blank"
+            >
+              IP Whitelisting
+            </Link>
+          </Typography>
+        )}
       </Alert>
     )
 
