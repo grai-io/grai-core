@@ -478,13 +478,13 @@ tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipyth
 
 [[package]]
 name = "faker"
-version = "20.0.0"
+version = "20.0.3"
 description = "Faker is a Python package that generates fake data for you."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Faker-20.0.0-py3-none-any.whl", hash = "sha256:171b27ba106cf69e30a91ac471407c2362bd6af27738e2461dc441aeff5eed91"},
-    {file = "Faker-20.0.0.tar.gz", hash = "sha256:df44b68b9d231e784f4bfe616d781576cfef9f0c5d9a17671bf84dc10d7b44d6"},
+    {file = "Faker-20.0.3-py3-none-any.whl", hash = "sha256:88316cfa7c8be892433bb10b2f1c2a7ce97246e18712680547e2fb1c4bd03912"},
+    {file = "Faker-20.0.3.tar.gz", hash = "sha256:f9af61c9223e1a3fd01ee2a48265352432f40a4fb21feb274d9d1d97b4943d75"},
 ]
 
 [package.dependencies]
@@ -541,13 +541,13 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.10"
+version = "0.2.11"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.10-py3-none-any.whl", hash = "sha256:d882ce710135d2b9c5802773a35920f857f5e2c3b9894260a4add7dc33424e16"},
-    {file = "grai_schemas-0.2.10.tar.gz", hash = "sha256:af286d9f05d1872257e3e1e5acdcf99d554ccc6db43fc9cd1cac9b88eba8abeb"},
+    {file = "grai_schemas-0.2.11-py3-none-any.whl", hash = "sha256:86456c80a12510580eaeba90471dd89d5faa0f490fb67298c16b4e87d93a0695"},
+    {file = "grai_schemas-0.2.11.tar.gz", hash = "sha256:d44df3cbcc30e9e69dcfdcccf2fa434204b64e9a85b62c06d8dc60513bfb5415"},
 ]
 
 [package.dependencies]

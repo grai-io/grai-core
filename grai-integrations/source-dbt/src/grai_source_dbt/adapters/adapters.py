@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
-from grai_schemas.v1.generics import Code
+from grai_schemas.v1.generics import SQL, Code
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
@@ -117,7 +117,7 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         "tags": [config.metadata_id],
         "code": Code(
             code=current.definition,
-            language={"language_name": "SQL", "file_extension": ".sql"},
+            language=SQL(),
             has_code=current.definition is not None,
         ),
     }
