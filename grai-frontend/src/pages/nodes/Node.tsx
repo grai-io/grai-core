@@ -138,11 +138,11 @@ const Table: React.FC = () => {
       ),
       noWrapper: true,
     },
-    {
-      label: "Sample",
-      value: "sample",
-      disabled: true,
-    },
+    // {
+    //   label: "Sample",
+    //   value: "sample",
+    //   disabled: true,
+    // },
     {
       label: "Lineage",
       value: "lineage",
