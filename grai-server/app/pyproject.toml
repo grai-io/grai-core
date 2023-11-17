@@ -24,6 +24,7 @@ django-celery-beat = "^2.4.0"
 django-storages = "^1.13.2"
 django-extensions = "^3.2"
 djangorestframework-api-key = "^2"
+django-permissions-policy = "^4.18.0"
 django-health-check = "^3.17.0"
 django_multitenant = "^3.0.0"
 django-ses = "^3.3.0"
@@ -75,6 +76,8 @@ openai = "^0.28.1"
 tiktoken = "^0.5.1"
 pgvector = "^0.2.3"
 pyjwt = "^2.8.0"
+django-csp = "^3.7"
+
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
