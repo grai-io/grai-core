@@ -129,6 +129,12 @@ class WorkspaceInline(admin.TabularInline):
 
 
 class OrganisationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "created_at",
+    )
+
     search_fields = ["id", "name"]
 
     inlines = [
