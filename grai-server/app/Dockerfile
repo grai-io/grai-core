@@ -36,8 +36,10 @@ RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh && chmod +x /usr/src/app/entryp
     && sed -i 's/\r$//g' /usr/src/app/beat.sh && chmod +x /usr/src/app/beat.sh \
     && sed -i 's/\r$//g' /usr/src/app/worker.sh && chmod +x /usr/src/app/worker.sh
 
+
 ENV SECRET_KEY="dummy"
 RUN python manage.py collectstatic --noinput
+
 
 # --------- base image --------------- #
 
@@ -45,10 +47,13 @@ FROM python:3.11-slim-bookworm AS base
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 WORKDIR /usr/src/app
 
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     INSTANCE_TYPE=server \
+    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache" \
     PGSSLCERT=/tmp/postgresql.crt
+
 
 COPY --from=builder /version.txt /version.txt
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
@@ -69,21 +74,25 @@ RUN apt update \
     && curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
-    && rm -rf /var/lib/apt/lists/*
-
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir ${TIKTOKEN_CACHE_DIR} \
+    && python ai_build_script.py
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # --------- final images --------------- #
 
 FROM base AS grai-server
+ENV TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
 CMD ["gunicorn", "the_guide.asgi:application", "-b", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
 
 
 FROM base AS grai-worker
-ENV INSTANCE_TYPE=worker
+ENV INSTANCE_TYPE=worker \
+    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
 CMD ["/usr/src/app/worker.sh"]
 
 FROM base AS grai-beat-worker
-ENV INSTANCE_TYPE=beat
+ENV INSTANCE_TYPE=beat \
+    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
 CMD ["/usr/src/app/beat.sh"]
