@@ -37,11 +37,11 @@ Grai makes it easy to understand and test how your data relates across databases
 - **Pre-built connectors.** Automatically synchronize lineage from across the stack so your metadata is never out of date.
 - **Centralized data tests.** Write data validation tests that run whenever upstream data sources change.
 - **Integrated with GitHub.** Run data validation tasks as part of your CI/CD process to test changes everywhere your data is used.
-- **Your data, your cloud.**  is fully open-sourced and self-hosted. You maintain full control over your data and hosting environment.
+- **Your data, your cloud.**  is fully open source and self-hosted. You maintain full control over your data and hosting environment.
 
 ## How it works
 
-- Automatically build column-level lineage spanning your warehouse and production services with connectors for `dbt`, `Snowflake`, `Fivetran`, and more (see below).
+- Automatically build column level lineage spanning your warehouse and production services with connectors for `dbt`, `Snowflake`, `Fivetran`, and more (see below).
 - Get alerts in your CI/CD workflows whenever changes to a production system will impact your warehouse or dbt projects with [GitHub Actions](https://github.com/-io/grai-actions-server).
 - Self-host the project or run it in the [Grai Cloud](https://app.grai.io) for free.
 
@@ -84,7 +84,7 @@ grai demo start
 
 ### Running Locally
 
-You can always find pre-built images of the backend server at `ghcr.io/grai-io/grai-core/grai-server:latest` and the frontend at `ghcr.io/grai-io/grai-core/grai-frontend:latest`, however, if you prefer to build from source, you can do so with docker-compose.
+You can always find pre-built images of the backend server at `ghcr.io/grai-io/grai-core/grai-server:latest` and the frontend at `ghcr.io/grai-io/grai-core/grai-frontend:latest`, however, if you prefer to build from source, you can do so with docker compose.
 
 ```bash
 git clone https://github.com/grai-io/grai-core
@@ -102,7 +102,7 @@ For more information about using the web application check out the [getting star
 
 ### Other Deployment Mechanisms
 
-You can find example configurations for docker-compose and Kubernetes in the [examples](/examples/deployment) folder.
+You can find example configurations for docker compose and Kubernetes in the [examples](/examples/deployment) folder.
 
 #### Helm
 
