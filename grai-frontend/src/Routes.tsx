@@ -4,10 +4,9 @@ import * as Sentry from "@sentry/react"
 import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
 import Loading from "components/layout/Loading"
-import PageLayoutOutlet from "components/layout/PageLayoutOutlet"
 import SettingsLayout from "components/settings/SettingsLayout"
 import SuspenseOutlet from "components/utils/SuspenseOutlet"
-import WorkspaceProvider from "components/utils/WorkspaceProvider"
+import WorkspaceOutlet from "components/workspaces/WorkspaceOutlet"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import NotFound from "./pages/NotFound"
@@ -86,88 +85,81 @@ const Routes: React.FC = () => (
           </Route>
           <Route
             path=":organisationName/:workspaceName"
-            element={<WorkspaceProvider />}
+            element={<WorkspaceOutlet />}
           >
-            <Route element={<PageLayoutOutlet />}>
-              <Route element={<SuspenseOutlet fallback={<Loading />} />}>
-                <Route index element={<Home />} />
-                <Route path="graph" element={<Graph />} />
-                <Route path="nodes">
-                  <Route index element={<Nodes />} />
-                  <Route path=":nodeId" element={<Node />} />
-                </Route>
-                <Route path="edges">
-                  <Route index element={<Edges />} />
-                  <Route path=":edgeId" element={<Edge />} />
-                </Route>
-                <Route path="runs">
-                  <Route index element={<Runs />} />
-                  <Route path=":runId" element={<Run />} />
-                </Route>
-                <Route path="reports">
-                  <Route index element={<Reports />} />
-                  <Route path=":type/:owner">
-                    <Route index element={<Repositories />} />
-                    <Route path=":repo">
-                      <Route index element={<Commits />} />
-                      <Route path=":reportId" element={<Report />} />
-                      <Route path="pulls">
-                        <Route index element={<PullRequests />} />
-                        <Route path=":reference" element={<PullRequest />} />
-                      </Route>
-                      <Route path="commits">
-                        <Route index element={<Commits />} />
-                        <Route path=":reference" element={<Commit />} />
-                      </Route>
-                      <Route path="*" element={<NotFound />} />
-                    </Route>
-                  </Route>
-                  <Route path=":reportId" element={<Report />} />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-                <Route path="connections">
-                  <Route index element={<Connections />} />
-                  <Route path="create" element={<ConnectionCreate />} />
-                  <Route path=":connectionId" element={<Connection />} />
-                </Route>
-                <Route path="sources">
-                  <Route index element={<Sources />} />
-                  <Route path="create" element={<SourceCreate />} />
-                  <Route path="graph" element={<SourceGraph />} />
-                  <Route path=":sourceId" element={<Source />} />
-                </Route>
-                <Route path="filters">
-                  <Route index element={<Filters />} />
-                  <Route path="create" element={<FilterCreate />} />
-                  <Route path=":filterId" element={<Filter />} />
-                </Route>
-                <Route
-                  path="settings"
-                  element={
-                    <SuspenseOutlet fallback={<SettingsLayout loading />} />
-                  }
-                >
-                  <Route index element={<Settings />} />
-                  <Route path="profile" element={<ProfileSettings />} />
-                  <Route path="2fa" element={<TwoFactor />} />
-                  <Route path="password" element={<PasswordSettings />} />
-                  <Route path="api-keys" element={<ApiKeys />} />
-                  <Route path="workspace" element={<WorkspaceSettings />} />
-                  <Route path="memberships" element={<Memberships />} />
-                  <Route path="alerts">
-                    <Route index element={<Alerts />} />
-                    <Route path=":alertId" element={<Alert />} />
-                  </Route>
-                  <Route path="installations" element={<Installations />} />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-                <Route path="chat" element={<Chat />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
+            <Route index element={<Home />} />
+            <Route path="graph" element={<Graph />} />
+            <Route path="nodes">
+              <Route index element={<Nodes />} />
+              <Route path=":nodeId" element={<Node />} />
             </Route>
-            <Route path="post-install" element={<PostInstall />} />
+            <Route path="edges">
+              <Route index element={<Edges />} />
+              <Route path=":edgeId" element={<Edge />} />
+            </Route>
+            <Route path="runs">
+              <Route index element={<Runs />} />
+              <Route path=":runId" element={<Run />} />
+            </Route>
+            <Route path="reports">
+              <Route index element={<Reports />} />
+              <Route path=":type/:owner">
+                <Route index element={<Repositories />} />
+                <Route path=":repo">
+                  <Route index element={<Commits />} />
+                  <Route path=":reportId" element={<Report />} />
+                  <Route path="pulls">
+                    <Route index element={<PullRequests />} />
+                    <Route path=":reference" element={<PullRequest />} />
+                  </Route>
+                  <Route path="commits">
+                    <Route index element={<Commits />} />
+                    <Route path=":reference" element={<Commit />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Route>
+              <Route path=":reportId" element={<Report />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+            <Route path="connections">
+              <Route index element={<Connections />} />
+              <Route path="create" element={<ConnectionCreate />} />
+              <Route path=":connectionId" element={<Connection />} />
+            </Route>
+            <Route path="sources">
+              <Route index element={<Sources />} />
+              <Route path="create" element={<SourceCreate />} />
+              <Route path="graph" element={<SourceGraph />} />
+              <Route path=":sourceId" element={<Source />} />
+            </Route>
+            <Route path="filters">
+              <Route index element={<Filters />} />
+              <Route path="create" element={<FilterCreate />} />
+              <Route path=":filterId" element={<Filter />} />
+            </Route>
+            <Route
+              path="settings"
+              element={<SuspenseOutlet fallback={<SettingsLayout loading />} />}
+            >
+              <Route index element={<Settings />} />
+              <Route path="profile" element={<ProfileSettings />} />
+              <Route path="2fa" element={<TwoFactor />} />
+              <Route path="password" element={<PasswordSettings />} />
+              <Route path="api-keys" element={<ApiKeys />} />
+              <Route path="workspace" element={<WorkspaceSettings />} />
+              <Route path="memberships" element={<Memberships />} />
+              <Route path="alerts">
+                <Route index element={<Alerts />} />
+                <Route path=":alertId" element={<Alert />} />
+              </Route>
+              <Route path="installations" element={<Installations />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+            <Route path="chat" element={<Chat />} />
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="post-install" element={<PostInstall />} />
           <Route path="email-verification" element={<VerifyEmail />} />
         </Route>
       </Route>

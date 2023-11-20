@@ -1,26 +1,37 @@
 import React from "react"
-import { List, ListItem } from "@mui/material"
-import { Chat } from "./ChatWindow"
+import { Box } from "@mui/material"
+import ChatChoices from "./ChatChoices"
+import ChatMessage, { GroupedChats } from "./ChatMessage"
+import { Message } from "./ChatWindow"
+
+const combineMessages = (messages: Message[]) =>
+  messages.reduce<GroupedChats[]>((acc, chat) => {
+    const last = acc[acc.length - 1]
+    if (last && last.sender === chat.sender) {
+      last.messages.push(chat.message)
+    } else {
+      acc.push({ sender: chat.sender, messages: [chat.message] })
+    }
+    return acc
+  }, [])
 
 type ChatHistoryProps = {
-  chats: Chat[]
+  messages: Message[]
+  choices: string[]
+  onInput: (message: string) => void
 }
 
-const ChatHistory: React.FC<ChatHistoryProps> = ({ chats }) => (
-  <List>
-    {chats.map((chat, index) => (
-      <ListItem
-        key={index}
-        disableGutters
-        sx={{
-          display: "flex",
-          justifyContent: chat.sender ? null : "flex-end",
-        }}
-      >
-        {chat.message}
-      </ListItem>
+const ChatHistory: React.FC<ChatHistoryProps> = ({
+  messages,
+  choices,
+  onInput,
+}) => (
+  <Box sx={{ flexGrow: 1, overflow: "auto", height: "200px" }}>
+    {combineMessages(messages).map((groupedChat, i) => (
+      <ChatMessage key={i} groupedChat={groupedChat} />
     ))}
-  </List>
+    <ChatChoices choices={choices} onInput={onInput} />
+  </Box>
 )
 
 export default ChatHistory

@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Run, { GET_RUN } from "./Run"
@@ -39,6 +38,7 @@ test("renders errors", async () => {
               connection: {
                 id: "1",
                 name: "Connection 1",
+                validated: true,
                 connector: {
                   id: "1",
                   name: "connector 1",

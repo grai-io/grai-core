@@ -1,8 +1,9 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import FilterDelete, { DELETE_FILTER } from "./FilterDelete"
+
+const onClose = jest.fn()
 
 const filter = {
   id: "1",
@@ -12,34 +13,38 @@ const filter = {
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<FilterDelete filter={filter} onClose={() => {}} />)
+  render(<FilterDelete filter={filter} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<FilterDelete filter={filter} onClose={() => {}} />)
+  render(<FilterDelete filter={filter} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
+
+  await waitFor(() => {
+    expect(screen.getByText("Filter deleted")).toBeInTheDocument()
+  })
 })
 
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<FilterDelete filter={filter} onClose={() => {}} />, {
+  render(<FilterDelete filter={filter} onClose={onClose} />, {
     mocks: [
       {
         request: {
@@ -57,17 +62,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete filter ApolloError: Error!")
+      screen.getByText("Failed to delete filter ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

@@ -11,6 +11,7 @@ export interface GetWorkspaceSettingsW_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
+  sample_data: boolean;
 }
 
 export interface GetWorkspaceSettingsW {

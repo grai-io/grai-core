@@ -45,7 +45,6 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [createMemberships, { loading, error }] = useMutation<
     CreateMemberships,
     CreateMembershipsVariables
@@ -57,6 +56,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
+          /* istanbul ignore next */
           memberships(existingMemberships = { data: [] }) {
             const newMemberships =
               data?.createMemberships.map(data =>
@@ -72,7 +72,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
                       }
                     }
                   `,
-                })
+                }),
               ) ?? []
             return { data: [...existingMemberships.data, ...newMemberships] }
           },

@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface Verify_verifyEmail {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
 }
 

@@ -69,7 +69,9 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
       variables: {
         connectionId: connection.id,
       },
-    }).then(data => data.data?.runConnection && setRun(data.data.runConnection))
+    })
+      .then(data => data.data?.runConnection && setRun(data.data.runConnection))
+      .catch(() => {})
   }
 
   const handleContinue = () => opts.forwardStep()
@@ -90,6 +92,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
           workspaceId={workspaceId}
           run={run}
           onValidate={() => setValidated(true)}
+          detailed
         />
       )}
       {error && <GraphError error={error} />}

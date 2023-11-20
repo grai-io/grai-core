@@ -1,0 +1,57 @@
+---
+title: "Great Expectations"
+description: Grai integration for Great Expectations to automatically access metadata.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { GreatExpectationsLogo } from "../../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../../components/InlineLogo";
+
+<InlineLogo logo={<GreatExpectationsLogo height={140} width={140}/>} title="Great Expectations" />
+
+The Great Expectations integration uses OpenLineage to collect and send metadata to Grai.
+Complete documentation for integrating OpenLineage with Great Expectations can be found [here](https://openlineage.io/docs/integrations/great-expectations/).
+
+
+## Web App
+
+You'll also need to create a new Grai source in the web app.
+You can create a generic OpenLineage integration by selecting the OpenLineage source type.
+
+<Image
+  src="/images/docs/core/integrations/openlineage.png"
+  height={600}
+  width={1200}
+  alt="Great Expectations Integration"
+/>
+
+### Fields
+
+| Field      | Value                                                               | Example   |
+| ---------- | ------------------------------------------------------------------- | --------- |
+| source     | The name of the source, see [sources](/concepts/sources)            | Great Expectations   |
+| Name       | Name for connection                                                 | production   |
+| Namespace  | Namespace for the connection, see [namespaces](/concepts/namespace) | default   |
+| namespaces | Optional                                                            |           |
+
+### Webhook
+
+<Callout type="info" emoji="ℹ️">
+  In order to authenticate your webhook, you will need to create an API key in
+  the Grai web app.
+</Callout>
+
+Grai will open an endpoint at `/api/v1/openlineage/<connection_id>/` which can be used to receive OpenLineage events.
+
+The official [OpenLineage docs](https://openlineage.io/docs/integrations/great-expectations/) have more information on how to configure your instance to send OpenLineage events to Grai.
+However, you can use these values to finish your configuration:
+
+An example config:
+
+```env copy
+OPENLINEAGE_URL - https://api.grai.io/api/v1/openlineage/<connection_id>/
+OPENLINEAGE_API_KEY - "<your_grai_api_key>"
+```
+
+If you're self-hosting Grai, you'll need to replace the URL with your own instance.

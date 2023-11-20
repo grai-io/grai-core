@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
@@ -12,7 +11,7 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getAllByRole("heading", { name: /Hello world/i })
+      screen.getAllByRole("heading", { name: /Hello world/i }),
     ).toBeTruthy()
   })
 })
@@ -69,7 +68,7 @@ test("renders no pr", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /commit message/i })
+      screen.getByRole("heading", { name: /commit message/i }),
     ).toBeTruthy()
   })
 })

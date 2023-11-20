@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
@@ -54,7 +53,7 @@ test("renders", async () => {
                 x: 0,
                 y: 0,
                 columns: [],
-                destinations: ["1"],
+                destinations: [{ table_id: "1", edge_id: "1" }],
                 table_destinations: ["1"],
                 table_sources: [],
               },

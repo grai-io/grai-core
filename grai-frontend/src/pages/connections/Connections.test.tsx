@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -55,12 +54,13 @@ const connectionMock = {
               namespace: "default",
               name: "Connection 1",
               is_active: true,
+              validated: true,
               connector: {
                 id: "1",
                 name: "Connector 1",
                 events: true,
               },
-              runs: { data: [] },
+              runs: { data: [], meta: { total: 0 } },
               last_run: null,
               last_successful_run: null,
             },
@@ -115,12 +115,12 @@ test("delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
@@ -165,12 +165,12 @@ test("cancel delete", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /cancel/i }))
+      await user.click(screen.getByRole("button", { name: /cancel/i })),
   )
 })
 

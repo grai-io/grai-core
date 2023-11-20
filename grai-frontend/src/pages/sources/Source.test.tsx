@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -90,6 +89,11 @@ const sourceMock = {
           priority: 0,
           connections: {
             data: [],
+          },
+          runs: {
+            meta: {
+              total: 0,
+            },
           },
         },
       },

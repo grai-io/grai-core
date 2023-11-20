@@ -1,8 +1,9 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import EditMembershipDialog, { UPDATE_MEMBERSHIP } from "./EditMembershipDialog"
+
+const onClose = jest.fn()
 
 const membership = {
   id: "1",
@@ -20,11 +21,11 @@ test("renders", async () => {
     <EditMembershipDialog
       membership={membership}
       open={true}
-      onClose={() => {}}
+      onClose={onClose}
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -39,11 +40,11 @@ test("submit", async () => {
     <EditMembershipDialog
       membership={membership}
       open={true}
-      onClose={() => {}}
+      onClose={onClose}
     />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -59,7 +60,7 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 })
 
@@ -86,9 +87,9 @@ test("error", async () => {
     <EditMembershipDialog
       membership={membership}
       open={true}
-      onClose={() => {}}
+      onClose={onClose}
     />,
-    { mocks }
+    { mocks },
   )
 
   await waitFor(() => {
@@ -100,7 +101,7 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
   await waitFor(() => {

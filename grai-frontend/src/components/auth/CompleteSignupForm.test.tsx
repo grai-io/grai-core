@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -16,30 +15,30 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /first name/i }),
-        "test"
-      )
+        "test",
+      ),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /last name/i }),
-        "user"
-      )
+        "user",
+      ),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /submit/i }))
+      await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
   await waitFor(() => {
     expect(
       screen.getByText(
-        "You are all signed up, please login to view your workspace."
-      )
+        "You are all signed up, please login to view your workspace.",
+      ),
     ).toBeTruthy()
   })
 })
@@ -75,23 +74,23 @@ test("error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /first name/i }),
-        "test"
-      )
+        "test",
+      ),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /last name/i }),
-        "user"
-      )
+        "user",
+      ),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /submit/i }))
+      await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
   await waitFor(() => {

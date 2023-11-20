@@ -33,7 +33,6 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteAlert] = useMutation<DeleteAlert, DeleteAlertVariables>(
     DELETE_ALERT,
     {
@@ -45,15 +44,18 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
-            alerts: (existingAlerts = { data: [] }, { readField }) =>
+            alerts: /* istanbul ignore next */ (
+              existingAlerts = { data: [] },
+              { readField },
+            ) =>
               existingAlerts.data.filter(
                 (keyRef: any) =>
-                  data?.deleteAlert.id !== readField("id", keyRef)
+                  data?.deleteAlert.id !== readField("id", keyRef),
               ),
           },
         })
       },
-    }
+    },
   )
 
   const handleDelete = () => {
@@ -70,7 +72,7 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
           error &&
           enqueueSnackbar(`Failed to delete alert ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 

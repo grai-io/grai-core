@@ -21,6 +21,7 @@ from typing import (
 )
 from uuid import UUID
 
+from furl import furl
 from grai_schemas.generics import MalformedMetadata
 from grai_schemas.serializers import dump_json, load_json
 from httpx import Response
@@ -168,10 +169,13 @@ def paginated(
             resp = fn(client, page, options).json()
 
             results.extend(resp["results"])
-            page = resp["next"]
 
-            if page and page.startswith("http") and secure:
-                page = f"https{page[4:]}"
+            f = furl(resp["next"])
+            # Handles bad proxy headers
+            if secure:
+                f.scheme = "https"
+
+            page = f.url
 
         return results
 

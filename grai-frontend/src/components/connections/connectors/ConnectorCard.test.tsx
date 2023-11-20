@@ -1,7 +1,8 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectorCard from "./ConnectorCard"
+
+const onSelect = jest.fn()
 
 test("renders", async () => {
   render(
@@ -10,8 +11,9 @@ test("renders", async () => {
         id: "1",
         name: "connector 1",
         metadata: null,
+        icon: null,
       }}
-      onSelect={() => {}}
+      onSelect={onSelect}
     />,
     {
       withRouter: true,
@@ -27,6 +29,27 @@ test("coming soon", async () => {
         name: "connector 1",
         metadata: null,
         status: "coming_soon",
+        icon: null,
+      }}
+      onSelect={onSelect}
+    />,
+    {
+      withRouter: true,
+    },
+  )
+
+  expect(screen.getByText(/Coming soon/i)).toBeInTheDocument()
+})
+
+test("alpha", async () => {
+  render(
+    <ConnectorCard
+      connector={{
+        id: "1",
+        name: "connector 1",
+        metadata: null,
+        status: "alpha",
+        icon: null,
       }}
       onSelect={() => {}}
     />,
@@ -34,6 +57,8 @@ test("coming soon", async () => {
       withRouter: true,
     },
   )
+
+  expect(screen.getByText(/alpha/i)).toBeInTheDocument()
 })
 
 test("click", async () => {
@@ -45,8 +70,9 @@ test("click", async () => {
         id: "1",
         name: "connector 1",
         metadata: null,
+        icon: null,
       }}
-      onSelect={() => {}}
+      onSelect={onSelect}
     />,
     {
       withRouter: true,
@@ -56,6 +82,8 @@ test("click", async () => {
   await act(async () => {
     await user.click(screen.getByText("connector 1"))
   })
+
+  expect(onSelect).toHaveBeenCalled()
 })
 
 test("to", async () => {
@@ -68,8 +96,9 @@ test("to", async () => {
         name: "connector 1",
         metadata: null,
         to: "a",
+        icon: null,
       }}
-      onSelect={() => {}}
+      onSelect={onSelect}
     />,
     {
       withRouter: true,

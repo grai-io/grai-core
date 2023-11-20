@@ -1,8 +1,9 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import MembershipDelete, { DELETE_MEMBERSHIP } from "./MembershipDelete"
+
+const onClose = jest.fn()
 
 const membership = {
   id: "1",
@@ -16,11 +17,11 @@ const membership = {
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<MembershipDelete membership={membership} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
@@ -36,18 +37,18 @@ test("renders no name", async () => {
 
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<MembershipDelete membership={membership} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
 // test("cancel", async () => {
 //   const user = userEvent.setup()
 
-//   render(<MembershipDelete membership={membership} onClose={() => {}} />)
+//   render(<MembershipDelete membership={membership} onClose={onClose} />)
 
 //   await act(
 //     async () =>
@@ -63,23 +64,23 @@ test("renders no name", async () => {
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<MembershipDelete membership={membership} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />, {
+  render(<MembershipDelete membership={membership} onClose={onClose} />, {
     mocks: [
       {
         request: {
@@ -97,17 +98,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete membership ApolloError: Error!")
+      screen.getByText("Failed to delete membership ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

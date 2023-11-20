@@ -1,6 +1,7 @@
 import uuid
 from datetime import date
 from unittest.mock import MagicMock
+from app.conftest import generate_workspace
 
 import pytest
 from django.test import override_settings
@@ -9,7 +10,7 @@ from api.schema import schema
 from connections.models import Connection, Connector, Run
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Event, Filter, Node
-from workspaces.models import Workspace
+from workspaces.models import Workspace, Membership
 
 
 @pytest.mark.django_db
@@ -1553,6 +1554,116 @@ async def test_workspace_chats(test_context, test_chat, test_message):
     assert result.data["workspace"]["chats"]["data"][0]["id"] == str(test_chat.id)
     assert result.data["workspace"]["chats"]["data"][0]["messages"]["data"][0]["id"] == str(test_message.id)
     assert result.data["workspace"]["chats"]["data"][0]["messages"]["data"][0]["message"] == test_message.message
+
+
+@pytest.mark.django_db
+async def test_workspace_chat(test_context, test_chat, test_message):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $chatId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                chat(id: $chatId) {
+                    id
+                    messages {
+                        data {
+                            id
+                            message
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "chatId": str(test_chat.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["chat"]["id"] == str(test_chat.id)
+    assert result.data["workspace"]["chat"]["messages"]["data"][0]["id"] == str(test_message.id)
+    assert result.data["workspace"]["chat"]["messages"]["data"][0]["message"] == test_message.message
+
+
+@pytest.mark.django_db
+async def test_workspace_last_chat(test_context, test_chat, test_message):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                last_chat {
+                    id
+                    messages {
+                        data {
+                            id
+                            message
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["last_chat"]["id"] == str(test_chat.id)
+    assert result.data["workspace"]["last_chat"]["messages"]["data"][0]["id"] == str(test_message.id)
+    assert result.data["workspace"]["last_chat"]["messages"]["data"][0]["message"] == test_message.message
+
+
+@pytest.mark.django_db
+async def test_workspace_last_chat_missing(test_context, test_message):
+    context, organisation, workspace, user, membership = test_context
+
+    workspace2 = await generate_workspace(organisation)
+    await Membership.objects.acreate(workspace=workspace2, user=user)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                last_chat {
+                    id
+                    messages {
+                        data {
+                            id
+                            message
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace2.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace2.id)
+    assert result.data["workspace"]["last_chat"]["id"] is not None
 
 
 @pytest.fixture
@@ -3634,3 +3745,38 @@ async def test_source_connections_filter_validated_true(test_context, test_sourc
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["source"]["id"] == str(test_source.id)
     assert len(result.data["workspace"]["source"]["connections"]["data"]) == 0
+
+
+@pytest.mark.django_db
+async def test_source_runs(test_context, test_source, test_connection):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $sourceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                source(id: $sourceId) {
+                    id
+                    runs {
+                        data {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "sourceId": str(test_source.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["source"]["id"] == str(test_source.id)
+    assert len(result.data["workspace"]["source"]["runs"]["data"]) == 0

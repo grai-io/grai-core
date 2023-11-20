@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import CommitsList, { GET_BRANCH_COMMITS } from "./CommitsList"
@@ -13,7 +12,7 @@ test("renders", async () => {
     <CommitsList type="github" repository={repository} reference="branch" />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -57,7 +56,7 @@ test("not found", async () => {
       mocks,
       path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
       route: "/org/demo/reports/github/owner/repo?branch=branch",
-    }
+    },
   )
 
   await waitFor(() => {
@@ -91,7 +90,7 @@ test("error", async () => {
       mocks,
       path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
       route: "/org/demo/reports/github/owner/repo?branch=branch",
-    }
+    },
   )
 
   await waitFor(() => {

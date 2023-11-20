@@ -3,7 +3,6 @@ import { gql, useLazyQuery } from "@apollo/client"
 import { Edge as RFEdge, Node as RFNode, Viewport } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import useWorkspace from "helpers/useWorkspace"
-import { Filter } from "components/filters/filters"
 import {
   GetGraphLoadTable,
   GetGraphLoadTableVariables,
@@ -11,6 +10,7 @@ import {
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
+import { CombinedFilters } from "./useCombinedFilters"
 
 export const GET_GRAPH_LOAD_TABLE = gql`
   query GetGraphLoadTable(
@@ -96,10 +96,7 @@ type GraphComponentProps = {
   onMove?: (viewport: Viewport) => void
   onRefresh?: () => void
   refreshLoading?: boolean
-  filters: string[]
-  setFilters: (filters: string[]) => void
-  inlineFilters: Filter[]
-  setInlineFilters: (filters: Filter[]) => void
+  combinedFilters: CombinedFilters
   defaultViewport?: Viewport
 }
 
@@ -115,10 +112,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   onMove,
   onRefresh,
   refreshLoading,
-  filters,
-  setFilters,
-  inlineFilters,
-  setInlineFilters,
+  combinedFilters,
   defaultViewport,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
@@ -405,10 +399,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       onMove={onMove}
       onRefresh={onRefresh}
       refreshLoading={refreshLoading}
-      filters={filters}
-      setFilters={setFilters}
-      inlineFilters={inlineFilters}
-      setInlineFilters={setInlineFilters}
+      combinedFilters={combinedFilters}
       defaultViewport={defaultViewport}
     />
   )

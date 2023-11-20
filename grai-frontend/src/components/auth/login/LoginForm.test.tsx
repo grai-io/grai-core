@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -29,7 +28,7 @@ test("submit", async () => {
             username: "",
             first_name: "",
             last_name: "",
-            __typename: "User",
+            __typename: "Profile",
           },
         },
       },

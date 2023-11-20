@@ -35,6 +35,7 @@ test("error result", async () => {
               status: "error",
               metadata: {
                 error: "Run Error",
+                message: "Error Message",
               },
               connection: {
                 id: "1",
@@ -59,8 +60,114 @@ test("error result", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Run Error")).toBeInTheDocument()
+    expect(
+      screen.getByText("Validation Failed - Run Error"),
+    ).toBeInTheDocument()
   })
+
+  expect(screen.getByText("Error Message")).toBeInTheDocument()
+})
+
+test("error result no connection", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_RUN,
+        variables: {
+          workspaceId: "1",
+          runId: "1",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            run: {
+              id: "1",
+              status: "error",
+              metadata: {
+                error: "No connection",
+                message: "Error Message",
+              },
+              connection: {
+                id: "1",
+                validated: false,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  render(
+    <ValidateConnection
+      workspaceId="1"
+      run={{
+        id: "1",
+      }}
+      onValidate={onValidate}
+    />,
+    { mocks },
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Validation Failed - No connection"),
+    ).toBeInTheDocument()
+  })
+
+  expect(screen.getByText("Error Message")).toBeInTheDocument()
+})
+
+test("error result unknown", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_RUN,
+        variables: {
+          workspaceId: "1",
+          runId: "1",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            run: {
+              id: "1",
+              status: "error",
+              metadata: {
+                error: "Unknown",
+                message: "Error Message",
+              },
+              connection: {
+                id: "1",
+                validated: false,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  render(
+    <ValidateConnection
+      workspaceId="1"
+      run={{
+        id: "1",
+      }}
+      onValidate={onValidate}
+    />,
+    { mocks },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Validation Failed")).toBeInTheDocument()
+  })
+
+  expect(screen.getByText("Error Message")).toBeInTheDocument()
 })
 
 test("error", async () => {

@@ -24,18 +24,17 @@ const SearchControl: React.FC<SearchControlProps> = ({ value, onChange }) => {
           "data-testid": "search-input",
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
+          endAdornment: (
+            <InputAdornment position="end">
+              {value ? (
+                <Close onClick={handleClear} sx={{ cursor: "pointer" }} />
+              ) : (
+                <Search />
+              )}
             </InputAdornment>
           ),
-          endAdornment: value ? (
-            <InputAdornment position="end">
-              <Close onClick={handleClear} sx={{ cursor: "pointer" }} />
-            </InputAdornment>
-          ) : undefined,
         }}
-        sx={{ backgroundColor: "white", width: 350 }}
+        sx={{ backgroundColor: "white", width: 240 }}
       />
     </Box>
   )

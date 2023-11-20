@@ -32,7 +32,6 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  /* istanbul ignore next */
   const [deleteApiKey] = useMutation<DeleteApiKey, DeleteApiKeyVariables>(
     DELETE_API_KEY,
     {
@@ -44,20 +43,21 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
+            /* istanbul ignore next */
             api_keys(existingApiKeys = { data: [] }, { readField }) {
               if (!data?.deleteApiKey) return existingApiKeys
 
               return {
                 data: existingApiKeys.data.filter(
                   (keyRef: any) =>
-                    data.deleteApiKey.id !== readField("id", keyRef)
+                    data.deleteApiKey.id !== readField("id", keyRef),
                 ),
               }
             },
           },
         })
       },
-    }
+    },
   )
 
   const handleDelete = () => {
@@ -74,7 +74,7 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
           error &&
           enqueueSnackbar(`Failed to delete API key ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 

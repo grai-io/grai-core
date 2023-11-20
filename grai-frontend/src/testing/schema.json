@@ -1334,6 +1334,53 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "chat",
+            "description": null,
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Chat",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_chat",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Chat",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -3936,6 +3983,33 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "ConnectionPagination",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "runs",
+            "description": null,
+            "args": [
+              {
+                "name": "pagination",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OffsetPaginationInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RunPagination",
                 "ofType": null
               }
             },
@@ -8505,6 +8579,33 @@
             "deprecationReason": null
           },
           {
+            "name": "runs",
+            "description": null,
+            "args": [
+              {
+                "name": "pagination",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OffsetPaginationInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RunPagination",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "icon",
             "description": null,
             "args": [],
@@ -9124,7 +9225,7 @@
               "name": null,
               "ofType": {
                 "kind": "UNION",
-                "name": "UserDeviceDataWrapper",
+                "name": "ProfileDeviceDataWrapper",
                 "ofType": null
               }
             },
@@ -9197,7 +9298,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9272,7 +9373,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9317,7 +9418,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9362,7 +9463,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9452,7 +9553,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9539,7 +9640,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9584,7 +9685,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Profile",
                 "ofType": null
               }
             },
@@ -9795,15 +9896,21 @@
                 "name": "name",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
+              },
+              {
+                "name": "sample_data",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": "null"
               }
             ],
             "type": {
@@ -11137,7 +11244,7 @@
             "deprecationReason": null
           },
           {
-            "name": "fetchOrCreateChats",
+            "name": "createChat",
             "description": null,
             "args": [
               {
@@ -11160,7 +11267,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ChatDataWrapper",
+                "name": "Chat",
                 "ofType": null
               }
             },
@@ -11175,7 +11282,7 @@
       },
       {
         "kind": "UNION",
-        "name": "UserDeviceDataWrapper",
+        "name": "ProfileDeviceDataWrapper",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -11184,7 +11291,7 @@
         "possibleTypes": [
           {
             "kind": "OBJECT",
-            "name": "User",
+            "name": "Profile",
             "ofType": null
           },
           {
@@ -11330,41 +11437,6 @@
         "fields": null,
         "inputFields": null,
         "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ChatDataWrapper",
-        "description": null,
-        "fields": [
-          {
-            "name": "data",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Chat",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },

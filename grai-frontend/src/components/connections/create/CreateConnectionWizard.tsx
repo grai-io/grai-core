@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import ConnectorSelectTab from "./ConnectorSelectTab"
 import SetSchedule from "./SetSchedule"
@@ -68,12 +70,12 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
   ]
 
   return (
-    <WizardLayout
-      title="Create Source"
-      steps={steps}
-      onClose={() => workspaceNavigate("sources")}
-      className="create-connection-wizard"
-    />
+    <>
+      <PageHeader title="Add Source" />
+      <PageContent noPadding>
+        <WizardLayout steps={steps} className="create-connection-wizard" />
+      </PageContent>
+    </>
   )
 }
 

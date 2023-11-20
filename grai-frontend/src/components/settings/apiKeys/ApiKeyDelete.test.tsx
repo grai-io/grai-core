@@ -1,8 +1,9 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import ApiKeyDelete, { DELETE_API_KEY } from "./ApiKeyDelete"
+
+const onClose = jest.fn()
 
 const apiKey = {
   id: "1",
@@ -20,18 +21,18 @@ const apiKey = {
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<ApiKeyDelete apiKey={apiKey} onClose={() => {}} />)
+  render(<ApiKeyDelete apiKey={apiKey} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 })
 
 // test("cancel", async () => {
 //   const user = userEvent.setup()
 
-//   render(<ApiKeyDelete apiKey={apiKey} onClose={() => {}} />)
+//   render(<ApiKeyDelete apiKey={apiKey} onClose={onClose} />)
 
 //   await act(
 //     async () =>
@@ -47,23 +48,23 @@ test("renders", async () => {
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<ApiKeyDelete apiKey={apiKey} onClose={() => {}} />)
+  render(<ApiKeyDelete apiKey={apiKey} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 })
 
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<ApiKeyDelete apiKey={apiKey} onClose={() => {}} />, {
+  render(<ApiKeyDelete apiKey={apiKey} onClose={onClose} />, {
     mocks: [
       {
         request: {
@@ -81,17 +82,17 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+      await user.click(screen.getByRole("menuitem", { name: /delete/i })),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /delete/i }))
+      await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete API key ApolloError: Error!")
+      screen.getByText("Failed to delete API key ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

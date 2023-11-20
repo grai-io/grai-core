@@ -3,6 +3,11 @@ from enum import Enum
 from typing import Type
 
 from django.utils import timezone
+from grai_schemas.integrations.errors import (
+    IncorrectPasswordError,
+    MissingPermissionError,
+    NoConnectionError,
+)
 
 from celery import shared_task
 from connections.adapters.base import BaseAdapter
@@ -147,17 +152,31 @@ def execute_run(run: Run):
             )
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
-    except Exception as e:
-        run.metadata = {"error": str(e), "traceback": traceback.format_exc()}
-        run.status = "error"
-        run.finished_at = timezone.now()
-        run.save()
 
-        if run.commit and run.trigger:
-            github = get_github_api(run)
-            github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
+    except NoConnectionError as e:
+        error_run(run, {"error": "No connection", "message": str(e)})
+
+    except IncorrectPasswordError as e:
+        error_run(run, {"error": "Incorrect password", "message": str(e)})
+
+    except MissingPermissionError as e:
+        error_run(run, {"error": "Missing permission", "message": str(e)})
+
+    except Exception as e:
+        error_run(run, {"error": "Unknown", "message": str(e), "traceback": traceback.format_exc()})
 
         raise e
+
+
+def error_run(run: Run, metadata: dict):
+    run.metadata = metadata
+    run.status = "error"
+    run.finished_at = timezone.now()
+    run.save()
+
+    if run.commit and run.trigger:
+        github = get_github_api(run)
+        github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
 
 
 class NoConnectorError(Exception):

@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import ReportsCard, { GET_REPORTS } from "./ReportsCard"
@@ -58,7 +57,7 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Latest Reports/i })
+      screen.getByRole("heading", { name: /Latest Reports/i }),
     ).toBeTruthy()
   })
 

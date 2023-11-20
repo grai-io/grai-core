@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -219,7 +218,7 @@ test("expand all", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Last updated at")).toBeInTheDocument()
+    expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
   await act(
@@ -287,7 +286,7 @@ test("search", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Last updated at")).toBeInTheDocument()
+    expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
   await act(

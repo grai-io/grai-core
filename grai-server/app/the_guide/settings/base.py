@@ -2,7 +2,7 @@ import os
 import subprocess
 import warnings
 from pathlib import Path
-
+import logging
 import openai
 from decouple import config
 
@@ -172,6 +172,8 @@ MIDDLEWARE = [
     "middleware.HealthCheckMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "csp.middleware.CSPMiddleware",
+    "django_permissions_policy.PermissionsPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -333,6 +335,7 @@ CELERY_TASK_SERIALIZER = "json"
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = config("SESSION_COOKIE_AGE", 1209600)
 
 STORAGES = {
     "default": {
@@ -368,36 +371,55 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 OPENAI_API_KEY = config("OPENAI_API_KEY", None)
 OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
-OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo-1106")
 
 openai.organization = OPENAI_ORG_ID
 openai.api_key = OPENAI_API_KEY
 
-try:
-    models = [item["id"] for item in openai.Model.list()["data"]]
-except openai.error.AuthenticationError as e:
-    HAS_OPENAI = False
-else:
-    if len(models) == 0:
-        message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
-        warnings.warn(message)
-
+if OPENAI_API_KEY is not None and OPENAI_ORG_ID is not None:
+    try:
+        models = [item["id"] for item in openai.Model.list()["data"]]
+    except openai.error.AuthenticationError as e:
+        warnings.warn("Could not authenticate with OpenAI API key and organization id.")
         HAS_OPENAI = False
-        OPENAI_PREFERRED_MODEL = ""
-    elif OPENAI_PREFERRED_MODEL not in models:
-        default_model = models[0]
-        message = (
-            f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
-            f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
-            f"In the mean time we've defaulted to {default_model}."
-        )
-        warnings.warn(message)
-
-        HAS_OPENAI = True
-        OPENAI_PREFERRED_MODEL = default_model
     else:
-        HAS_OPENAI = True
+        if len(models) == 0:
+            message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
+            warnings.warn(message)
 
+            HAS_OPENAI = False
+            OPENAI_PREFERRED_MODEL = ""
+        elif OPENAI_PREFERRED_MODEL not in models:
+            default_model = models[0]
+            message = (
+                f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
+                f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
+                f"In the mean time we've defaulted to {default_model}."
+            )
+            warnings.warn(message)
+
+            HAS_OPENAI = True
+            OPENAI_PREFERRED_MODEL = default_model
+        else:
+            HAS_OPENAI = True
+else:
+    HAS_OPENAI = False
+
+
+if HAS_OPENAI:
+    pass
+    # TODO: Need to bake the encodings into the docker image otherwise it gets fetched every time
+    TIKTOKEN_CACHE_DIR = "/TIKTOKEN_CACHE_DIR"
+    # if not os.path.exists(TIKTOKEN_CACHE_DIR):
+    #     os.makedirs(TIKTOKEN_CACHE_DIR)
+
+    # os.environ["TIKTOKEN_CACHE_DIR"] = TIKTOKEN_CACHE_DIR
+    # import tiktoken
+    # # download the OpenAI preferred model encoder
+    # try:
+    #     tiktoken.encoding_for_model(OPENAI_PREFERRED_MODEL)
+    # except:
+    #     logging.error("Could not download OpenAI preferred model encoder with tiktoken")
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Grai Server",
@@ -407,4 +429,31 @@ SPECTACULAR_SETTINGS = {
     "EXTERNAL_DOCS": {"url": "https://docs.grai.io"},
     "SWAGGER_UI_FAVICON_HREF": f"{STATIC_URL}icons/favicon.svg"
     # OTHER SETTINGS
+}
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False, cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
+
+# Content Security Policy
+CSP_IMG_SRC = "'self'"
+CSP_STYLE_SRC = "'self'"
+CSP_SCRIPT_SRC = "'self'"
+
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "ambient-light-sensor": [],
+    "autoplay": [],
+    "camera": [],
+    "display-capture": [],
+    "document-domain": [],
+    "encrypted-media": [],
+    "fullscreen": [],
+    "geolocation": [],
+    "gyroscope": [],
+    "interest-cohort": [],
+    "magnetometer": [],
+    "microphone": [],
+    "midi": [],
+    "payment": [],
+    "usb": [],
 }

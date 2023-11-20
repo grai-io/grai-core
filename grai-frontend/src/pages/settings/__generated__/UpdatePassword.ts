@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface UpdatePassword_updatePassword {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
 }
 

@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
-from grai_schemas import config as base_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
+from grai_schemas.v1.generics import SQL, Code
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
@@ -18,10 +18,9 @@ from grai_schemas.v1.metadata.nodes import (
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
-from grai_source_dbt.loaders import AllDbtNodeInstances, AllDbtNodeTypes
-from grai_source_dbt.models.grai import Column, Constraint, Edge
+from grai_source_dbt.loaders import AllDbtNodeTypes
+from grai_source_dbt.models.grai import Column, Edge
 from grai_source_dbt.package_definitions import config
-from grai_source_dbt.utils import full_name
 
 T = TypeVar("T")
 X = TypeVar("X")
@@ -116,6 +115,11 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         "version": version,
         "edge_type": current.edge_type.value,
         "tags": [config.metadata_id],
+        "code": Code(
+            code=current.definition,
+            language=SQL(),
+            has_code=current.definition is not None,
+        ),
     }
     if current.edge_type == EdgeMetadataTypeLabels.table_to_table:
         return TableToTableMetadata(**data)

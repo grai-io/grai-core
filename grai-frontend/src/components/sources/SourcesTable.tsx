@@ -56,6 +56,11 @@ interface Source {
   connections: {
     data: Connection[]
   }
+  runs: {
+    meta: {
+      total: number
+    }
+  }
 }
 
 type SourcesTableProps = {

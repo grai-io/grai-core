@@ -1,6 +1,7 @@
 import Connections from "./Connections"
 import ConnectionsLarge from "./ConnectionsLarge"
 import GraiIcon from "./GraiIcon"
+import GraiIconSmall from "./GraiIconSmall"
 import GraiLogo from "./GraiLogo"
 import GraiLogoWhite from "./GraiLogoWhite"
 import Graph from "./Graph"
@@ -13,6 +14,7 @@ export {
   Connections,
   ConnectionsLarge,
   GraiIcon,
+  GraiIconSmall,
   GraiLogo,
   GraiLogoWhite,
   Graph,

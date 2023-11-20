@@ -1,29 +1,30 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import CreateKeyDialog, { CREATE_API_KEY } from "./CreateKeyDialog"
 
+const onClose = jest.fn()
+
 test("renders", async () => {
-  render(<CreateKeyDialog workspaceId="1" open={false} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={false} onClose={onClose} />)
 })
 
 test("renders open", async () => {
-  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={onClose} />)
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3")
+      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {
@@ -38,11 +39,11 @@ test("submit", async () => {
 test("submit custom expiry date", async () => {
   const user = userEvent.setup()
 
-  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={onClose} />)
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3")
+      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3"),
   )
 
   fireEvent.change(screen.getByTestId("expiration-select"), {
@@ -50,11 +51,11 @@ test("submit custom expiry date", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("date-input"), "01/01/2022")
+    async () => await user.type(screen.getByTestId("date-input"), "01/01/2022"),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {
@@ -85,13 +86,13 @@ test("submit error", async () => {
     },
   ]
 
-  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />, {
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={onClose} />, {
     mocks,
   })
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 4")
+      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 4"),
   )
 
   fireEvent.change(screen.getByTestId("expiration-select"), {
@@ -103,7 +104,7 @@ test("submit error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import ConnectionsTable from "./ConnectionsTable"
@@ -15,7 +14,12 @@ const connections = [
       name: "connector 1",
       events: true,
     },
-    runs: { data: [] },
+    runs: {
+      data: [],
+      meta: {
+        total: 0,
+      },
+    },
     last_run: null,
     last_successful_run: null,
   },
@@ -30,7 +34,12 @@ const connections = [
       name: "connector 1",
       events: false,
     },
-    runs: { data: [] },
+    runs: {
+      data: [],
+      meta: {
+        total: 0,
+      },
+    },
     last_run: null,
     last_successful_run: null,
   },

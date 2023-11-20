@@ -29,16 +29,22 @@ class Github:
     def fetch_installation_id(self):
         return Repository.objects.get(type=Repository.GITHUB, owner=self.owner, repo=self.repo).installation_id
 
+    # def generate_jwt(self) -> str:
+    #     with open(pem, "rb") as pem_file:
+    #         signing_key = jwt.jwk_from_pem(pem_file.read())
+    #
+    #     payload = {"iat": int(time.time()), "exp": int(time.time()) + 600, "iss": app_id}
+    #
+    #     jwt_instance = jwt.JWT()
+    #     encoded_jwt = jwt_instance.encode(payload, signing_key, alg="RS256")
+    #
+    #     return encoded_jwt
+
     def generate_jwt(self) -> str:
         with open(pem, "rb") as pem_file:
-            signing_key = jwt.jwk_from_pem(pem_file.read())
-
+            signing_key = pem_file.read()
         payload = {"iat": int(time.time()), "exp": int(time.time()) + 600, "iss": app_id}
-
-        jwt_instance = jwt.JWT()
-        encoded_jwt = jwt_instance.encode(payload, signing_key, alg="RS256")
-
-        return encoded_jwt
+        return jwt.encode(payload, signing_key, algorithm="RS256")
 
     def connect(self):
         jwt = self.generate_jwt()

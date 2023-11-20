@@ -20,6 +20,7 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      sample_data
     }
   }
 `

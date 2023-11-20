@@ -71,6 +71,7 @@ RUN apt update \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
     && rm -rf /var/lib/apt/lists/*
 
+
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # --------- final images --------------- #

@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -37,7 +36,6 @@ test("error", async () => {
         variables: {
           name: "demo",
           organisationName: "TestOrganisation",
-          sample_data: false,
         },
       },
       result: {

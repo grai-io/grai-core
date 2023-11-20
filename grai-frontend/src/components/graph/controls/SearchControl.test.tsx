@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import SearchControl from "./SearchControl"
@@ -24,7 +23,7 @@ test("change", async () => {
   expect(value).toEqual(null)
 
   await act(
-    async () => await user.type(screen.getByRole("textbox"), "SearchString")
+    async () => await user.type(screen.getByRole("textbox"), "SearchString"),
   )
 
   expect(value).toEqual("g")

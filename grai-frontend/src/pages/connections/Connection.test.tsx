@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
@@ -101,6 +100,9 @@ test("refresh", async () => {
                     user: null,
                   },
                 ],
+                meta: {
+                  total: 2,
+                },
               },
             },
           },
@@ -241,6 +243,9 @@ test("refresh no last_sucessful_run", async () => {
                     user: null,
                   },
                 ],
+                meta: {
+                  total: 2,
+                },
               },
             },
           },
@@ -287,7 +292,7 @@ test("refresh no last_sucessful_run", async () => {
                   last_name: null,
                 },
               },
-              runs: { data: [] },
+              runs: { data: [], meta: { total: 0 } },
             },
           },
         },
@@ -368,7 +373,7 @@ test("delete", async () => {
                   last_name: null,
                 },
               },
-              runs: { data: [] },
+              runs: { data: [], meta: { total: 0 } },
             },
           },
         },

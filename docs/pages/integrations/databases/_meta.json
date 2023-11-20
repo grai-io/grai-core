@@ -1,0 +1,5 @@
+{
+  "mysql": "MySQL",
+  "mssql": "Microsoft SQL Server",
+  "postgres": "PostgreSQL"
+}

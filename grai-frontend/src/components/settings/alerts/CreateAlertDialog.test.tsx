@@ -1,11 +1,12 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import CreateAlertDialog, { CREATE_ALERT } from "./CreateAlertDialog"
 
+const onClose = jest.fn()
+
 test("renders", async () => {
-  render(<CreateAlertDialog workspaceId="1" open={true} onClose={() => {}} />, {
+  render(<CreateAlertDialog workspaceId="1" open={true} onClose={onClose} />, {
     withRouter: true,
   })
 
@@ -17,7 +18,7 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<CreateAlertDialog workspaceId="1" open={true} onClose={() => {}} />, {
+  render(<CreateAlertDialog workspaceId="1" open={true} onClose={onClose} />, {
     withRouter: true,
   })
 
@@ -79,7 +80,7 @@ test("error", async () => {
     },
   ]
 
-  render(<CreateAlertDialog workspaceId="1" open={true} onClose={() => {}} />, {
+  render(<CreateAlertDialog workspaceId="1" open={true} onClose={onClose} />, {
     mocks,
   })
 

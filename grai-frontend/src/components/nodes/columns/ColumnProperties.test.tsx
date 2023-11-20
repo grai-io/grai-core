@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen } from "testing"
 import { enrichColumn } from "helpers/columns"
 import ColumnProperties from "./ColumnProperties"

@@ -1,4 +1,3 @@
-import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Repositories, { GET_REPOSITORIES } from "./Repositories"
@@ -49,7 +48,7 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Select Repository/i })
+      screen.getByRole("heading", { name: /Select Repository/i }),
     ).toBeTruthy()
   })
 
@@ -121,7 +120,7 @@ test("empty", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Select Repository/i })
+      screen.getByRole("heading", { name: /Select Repository/i }),
     ).toBeTruthy()
   })
 })

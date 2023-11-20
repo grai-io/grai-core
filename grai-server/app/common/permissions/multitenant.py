@@ -7,6 +7,8 @@ from workspaces.models import Workspace, WorkspaceAPIKey
 
 
 class BasePermission(permissions.BasePermission):
+    auth_keys = {"Api-Key", "Bearer"}
+
     def get_workspace(self, request, guess: bool = True) -> Optional[Workspace]:
         workspace = self.get_workspace_from_header(request)
 
@@ -28,12 +30,11 @@ class BasePermission(permissions.BasePermission):
 
         if header:
             split = header.split()
-            if split[0] == "Api-Key":
+            if split[0] in self.auth_keys:
                 try:
                     api_key = WorkspaceAPIKey.objects.get_from_key(split[1])
-                    workspace_id = api_key.workspace_id
-                    if workspace_id:
-                        return Workspace(id=workspace_id)
+                    if api_key.workspace_id:
+                        return Workspace(id=api_key.workspace_id)
                 except WorkspaceAPIKey.DoesNotExist:
                     pass
 

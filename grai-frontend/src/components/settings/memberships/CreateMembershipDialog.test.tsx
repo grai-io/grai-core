@@ -1,4 +1,3 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, fireEvent, render, screen, waitFor } from "testing"
@@ -6,9 +5,11 @@ import CreateMembershipDialog, {
   CREATE_MEMBERSHIPS,
 } from "./CreateMembershipDialog"
 
+const onClose = jest.fn()
+
 test("renders", async () => {
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     {
       withRouter: true,
     },
@@ -23,7 +24,7 @@ test("submit", async () => {
   const user = userEvent.setup()
 
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     {
       withRouter: true,
     },
@@ -72,7 +73,7 @@ test("error", async () => {
   ]
 
   render(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={onClose} />,
     { mocks },
   )
 

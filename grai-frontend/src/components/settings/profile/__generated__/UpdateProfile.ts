@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface UpdateProfile_updateProfile {
-  __typename: "User";
+  __typename: "Profile";
   id: any;
   first_name: string;
   last_name: string;

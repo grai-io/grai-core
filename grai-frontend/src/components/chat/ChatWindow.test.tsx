@@ -1,12 +1,20 @@
-import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
+
+jest.mock("remark-gfm", () => () => {})
 
 const handleInput = jest.fn()
 
 test("renders", async () => {
-  render(<ChatWindow chats={[]} onInput={handleInput} />)
+  render(
+    <ChatWindow
+      messages={[]}
+      onInput={handleInput}
+      workspaceId="1"
+      choices={[]}
+    />,
+  )
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 })
@@ -14,15 +22,22 @@ test("renders", async () => {
 test("type", async () => {
   const user = userEvent.setup()
 
-  render(<ChatWindow chats={[]} onInput={handleInput} />)
+  render(
+    <ChatWindow
+      messages={[]}
+      onInput={handleInput}
+      workspaceId="1"
+      choices={[]}
+    />,
+  )
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
-  user.type(screen.getByRole("textbox"), "Hello")
+  await act(async () => user.type(screen.getByRole("textbox"), "Hello"))
 
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Hello"))
 
-  user.type(screen.getByRole("textbox"), "{enter}")
+  await act(async () => await user.type(screen.getByRole("textbox"), "{enter}"))
 
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""))
 
