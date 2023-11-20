@@ -7,13 +7,13 @@ from unittest.mock import MagicMock
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
 
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
-from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 from users.models import User
-from django.urls import reverse
+from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
 @pytest.fixture

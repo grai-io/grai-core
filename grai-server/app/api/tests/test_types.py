@@ -1,16 +1,16 @@
 import uuid
 from datetime import date
 from unittest.mock import MagicMock
-from app.conftest import generate_workspace
 
 import pytest
+from app.conftest import generate_workspace
 from django.test import override_settings
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Event, Filter, Node
-from workspaces.models import Workspace, Membership
+from workspaces.models import Membership, Workspace
 
 
 @pytest.mark.django_db

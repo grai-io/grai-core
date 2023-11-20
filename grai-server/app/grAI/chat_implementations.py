@@ -1,39 +1,50 @@
+import copy
 import json
+import logging
+import operator
 import uuid
 from abc import ABC, abstractmethod
-from functools import partial
-from typing import Callable, Any, Literal, Union, Annotated
+from functools import partial, reduce
+from itertools import accumulate
+from typing import Annotated, Any, Callable, Literal, Type, TypeVar, Union
 
 import openai
+import tiktoken
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Q
 from grai_schemas.serializers import GraiYamlSerializer
 from pydantic import BaseModel, Field
-from lineage.models import Node, Edge
-from grAI.models import Message
-from django.db.models import Q
-from functools import reduce
-import operator
-import logging
+
 from connections.adapters.schemas import model_to_schema
-import tiktoken
-from pydantic import BaseModel
+from grAI.models import Message
+from lineage.models import Edge, Node
+from workspaces.models import Workspace
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 MAX_RETURN_LIMIT = 20
 
+T = TypeVar("T")
 RoleType = Union[Literal["user"], Literal["system"], Literal["assistant"]]
 
 
 class BaseMessage(BaseModel):
     role: str
     content: str
-    token_length: int | None = None
+    token_length: int
 
-    def representation(self):
+    def representation(self) -> dict:
         return {"role": self.role, "content": self.content}
+
+    def chunk_content(self, n_chunks: int = 2) -> list[str]:
+        if self.token_length is None:
+            raise ValueError("Cannot chunk content without a token length")
+
+        chunk_size = self.token_length // n_chunks
+        chunks = [self.content[i : i + chunk_size] for i in range(0, len(self.content), chunk_size)]
+        return chunks
 
 
 class UserMessage(BaseMessage):
@@ -52,7 +63,7 @@ class FunctionMessage(BaseMessage):
     role: Literal["function"] = "function"
     name: str
 
-    def representation(self):
+    def representation(self) -> dict:
         return {"role": self.role, "content": self.content, "name": self.name}
 
 
@@ -63,13 +74,13 @@ class ChatMessage(BaseModel):
 class ChatMessages(BaseModel):
     messages: list[BaseMessage]
 
-    def to_gpt(self):
+    def to_gpt(self) -> list[dict]:
         return [message.representation() for message in self.messages]
 
     def __getitem__(self, index):
         return self.messages[index]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.messages)
 
     def append(self, item):
@@ -77,6 +88,24 @@ class ChatMessages(BaseModel):
 
     def extend(self, items):
         self.messages.extend(items)
+
+    def token_length(self) -> int:
+        return sum(m.token_length for m in self.messages)
+
+
+def get_token_limit(model_type: str) -> int:
+    OPENAI_TOKEN_LIMITS = {"gpt-4": 8192, "gpt-3.5-turbo": 4096, "gpt-3.5-turbo-16k": 16385, "gpt-4-32k": 32768}
+
+    if model_type in OPENAI_TOKEN_LIMITS:
+        return OPENAI_TOKEN_LIMITS[model_type]
+    elif model_type.endswith("k"):
+        return int(model_type.split("-")[-1]) * 1024
+    elif model_type.startswith("gpt-4"):
+        return 8192
+    elif model_type.startswith("gpt-3.5"):
+        return 4096
+    else:
+        return 2049
 
 
 class API(ABC):
@@ -100,12 +129,30 @@ class API(ABC):
 
         logging.info(f"Building Response message for {self.id} with {kwargs}")
         if message is None:
-            return self.serialize(obj)
+            result = self.serialize(obj)
         else:
-            return f"{self.serialize(obj)}\n{message}"
+            result = f"{self.serialize(obj)}\n{message}"
+
+        return result
 
     def gpt_definition(self) -> dict:
         return {"name": self.id, "description": self.description, "parameters": self.schema_model.schema()}
+
+
+class SummaryModel(API):
+    content: str
+
+
+class Summarize(API):
+    id = "Summarize API"
+    description: "Summarize a conversation to manage token lengths"
+    schema_model = SummaryModel
+
+    def __init__(self, encoder):
+        self.encoder = encoder
+
+    def call(self, content: str) -> str:
+        pass
 
 
 class NodeIdentifier(BaseModel):
@@ -119,9 +166,7 @@ class NodeLookup(BaseModel):
 
 class NodeLookupAPI(API):
     id = "node_lookup"
-    description = (
-        "A function to lookup metadata about one or more nodes. Results will be returned in the order requested."
-    )
+    description = "Lookup metadata about one or more nodes if you know precisely which node(s) to lookup"
     schema_model = NodeLookup
 
     def __init__(self, workspace: str | uuid.UUID):
@@ -130,9 +175,7 @@ class NodeLookupAPI(API):
 
     def response_message(self, result_set: list[Node]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -166,9 +209,7 @@ class FuzzyMatchNodesAPI(API):
 
     def response_message(self, result_set: list[Node]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -212,9 +253,7 @@ class EdgeLookupAPI(API):
 
     def response_message(self, result_set: list[Edge]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -268,6 +307,58 @@ class NodeEdgeSerializer:
         return self.representation()
 
 
+class NHopQuerySchema(BaseModel):
+    name: str = Field(description="The name of the node to query for")
+    namespace: str = Field(description="The namespace of the node to query for")
+    n: int = Field(description="The number of hops to query for", default=1)
+
+
+class NHopQueryAPI(API):
+    id: str = "n_hop_query"
+    description: str = "query for nodes and edges within a specified number of hops from a given node"
+    schema_model = NHopQuerySchema
+
+    def __init__(self, workspace: str | uuid.UUID):
+        self.workspace = workspace
+
+    def response_message(self, result_set: list[Edge | Node]) -> str | None:
+        total_results = len(result_set)
+        if total_results == 0:
+            message = "No results found matching these query conditions."
+        else:
+            message = None
+
+        return message
+
+    def call(self, **kwargs) -> (list[Edge | Node], str | None):
+        n = kwargs.get("n", None)
+        if n is None:
+            return [], "Invalid input, n is a required parameter"
+        elif n < 1:
+            return [], "Invalid input, n must be greater than 0"
+
+        source_node = Node(workspace=Workspace(pk=self.workspace), name=kwargs["name"], namespace=kwargs["namespace"])
+        query = Q(source=source_node) | Q(destination=source_node)
+        hop_edges = list(Edge.objects.filter(workspace=self.workspace).filter(query).all())
+        search_nodes = [e.source if e.destination == source_node else e.destination for e in hop_edges]
+
+        return_nodes = search_nodes
+        return_edges = hop_edges
+        for i in range(kwargs["n"] - 1):
+            source_edges = Edge.objects.filter(source__in=search_nodes).all()
+            destination_edges = Edge.objects.filter(destination__in=search_nodes).all()
+
+            search_nodes = [*[e.source for e in source_edges], *[e.destination for e in destination_edges]]
+            return_nodes.extend(search_nodes)
+            return_edges.extend(source_edges)
+            return_edges.extend(destination_edges)
+
+        nodes = set(model_to_schema(return_nodes, "NodeV1"))
+        edges = set(model_to_schema(return_edges, "EdgeV1"))
+        result = [item.spec for item in (*nodes, *edges)]
+        return result, self.response_message(result)
+
+
 class InvalidApiSchema(BaseModel):
     pass
 
@@ -306,7 +397,9 @@ class BaseConversation:
             functions = []
 
         self.model_type = model_type
-        self.encoder = FakeEncoder()  # tiktoken.encoding_for_model(self.model_type)
+        self.token_limit = get_token_limit(self.model_type)
+        self.encoder = tiktoken.encoding_for_model(self.model_type)
+        # self.encoder = FakeEncoder()
         self.chat_id = chat_id
         self.cache_id = f"grAI:chat_id:{chat_id}"
         self.system_context = prompt
@@ -314,8 +407,14 @@ class BaseConversation:
         self.api_functions = {func.id: func for func in functions}
         self.verbose = verbose
 
-        self.prompt_message = SystemMessage(content=self.system_context)
+        self.prompt_message = self.build_message(SystemMessage, content=self.system_context)
         self.hydrate_chat()
+
+    def build_message(self, message_type: Type[T], content: str, **kwargs) -> T:
+        return message_type(content=content, token_length=self.get_token_length(content), **kwargs)
+
+    def get_token_length(self, message):
+        return len(self.encoder.encode(message))
 
     @property
     def cached_messages(self) -> list[BaseMessage]:
@@ -345,7 +444,7 @@ class BaseConversation:
         working on the problem with me. Please insure you do not call any functions providing an exclusively
         text based summary of the conversation to this point with all relevant context for the next agent.
         """
-        message = UserMessage(content=summary_prompt)
+        message = self.build_message(UserMessage, summary_prompt)
         summary_messages = ChatMessages(messages=[*messages, message])
         logging.info(f"Summarizing conversation for chat: {self.chat_id}")
         response = openai.ChatCompletion.create(
@@ -353,7 +452,7 @@ class BaseConversation:
         )
 
         # this is hacky for now
-        summary_message = AIMessage(content=response.choices[0].message.content)
+        summary_message = self.build_message(AIMessage, response.choices[0].message.content)
         return summary_message
 
     @property
@@ -370,21 +469,55 @@ class BaseConversation:
             model = partial(openai.ChatCompletion.create, model=self.model_type, user=self.user)
         return model
 
+    def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
+        model_limit = self.token_limit * 0.85
+
+        requires_summary = messages.token_length() > model_limit
+        while requires_summary:
+            prev_accumulated_tokens = 0
+            accumulated_tokens = 0
+            i = 0
+            for i, message in enumerate(messages.messages):
+                accumulated_tokens += message.token_length
+                if accumulated_tokens > model_limit:
+                    break
+                prev_accumulated_tokens = accumulated_tokens
+
+            available_tokens = model_limit - prev_accumulated_tokens
+            message = messages.messages[i]
+            if i == len(messages) and accumulated_tokens < model_limit:
+                requires_summary = False
+            elif available_tokens >= message.token_length:
+                summary = self.summarize(messages.messages[: (i + 1)])
+                messages = [self.prompt_message, summary, *messages.messages[(i + 1) :]]
+            else:
+                encoding = self.encoder.encode(message)
+                message_obj = copy.copy(message)
+                next_message_obj = copy.copy(message)
+
+                message_obj.content = self.encoder.decode(encoding[:available_tokens])
+                message_obj.token_length = len(encoding[:available_tokens])
+                next_message_obj.content = self.encoder.decode(encoding[available_tokens:])
+                next_message_obj.token_length = len(encoding[available_tokens:])
+
+                summary = self.summarize([*messages.messages[:i], message_obj])
+                messages = [self.prompt_message, summary, next_message_obj, *messages.messages[i:]]
+
+            messages = ChatMessages(messages=messages)
+        return messages
+
     def request(self, user_input: str) -> str:
         logging.info(f"Responding to request for: {self.chat_id}")
-        messages = ChatMessages(messages=[self.prompt_message, *self.cached_messages, UserMessage(content=user_input)])
+
+        messages = ChatMessages(
+            messages=[self.prompt_message, *self.cached_messages, self.build_message(UserMessage, content=user_input)]
+        )
 
         result = None
         stop = False
         while not stop:
-            try:
-                response = self.model(messages=messages.to_gpt())
-            except openai.InvalidRequestError:
-                # If it hits the token limit try to summarize
-                summary = self.summarize(messages[:-1])
-
-                messages = ChatMessages(messages=[self.prompt_message, summary, messages[-1]])
-                response = self.model(messages=messages.to_gpt())
+            messages = self.evaluate_summary(messages)
+            response = self.model(messages=messages.to_gpt())
 
             if result:
                 for choice in response.choices:
@@ -395,7 +528,8 @@ class BaseConversation:
                 result = response.choices[0]
 
             if stop := result.finish_reason == "stop":
-                messages.append(AIMessage(content=result.message.content))
+                message = self.build_message(AIMessage, content=result.message.content)
+                messages.append(message)
             elif result.finish_reason == "function_call":
                 func_id = result.message.function_call.name
                 func_kwargs = json.loads(result.message.function_call.arguments)
@@ -403,9 +537,11 @@ class BaseConversation:
                 response = api.response(**func_kwargs)
 
                 if isinstance(api, InvalidAPI):
-                    messages.append(SystemMessage(content=response))
+                    message = self.build_message(SystemMessage, response)
+                    messages.append(message)
                 else:
-                    messages.append(FunctionMessage(name=func_id, content=response))
+                    message = self.build_message(FunctionMessage, content=response, name=func_id)
+                    messages.append(message)
             elif result.finish_reason == "length":
                 summary = self.summarize(messages[:-1])
                 messages = ChatMessages(messages=[self.prompt_message, summary, messages[-1]])
@@ -427,11 +563,18 @@ def get_chat_conversation(
     * Unique pieces of data like a column in a database is identified by a (name, namespace) tuple or a unique uuid.
     * You can help users discover new data or identify and correct issues such as broken data pipelines, and BI dashboards.
     * Your responses must use Markdown syntax
+    * When a user asks you a question about their data you should proactively look up additional context about the data.
+    * Nodes contain a metadata field with extra context about the node.
+    * Nodes and Edges are typed. You can identify the type under `metadata.grai.node_type` or `metadata.grai.edge_type`
+    * If a Node has a type like `Column` with a `TableToColumn` Edge connecting to a `Table` node, the Column node represents a column in the table.
+    * Node names for databases and datawarehouses are constructed following `{schema}.{table}.{column}` format e.g. a column named `id` in a table named `users` in a schema named `public` would be identified as `public.users.id`
     """
     functions = [
         NodeLookupAPI(workspace=workspace),
+        # Todo: edge lookup is broken
         # EdgeLookupAPI(workspace=workspace),
         FuzzyMatchNodesAPI(workspace=workspace),
+        NHopQueryAPI(workspace=workspace),
     ]
 
     conversation = BaseConversation(

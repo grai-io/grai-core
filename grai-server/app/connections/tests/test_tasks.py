@@ -1,12 +1,12 @@
 import os
 import uuid
 from datetime import date
-from grai_schemas.integrations.errors import NoConnectionError
 
 import pytest
 from decouple import config
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
+from grai_schemas.integrations.errors import NoConnectionError
 from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile
