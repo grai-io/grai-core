@@ -1,5 +1,6 @@
-import tiktoken
 import os
+
+import tiktoken
 
 supported_models = ["gpt-4", "gpt-4-32k", "gpt-3.5-turbo"]
 

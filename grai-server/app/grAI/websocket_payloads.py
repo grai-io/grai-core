@@ -1,7 +1,8 @@
 import uuid
 from enum import Enum
-from typing import Literal, Annotated
+from typing import Annotated, Literal
 from uuid import UUID
+
 from pydantic import BaseModel, ValidationError, validator
 
 

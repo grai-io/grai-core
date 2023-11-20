@@ -1,8 +1,10 @@
 # chat/consumers.py
 import json
+import logging
 import uuid
 from functools import cached_property, partial
 from typing import Callable
+from uuid import UUID
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -15,8 +17,6 @@ from grAI.models import Message, MessageRoles, UserChat
 from grAI.websocket_payloads import ChatErrorMessages, ChatEvent
 from users.models import User
 from workspaces.models import Membership
-import logging
-from uuid import UUID
 
 
 class ChatConsumer(WebsocketConsumer):

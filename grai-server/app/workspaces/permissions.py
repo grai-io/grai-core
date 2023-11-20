@@ -1,4 +1,4 @@
-from rest_framework_api_key.permissions import BaseHasAPIKey, KeyParser, HasAPIKey
+from rest_framework_api_key.permissions import BaseHasAPIKey, HasAPIKey, KeyParser
 
 from .models import WorkspaceAPIKey
 

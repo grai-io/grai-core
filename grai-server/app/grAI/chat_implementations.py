@@ -1,26 +1,25 @@
 import copy
 import json
+import logging
+import operator
 import uuid
 from abc import ABC, abstractmethod
-from functools import partial
-from typing import Callable, Any, Literal, Union, Annotated, Type, TypeVar
+from functools import partial, reduce
+from itertools import accumulate
+from typing import Annotated, Any, Callable, Literal, Type, TypeVar, Union
 
 import openai
+import tiktoken
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Q
 from grai_schemas.serializers import GraiYamlSerializer
 from pydantic import BaseModel, Field
-from lineage.models import Node, Edge
-from grAI.models import Message
-from django.db.models import Q
-from functools import reduce
-import operator
-import logging
-from connections.adapters.schemas import model_to_schema
-import tiktoken
-from pydantic import BaseModel
 
-from itertools import accumulate
+from connections.adapters.schemas import model_to_schema
+from grAI.models import Message
+from lineage.models import Edge, Node
+from workspaces.models import Workspace
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -167,9 +166,7 @@ class NodeLookup(BaseModel):
 
 class NodeLookupAPI(API):
     id = "node_lookup"
-    description = (
-        "A function to lookup metadata about one or more nodes. Results will be returned in the order requested."
-    )
+    description = "Lookup metadata about one or more nodes if you know precisely which node(s) to lookup"
     schema_model = NodeLookup
 
     def __init__(self, workspace: str | uuid.UUID):
@@ -178,9 +175,7 @@ class NodeLookupAPI(API):
 
     def response_message(self, result_set: list[Node]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -214,9 +209,7 @@ class FuzzyMatchNodesAPI(API):
 
     def response_message(self, result_set: list[Node]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -260,9 +253,7 @@ class EdgeLookupAPI(API):
 
     def response_message(self, result_set: list[Edge]) -> str | None:
         total_results = len(result_set)
-        if total_results > self.query_limit:
-            message = f"Returned {self.query_limit} of {total_results} results. You might need to narrow your search."
-        elif total_results == 0:
+        if total_results == 0:
             message = "No results found matching these query conditions."
         else:
             message = None
@@ -319,20 +310,53 @@ class NodeEdgeSerializer:
 class NHopQuerySchema(BaseModel):
     name: str = Field(description="The name of the node to query for")
     namespace: str = Field(description="The namespace of the node to query for")
-    n_forward: int = Field(description="The number of hops to search forward from the node", default=1)
-    n_backward: int = Field(description="The number of hops to search backward from the node", default=1)
+    n: int = Field(description="The number of hops to query for", default=1)
 
 
 class NHopQueryAPI(API):
-    id: "n_hop_query"
-    description: "query for nodes and edges within a specified number of hops from a given node"
+    id: str = "n_hop_query"
+    description: str = "query for nodes and edges within a specified number of hops from a given node"
     schema_model = NHopQuerySchema
 
     def __init__(self, workspace: str | uuid.UUID):
         self.workspace = workspace
 
-    def call(self, **kwargs):
-        pass
+    def response_message(self, result_set: list[Edge | Node]) -> str | None:
+        total_results = len(result_set)
+        if total_results == 0:
+            message = "No results found matching these query conditions."
+        else:
+            message = None
+
+        return message
+
+    def call(self, **kwargs) -> (list[Edge | Node], str | None):
+        n = kwargs.get("n", None)
+        if n is None:
+            return [], "Invalid input, n is a required parameter"
+        elif n < 1:
+            return [], "Invalid input, n must be greater than 0"
+
+        source_node = Node(workspace=Workspace(pk=self.workspace), name=kwargs["name"], namespace=kwargs["namespace"])
+        query = Q(source=source_node) | Q(destination=source_node)
+        hop_edges = list(Edge.objects.filter(workspace=self.workspace).filter(query).all())
+        search_nodes = [e.source if e.destination == source_node else e.destination for e in hop_edges]
+
+        return_nodes = search_nodes
+        return_edges = hop_edges
+        for i in range(kwargs["n"] - 1):
+            source_edges = Edge.objects.filter(source__in=search_nodes).all()
+            destination_edges = Edge.objects.filter(destination__in=search_nodes).all()
+
+            search_nodes = [*[e.source for e in source_edges], *[e.destination for e in destination_edges]]
+            return_nodes.extend(search_nodes)
+            return_edges.extend(source_edges)
+            return_edges.extend(destination_edges)
+
+        nodes = set(model_to_schema(return_nodes, "NodeV1"))
+        edges = set(model_to_schema(return_edges, "EdgeV1"))
+        result = [item.spec for item in (*nodes, *edges)]
+        return result, self.response_message(result)
 
 
 class InvalidApiSchema(BaseModel):
@@ -547,8 +571,10 @@ def get_chat_conversation(
     """
     functions = [
         NodeLookupAPI(workspace=workspace),
-        EdgeLookupAPI(workspace=workspace),
+        # Todo: edge lookup is broken
+        # EdgeLookupAPI(workspace=workspace),
         FuzzyMatchNodesAPI(workspace=workspace),
+        NHopQueryAPI(workspace=workspace),
     ]
 
     conversation = BaseConversation(

@@ -1,8 +1,9 @@
+import logging
 import os
 import subprocess
 import warnings
 from pathlib import Path
-import logging
+
 import openai
 from decouple import config
 

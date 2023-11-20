@@ -6,10 +6,14 @@ import uuid
 
 from django.urls import path
 from django_multitenant.utils import get_current_tenant
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.response import Response
 
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from common.permissions.multitenant import Multitenant
 from connections.tasks import process_run
 from installations.github import Github

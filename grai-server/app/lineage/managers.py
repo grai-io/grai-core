@@ -1,14 +1,14 @@
-from typing import Any, Iterable, List, Sequence
+import uuid
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, List, Sequence
 
+from django.core.cache import cache
 from django.db import models
 from django_multitenant.models import TenantManagerMixin
 from psqlextra.manager import PostgresManager
 
+from lineage.tasks import EmbeddingTaskStatus, update_node_vector_index
+
 from .graph_cache import GraphCache
-from lineage.tasks import update_node_vector_index, EmbeddingTaskStatus
-from django.core.cache import cache
-from typing import TYPE_CHECKING, Iterator
-import uuid
 
 if TYPE_CHECKING:
     from lineage.models import Node

@@ -1,8 +1,9 @@
 import pprint
 from typing import Any, List, Literal, Optional, Sequence, Type
 from uuid import UUID
-from django.db.models.query import QuerySet
+
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from grai_schemas.v1.edge import EdgeSpec, EdgeV1, SourcedEdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.node import (
     NodeNamedID,

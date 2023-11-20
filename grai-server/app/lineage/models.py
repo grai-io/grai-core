@@ -1,17 +1,17 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 from grai_schemas.serializers import GraiEncoder
+from pgvector.django import HnswIndex, VectorField
 
+from lineage.tasks import update_node_vector_index
 
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
-from .managers import CacheManager, SourceManager, NodeManager
-from pgvector.django import VectorField, HnswIndex
-from django.conf import settings
-from lineage.tasks import update_node_vector_index
+from .managers import CacheManager, NodeManager, SourceManager
 
 
 class Node(TenantModel):
