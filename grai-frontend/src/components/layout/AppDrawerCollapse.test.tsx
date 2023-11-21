@@ -2,11 +2,15 @@ import { userEvent } from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import AppDrawerCollapse from "./AppDrawerCollapse"
 
-const setExpand = jest.fn()
+const setExpanded = jest.fn()
 
 test("renders", async () => {
   render(
-    <AppDrawerCollapse expand={false} setExpand={setExpand} hover={false} />,
+    <AppDrawerCollapse
+      expanded={false}
+      setExpanded={setExpanded}
+      hover={false}
+    />,
   )
 
   // expect(screen.queryByTestId("RightIcon")).not.toBeInTheDocument()
@@ -16,7 +20,7 @@ test("renders", async () => {
 test("expand", async () => {
   const user = userEvent.setup()
 
-  render(<AppDrawerCollapse expand={false} setExpand={setExpand} hover />)
+  render(<AppDrawerCollapse expanded={false} setExpanded={setExpanded} hover />)
 
   expect(screen.getByTestId("RightIcon")).toBeInTheDocument()
   expect(screen.queryByTestId("LeftIcon")).not.toBeInTheDocument()
@@ -25,13 +29,13 @@ test("expand", async () => {
     await user.click(screen.getByTestId("RightIcon"))
   })
 
-  expect(setExpand).toHaveBeenCalledWith(true)
+  expect(setExpanded).toHaveBeenCalledWith(true)
 })
 
 test("collapse", async () => {
   const user = userEvent.setup()
 
-  render(<AppDrawerCollapse expand setExpand={setExpand} hover />)
+  render(<AppDrawerCollapse expanded setExpanded={setExpanded} hover />)
 
   expect(screen.queryByTestId("RightIcon")).not.toBeInTheDocument()
   expect(screen.getByTestId("LeftIcon")).toBeInTheDocument()
@@ -40,5 +44,5 @@ test("collapse", async () => {
     await user.click(screen.getByTestId("LeftIcon"))
   })
 
-  expect(setExpand).toHaveBeenCalledWith(false)
+  expect(setExpanded).toHaveBeenCalledWith(false)
 })

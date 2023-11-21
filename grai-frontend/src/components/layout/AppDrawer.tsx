@@ -1,6 +1,6 @@
 import React from "react"
 import { Chat } from "@mui/icons-material"
-import { Drawer, List, ListItem, ListItemButton } from "@mui/material"
+import { Box, Drawer, List, ListItem, ListItemButton } from "@mui/material"
 import { Link } from "react-router-dom"
 import useChat from "helpers/useChat"
 import useLocalState from "helpers/useLocalState"
@@ -22,12 +22,13 @@ import Profile, { User } from "./profile/Profile"
 
 type AppDrawerProps = {
   profile?: User
+  sampleData?: boolean
 }
 
-const AppDrawer: React.FC<AppDrawerProps> = ({ profile }) => {
+const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
   const { routePrefix } = useWorkspace()
   const { unread } = useChat()
-  const [expand, setExpand] = useLocalState("app-drawer", true)
+  const [expanded, setExpanded] = useLocalState("app-drawer", true)
 
   const pages = [
     {
@@ -70,114 +71,74 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile }) => {
     },
   ]
 
-  const drawerWidth = expand ? 224 : 81
+  const drawerWidth = expanded ? 224 : 81
 
   return (
-    <HoverState>
-      {(hover, bindHover) => (
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            display: "flex",
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
+    <>
+      <HoverState>
+        {(hover, bindHover) => (
+          <Drawer
+            sx={{
               width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          variant="permanent"
-          anchor="left"
-          PaperProps={{
-            sx: {
-              backgroundColor: "#1F2A37",
-              position: "static",
-            },
-          }}
-          {...bindHover}
-        >
-          <AppDrawerCollapse
-            expand={expand}
-            setExpand={setExpand}
-            hover={hover}
-          />
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to={`${routePrefix}`}>
-                {expand ? <GraiLogoWhite /> : <GraiIcon />}
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <List sx={{ flexGrow: 1 }}>
-            {pages.map(page => (
-              <AppDrawerItem
-                expand={expand}
-                key={page.path}
-                title={page.title}
-                path={page.path}
-                icon={page.icon}
-                className={page.className}
-                alert={page.alert}
-              />
-            ))}
-          </List>
-          <List>
-            <AppDrawerItem
-              title="Settings"
-              path="settings/profile"
-              icon={<Settings />}
-              expand={expand}
+              display: "flex",
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+              },
+              height: sampleData ? "calc(100vh - 64px)" : "100vh",
+              position: "fixed",
+            }}
+            variant="permanent"
+            anchor="left"
+            PaperProps={{
+              sx: {
+                backgroundColor: "#1F2A37",
+                position: "static",
+              },
+            }}
+            {...bindHover}
+          >
+            <AppDrawerCollapse
+              expanded={expanded}
+              setExpanded={setExpanded}
+              hover={hover}
             />
-
-            <Profile expand={expand} profile={profile} />
-            {/* {expand ? (
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setExpand(false)}>
-                <ListItemIcon>
-                  <Box
-                    sx={{
-                      borderRadius: "8px",
-                      height: 48,
-                      width: 48,
-                      textAlign: "center",
-                      pt: "10px",
-                      mr: "16px",
-                    }}
-                  >
-                    <KeyboardArrowLeft sx={{ color: "#FFFFFF95" }} />
-                  </Box>
-                </ListItemIcon>
-                <ListItemText
-                  primary="Collapse"
-                  primaryTypographyProps={{
-                    sx: { fontWeight: 600, color: "#FFFFFF80" },
-                  }}
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={Link} to={`${routePrefix}`}>
+                  {expanded ? <GraiLogoWhite /> : <GraiIcon />}
+                </ListItemButton>
+              </ListItem>
+            </List>
+            <List sx={{ flexGrow: 1 }}>
+              {pages.map(page => (
+                <AppDrawerItem
+                  expanded={expanded}
+                  key={page.path}
+                  title={page.title}
+                  path={page.path}
+                  icon={page.icon}
+                  className={page.className}
+                  alert={page.alert}
                 />
-              </ListItemButton>
-            </ListItem>
-          ) : (
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setExpand(true)}>
-                <ListItemIcon>
-                  <Box
-                    sx={{
-                      borderRadius: "8px",
-                      height: 48,
-                      width: 48,
-                      textAlign: "center",
-                      pt: "10px",
-                      mr: "16px",
-                    }}
-                  >
-                    <KeyboardArrowRight sx={{ color: "#FFFFFF95" }} />
-                  </Box>
-                </ListItemIcon>
-              </ListItemButton>
-            </ListItem>
-          )} */}
-          </List>
-        </Drawer>
-      )}
-    </HoverState>
+              ))}
+            </List>
+            <List>
+              <AppDrawerItem
+                title="Settings"
+                path="settings/profile"
+                icon={<Settings />}
+                expanded={expanded}
+              />
+
+              <Profile expanded={expanded} profile={profile} />
+            </List>
+          </Drawer>
+        )}
+      </HoverState>
+      <Box sx={{ width: expanded ? 224 : 81 }} />
+    </>
   )
 }
 

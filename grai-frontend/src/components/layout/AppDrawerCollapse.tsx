@@ -2,18 +2,18 @@ import React from "react"
 import { Box, Fade } from "@mui/material"
 
 type AppDrawerCollapseProps = {
-  expand: boolean
-  setExpand: (expand: boolean) => void
+  expanded: boolean
+  setExpanded: (expanded: boolean) => void
   hover: boolean
 }
 
 const AppDrawerCollapse: React.FC<AppDrawerCollapseProps> = ({
-  expand,
-  setExpand,
+  expanded,
+  setExpanded,
   hover,
 }) => (
   <Fade in={hover} timeout={{ exit: 500 }}>
-    {expand ? (
+    {expanded ? (
       <Box
         sx={{
           p: "2px",
@@ -27,7 +27,7 @@ const AppDrawerCollapse: React.FC<AppDrawerCollapseProps> = ({
           zIndex: 20,
           cursor: "pointer",
         }}
-        onClick={() => setExpand(false)}
+        onClick={() => setExpanded(false)}
         data-testid="LeftIcon"
       >
         <svg
@@ -60,7 +60,7 @@ const AppDrawerCollapse: React.FC<AppDrawerCollapseProps> = ({
           zIndex: 20,
           cursor: "pointer",
         }}
-        onClick={() => setExpand(true)}
+        onClick={() => setExpanded(true)}
         data-testid="RightIcon"
       >
         <svg

@@ -10,7 +10,7 @@ const profile = {
 }
 
 test("renders", async () => {
-  render(<Profile expand profile={profile} />, {
+  render(<Profile expanded profile={profile} />, {
     withRouter: true,
   })
 
@@ -20,7 +20,7 @@ test("renders", async () => {
 })
 
 test("renders collapsed", async () => {
-  render(<Profile expand={false} profile={profile} />, {
+  render(<Profile expanded={false} profile={profile} />, {
     withRouter: true,
   })
 
@@ -29,8 +29,37 @@ test("renders collapsed", async () => {
   })
 })
 
+const emptyProfile = {
+  id: "1",
+  username: "test",
+  first_name: "",
+  last_name: "",
+}
+
+test("renders empty", async () => {
+  render(<Profile expanded profile={emptyProfile} />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("PersonOutlineIcon")).toBeTruthy()
+  })
+
+  expect(screen.getByText("Profile")).toBeTruthy()
+})
+
+test("renders empty collapsed", async () => {
+  render(<Profile expanded={false} profile={emptyProfile} />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("PersonOutlineIcon")).toBeTruthy()
+  })
+})
+
 test("renders no profile", async () => {
-  render(<Profile expand />, {
+  render(<Profile expanded />, {
     withRouter: true,
   })
 
@@ -40,7 +69,7 @@ test("renders no profile", async () => {
 })
 
 test("logout", async () => {
-  render(<Profile expand profile={profile} />, {
+  render(<Profile expanded profile={profile} />, {
     withRouter: true,
   })
 
