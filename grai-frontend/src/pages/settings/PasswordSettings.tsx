@@ -49,6 +49,10 @@ const PasswordSettings: React.FC = () => {
       .then(() => navigate(`${routePrefix}/settings/profile`))
       .catch(err => {})
 
+  const currentError =
+    error && error.graphQLErrors[0]?.message === "Old password does not match"
+  const newError = error && !currentError
+
   return (
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
@@ -69,6 +73,7 @@ const PasswordSettings: React.FC = () => {
                 type="password"
                 fullWidth
                 required
+                error={currentError}
                 inputProps={{ "data-testid": "current-password" }}
               />
               <TextField
@@ -81,7 +86,8 @@ const PasswordSettings: React.FC = () => {
                 type="password"
                 fullWidth
                 required
-                inputProps={{ "data-testid": "new-password" }}
+                error={newError}
+                inputProps={{ "data-testid": "new-password", minLength: 10 }}
               />
               <LoadingButton
                 type="submit"
