@@ -1,14 +1,16 @@
+import json
 from datetime import datetime
 from typing import Union
 
+import django.contrib.auth.password_validation as validators
 import strawberry
 from asgiref.sync import sync_to_async
-from decouple import config
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import PermissionDenied
+from django.core import exceptions
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django_otp import devices_for_user, user_has_device, verify_token
@@ -18,9 +20,17 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, get_user
 from api.pagination import DataWrapper
 from api.types import BasicResult
+from users.models import User
 from users.types import Device, Profile
 
 from .validation import send_validation_email, verification_generator
+
+
+def validate_password(password: str, user: User):
+    try:
+        validators.validate_password(password=password, user=user)
+    except exceptions.ValidationError as e:
+        raise ValidationError(json.dumps(e.messages))
 
 
 @strawberry.type
@@ -106,6 +116,9 @@ class Mutation:
 
         split_name = name.rpartition(" ")
         user = UserModel(username=username, first_name=split_name[0], last_name=split_name[2])
+
+        validate_password(password, user)
+
         user.set_password(password)
         await sync_to_async(user.save)()
 
@@ -132,6 +145,8 @@ class Mutation:
 
         if not check_password(old_password, user.password):
             raise PermissionDenied("Old password does not match")
+
+        validate_password(password, user)
 
         user.set_password(password)
         await sync_to_async(user.save)()
@@ -182,6 +197,8 @@ class Mutation:
             if not default_token_generator.check_token(user, token):
                 raise Exception("Token invalid")
 
+            validate_password(password, user)
+
             user.set_password(password)
             await sync_to_async(user.save)()
             return user
@@ -201,6 +218,9 @@ class Mutation:
 
             user.first_name = first_name
             user.last_name = last_name
+
+            validate_password(password, user)
+
             user.set_password(password)
             await sync_to_async(user.save)()
 

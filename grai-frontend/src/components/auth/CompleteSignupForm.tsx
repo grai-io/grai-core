@@ -126,6 +126,7 @@ const CompleteSignupForm: React.FC = () => {
           }
           inputProps={{
             "data-testid": "password",
+            minLength: 10,
           }}
         />
         <LoadingButton

@@ -312,7 +312,7 @@ async def test_register(test_basic_context):
         variable_values={
             "username": username,
             "name": "Test Name Last",
-            "password": "password",
+            "password": "test12abcde",
         },
         context_value=context,
     )
@@ -322,6 +322,40 @@ async def test_register(test_basic_context):
     assert result.data["register"]["username"] == username
     assert result.data["register"]["first_name"] == "Test Name"
     assert result.data["register"]["last_name"] == "Last"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_register_short(test_basic_context):
+    context = test_basic_context
+
+    mutation = """
+        mutation Register($username: String!, $name: String!, $password: String!) {
+            register(username: $username, name: $name, password: $password) {
+                id
+                username
+                first_name
+                last_name
+            }
+        }
+    """
+
+    username = generate_username()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "username": username,
+            "name": "Test Name Last",
+            "password": "test",
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == '[GraphQLError(\'["The password is too similar to the first name.", "This password is too short. It must contain at least 10 characters.", "This password is too common."]\', locations=[SourceLocation(line=3, column=13)], path=[\'register\'])]'
+    )
 
 
 @pytest.mark.django_db
@@ -376,7 +410,7 @@ async def test_update_password(test_context):
         mutation,
         variable_values={
             "old_password": "old_password",
-            "password": "password",
+            "password": "test12abcde",
         },
         context_value=context,
     )
@@ -385,6 +419,37 @@ async def test_update_password(test_context):
     assert result.data["updatePassword"] == {
         "id": str(user.id),
     }
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_update_password_short(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    user.set_password("old_password")
+    await sync_to_async(user.save)()
+
+    mutation = """
+        mutation UpdatePassword($old_password: String!, $password: String!) {
+            updatePassword(old_password: $old_password, password: $password) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "old_password": "old_password",
+            "password": "test",
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('[\"This password is too short. It must contain at least 10 characters.\", \"This password is too common.\"]', locations=[SourceLocation(line=3, column=13)], path=['updatePassword'])]"
+    )
 
 
 @pytest.mark.django_db
@@ -483,13 +548,38 @@ async def test_reset_password(test_context):
 
     result = await schema.execute(
         mutation,
-        variable_values={"token": token, "uid": str(user.pk), "password": "password"},
+        variable_values={"token": token, "uid": str(user.pk), "password": "test1234abcd"},
     )
 
     assert result.errors is None
     assert result.data["resetPassword"] == {
         "id": str(user.id),
     }
+
+
+@pytest.mark.django_db
+async def test_reset_password_short(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    token = default_token_generator.make_token(user)
+
+    mutation = """
+        mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
+            resetPassword(token: $token, uid: $uid, password: $password) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={"token": token, "uid": str(user.pk), "password": "test"},
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('[\"This password is too short. It must contain at least 10 characters.\", \"This password is too common.\"]', locations=[SourceLocation(line=3, column=13)], path=['resetPassword'])]"
+    )
 
 
 @pytest.mark.django_db
@@ -568,7 +658,7 @@ async def test_complete_signup(test_context):
             "uid": str(user.pk),
             "first_name": "First",
             "last_name": "Last",
-            "password": "password",
+            "password": "test1234abcd",
         },
     )
 
@@ -578,6 +668,39 @@ async def test_complete_signup(test_context):
         "first_name": "First",
         "last_name": "Last",
     }
+
+
+@pytest.mark.django_db
+async def test_complete_signup_short(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    token = default_token_generator.make_token(user)
+
+    mutation = """
+        mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {
+            completeSignup(token: $token, uid: $uid, first_name: $first_name, last_name: $last_name, password: $password) {
+                id
+                first_name
+                last_name
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "token": token,
+            "uid": str(user.pk),
+            "first_name": "First",
+            "last_name": "Last",
+            "password": "test",
+        },
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('[\"This password is too short. It must contain at least 10 characters.\", \"This password is too common.\"]', locations=[SourceLocation(line=3, column=13)], path=['completeSignup'])]"
+    )
 
 
 @pytest.mark.django_db

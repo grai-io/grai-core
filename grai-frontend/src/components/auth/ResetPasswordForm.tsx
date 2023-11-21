@@ -71,6 +71,7 @@ const ResetPasswordForm: React.FC = () => {
           onChange={event => setPassword(event.target.value)}
           inputProps={{
             "data-testid": "password",
+            minLength: 10,
           }}
         />
         <LoadingButton
