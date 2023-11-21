@@ -423,7 +423,7 @@ jobs:
           name: frontend-build
           path: "./grai-frontend/build"
       - name: Run bundlewatch
-        run: npm run bundlewatch
+        run: npx bundlewatch
         env:
           BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
 
