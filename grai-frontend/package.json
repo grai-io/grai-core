@@ -33,7 +33,6 @@
     "algoliasearch": "^4.15.0",
     "apollo-link-debounce": "^3.0.0",
     "apollo-upload-client": "^17.0.0",
-    "bundlewatch": "^0.3.3",
     "casual": "^1.6.2",
     "chart.js": "^4.3.0",
     "chartjs-adapter-luxon": "^1.3.1",
@@ -90,7 +89,6 @@
     "lint": "eslint src/**/*.{ts,tsx,test.tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx,test.tsx} --fix",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "bundlewatch": "bundlewatch",
     "download:schema": "npx apollo client:download-schema --endpoint=http://127.0.0.1:8000/graphql/ src/testing/schema.json",
     "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
   },
@@ -116,7 +114,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color|reactflow|react-json-view-lite|react-syntax-highlighter|remark-gfm)"
+      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color|d3-interpolate|d3-scale-chromatic|reactflow|react-json-view-lite|react-syntax-highlighter|remark-gfm)"
     ],
     "moduleNameMapper": {
       "react-markdown": "<rootDir>/__test__/mocks/react-markdown.js"
