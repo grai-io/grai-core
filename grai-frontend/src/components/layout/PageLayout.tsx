@@ -20,33 +20,28 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   sampleData,
   workspace,
   profile,
-}) => {
-  return (
-    <>
-      {gettingStarted && <GettingStarted />}
-      {sampleData && workspace && <SampleData workspace={workspace} />}
-      <Box sx={{ display: "flex" }}>
-        <AppDrawer profile={profile} />
-        <Box sx={{ width: "100%" }}>
-          <ErrorBoundary>
-            <Box
-              sx={{
-                flexGrow: 1,
-                backgroundColor: "#F8F8F8",
-                height: "100%",
-                minHeight:
-                  !gettingStarted && !sampleData
-                    ? "100vh"
-                    : "calc(100vh - 64px)",
-              }}
-            >
-              {children}
-            </Box>
-          </ErrorBoundary>
-        </Box>
+}) => (
+  <>
+    {gettingStarted && <GettingStarted />}
+    {sampleData && workspace && <SampleData workspace={workspace} />}
+    <Box sx={{ display: "flex" }}>
+      <AppDrawer profile={profile} sampleData={sampleData && !!workspace} />
+      <Box sx={{ flexGrow: 1 }}>
+        <ErrorBoundary>
+          <Box
+            sx={{
+              backgroundColor: "#F8F8F8",
+              height: "100%",
+              minHeight:
+                !gettingStarted && !sampleData ? "100vh" : "calc(100vh - 64px)",
+            }}
+          >
+            {children}
+          </Box>
+        </ErrorBoundary>
       </Box>
-    </>
-  )
-}
+    </Box>
+  </>
+)
 
 export default PageLayout
