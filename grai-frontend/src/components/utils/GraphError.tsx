@@ -37,8 +37,10 @@ const GraphError: React.FC<GraphErrorProps> = ({ error }) => {
     <Alert severity="error">
       <AlertTitle>Error</AlertTitle>
       <Stack spacing={1}>
-        {arrayWrap(parseJsonError(error)).map((message: string) => (
-          <Typography variant="body2">{message}</Typography>
+        {arrayWrap(parseJsonError(error)).map((message: string, index) => (
+          <Typography variant="body2" key={index}>
+            {message}
+          </Typography>
         ))}
       </Stack>
     </Alert>
