@@ -1,6 +1,5 @@
 import React from "react"
 import PopupState, { bindTrigger } from "material-ui-popup-state"
-import notEmpty from "helpers/notEmpty"
 import ProfileListItem from "./ProfileListItem"
 import ProfileMenu from "./ProfileMenu"
 
@@ -12,17 +11,17 @@ export interface User {
 }
 
 type ProfileProps = {
-  expand: boolean
+  expanded: boolean
   profile?: User
 }
 
-const Profile: React.FC<ProfileProps> = ({ expand, profile }) => {
-  if (!profile) return <ProfileListItem expand={expand} />
+const Profile: React.FC<ProfileProps> = ({ expanded, profile }) => {
+  if (!profile) return <ProfileListItem expand={expanded} />
 
-  const names = [profile.first_name, profile.last_name].filter(notEmpty)
+  const names = [profile.first_name, profile.last_name].filter(n => n !== "")
 
   const name = names.length > 0 ? names.join(" ") : "Profile"
-  const initials = names.map(name => name[0]).join("")
+  const initials = names.length > 0 ? names.map(name => name[0]).join("") : null
 
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -30,7 +29,7 @@ const Profile: React.FC<ProfileProps> = ({ expand, profile }) => {
         <React.Fragment>
           <ProfileListItem
             {...bindTrigger(popupState)}
-            expand={expand}
+            expand={expanded}
             name={name}
             initials={initials}
           />

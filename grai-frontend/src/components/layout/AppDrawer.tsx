@@ -100,8 +100,8 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
             {...bindHover}
           >
             <AppDrawerCollapse
-              expand={expanded}
-              setExpand={setExpanded}
+              expanded={expanded}
+              setExpanded={setExpanded}
               hover={hover}
             />
             <List>
@@ -114,7 +114,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
             <List sx={{ flexGrow: 1 }}>
               {pages.map(page => (
                 <AppDrawerItem
-                  expand={expanded}
+                  expanded={expanded}
                   key={page.path}
                   title={page.title}
                   path={page.path}
@@ -129,55 +129,10 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
                 title="Settings"
                 path="settings/profile"
                 icon={<Settings />}
-                expand={expanded}
+                expanded={expanded}
               />
 
-              <Profile expand={expanded} profile={profile} />
-              {/* {expand ? (
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setExpand(false)}>
-                <ListItemIcon>
-                  <Box
-                    sx={{
-                      borderRadius: "8px",
-                      height: 48,
-                      width: 48,
-                      textAlign: "center",
-                      pt: "10px",
-                      mr: "16px",
-                    }}
-                  >
-                    <KeyboardArrowLeft sx={{ color: "#FFFFFF95" }} />
-                  </Box>
-                </ListItemIcon>
-                <ListItemText
-                  primary="Collapse"
-                  primaryTypographyProps={{
-                    sx: { fontWeight: 600, color: "#FFFFFF80" },
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ) : (
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setExpand(true)}>
-                <ListItemIcon>
-                  <Box
-                    sx={{
-                      borderRadius: "8px",
-                      height: 48,
-                      width: 48,
-                      textAlign: "center",
-                      pt: "10px",
-                      mr: "16px",
-                    }}
-                  >
-                    <KeyboardArrowRight sx={{ color: "#FFFFFF95" }} />
-                  </Box>
-                </ListItemIcon>
-              </ListItemButton>
-            </ListItem>
-          )} */}
+              <Profile expanded={expanded} profile={profile} />
             </List>
           </Drawer>
         )}

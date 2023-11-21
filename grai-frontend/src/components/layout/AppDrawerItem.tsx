@@ -34,7 +34,7 @@ type AppDrawerItemProps = {
   path: string
   icon: JSX.Element
   className?: string
-  expand: boolean
+  expanded: boolean
   alert?: boolean
 }
 
@@ -43,7 +43,7 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
   path,
   icon,
   className,
-  expand,
+  expanded,
   alert,
 }) => {
   const location = useLocation()
@@ -55,7 +55,7 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
 
   return (
     <ListItem disablePadding key={path} className={className}>
-      <TooltipWrap show={!expand} title={title} placement="right">
+      <TooltipWrap show={!expanded} title={title} placement="right">
         <ListItemButton
           component={Link}
           to={to}
@@ -83,7 +83,7 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
               <Icon selected={selected}>{icon}</Icon>
             )}
           </ListItemIcon>
-          {expand && (
+          {expanded && (
             <ListItemText
               primary={title}
               primaryTypographyProps={{

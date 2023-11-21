@@ -7,7 +7,7 @@ test("renders", async () => {
       title="test"
       path="/"
       icon={<>Test Icon</>}
-      expand={false}
+      expanded={false}
     />,
     { withRouter: true },
   )
@@ -17,9 +17,12 @@ test("renders", async () => {
 })
 
 test("renders expanded", async () => {
-  render(<AppDrawerItem title="test" path="/" icon={<>Test Icon</>} expand />, {
-    withRouter: true,
-  })
+  render(
+    <AppDrawerItem title="test" path="/" icon={<>Test Icon</>} expanded />,
+    {
+      withRouter: true,
+    },
+  )
 
   expect(screen.getByText("Test Icon")).toBeInTheDocument()
   expect(screen.getByText("test")).toBeInTheDocument()
@@ -31,7 +34,7 @@ test("alert", async () => {
       title="test"
       path="/"
       icon={<>Test Icon</>}
-      expand={false}
+      expanded={false}
       alert
     />,
     { withRouter: true },

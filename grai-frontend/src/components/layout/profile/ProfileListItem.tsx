@@ -1,6 +1,8 @@
 import React from "react"
+import { PersonOutline } from "@mui/icons-material"
 import {
   Avatar,
+  Box,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -34,19 +36,38 @@ const ProfileListItem: React.FC<ProfileListItemProps> = ({
       }}
     >
       <ListItemIcon>
-        <Avatar
-          className="child-icon"
-          sx={{
-            bgcolor: "#324459",
-            width: "40px",
-            height: "40px",
-            fontSize: "16px",
-            ml: "4px",
-            mr: "20px",
-          }}
-        >
-          {initials}
-        </Avatar>
+        {initials ? (
+          <Avatar
+            className="child-icon"
+            sx={{
+              bgcolor: "#324459",
+              width: "40px",
+              height: "40px",
+              fontSize: "16px",
+              ml: "4px",
+              mr: "20px",
+            }}
+          >
+            {initials}
+          </Avatar>
+        ) : (
+          <Box
+            sx={{
+              bgcolor: "#324459",
+              borderRadius: "20px",
+              width: "40px",
+              height: "40px",
+              fontSize: "16px",
+              ml: "4px",
+              mr: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PersonOutline sx={{ color: "white" }} />
+          </Box>
+        )}
       </ListItemIcon>
       {expand && (
         <ListItemText
