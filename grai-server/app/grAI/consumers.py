@@ -11,7 +11,8 @@ from django.conf import settings
 from django.core.cache import cache
 from pydantic import ValidationError
 
-from channels.generic.websocket import AsyncConsumer, WebsocketConsumer
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from grAI.chat_implementations import BaseConversation, get_chat_conversation
 from grAI.models import Message, MessageRoles, UserChat
 from grAI.websocket_payloads import ChatErrorMessages, ChatEvent
@@ -19,7 +20,17 @@ from users.models import User
 from workspaces.models import Membership
 
 
-class ChatConsumer(WebsocketConsumer):
+@database_sync_to_async
+def async_bulk_create_objects(model, objects):
+    model.objects.bulk_create(objects)
+
+
+@database_sync_to_async
+def async_get_or_create(model, **kwargs):
+    return model.objects.get_or_create(**kwargs)
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
     """
     scope includes: path, headers, method, user, and url_route
     """
@@ -49,36 +60,36 @@ class ChatConsumer(WebsocketConsumer):
     def group_name(self) -> str:
         return f"{self.user.id}_{self.workspace}"
 
-    def connect(self):
-        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
-        self.accept()
+    async def connect(self):
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
 
-    def disconnect(self, close_code):
+    async def disconnect(self, close_code):
         # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         data: dict = json.loads(text_data)
-        socket_message_type = data.get("type", None)
-        match socket_message_type:
+
+        match socket_message_type := data.get("type", None):
             case "chat.message":
-                self.chat_message(data)
+                await self.chat_message(data)
             case None:
                 raise ValueError("Message type not specified")
             case _:
                 raise ValueError(f"Unknown message type `{socket_message_type}`")
 
-    def chat_message(self, event: dict):
+    async def chat_message(self, event: dict):
         try:
             payload = ChatEvent(**event)
         except ValidationError as e:
             response = f"Invalid payload:\n{e}"
-            self.send(text_data=json.dumps({"error": response}))
+            await self.send(text_data=json.dumps({"error": response}))
             return
 
         # Insure the conversation exists
         if payload.chat_id not in self.active_chats:
-            chat, created = UserChat.objects.get_or_create(membership=self.membership, id=payload.chat_id)
+            chat, created = await async_get_or_create(UserChat, membership=self.membership, id=payload.chat_id)
             self.active_chats.add(chat.id)
 
         if not settings.HAS_OPENAI:
@@ -89,9 +100,10 @@ class ChatConsumer(WebsocketConsumer):
             agent = MessageRoles.SYSTEM.value
         else:
             if payload.chat_id not in self.conversations:
-                self.conversations[payload.chat_id] = get_chat_conversation(payload.chat_id, workspace=self.workspace)
+                conversation = await get_chat_conversation(payload.chat_id, workspace=self.workspace)
+                self.conversations[payload.chat_id] = conversation
 
-            response = self.conversations[payload.chat_id].request(payload.message)
+            response = await self.conversations[payload.chat_id].request(payload.message)
             agent = MessageRoles.AGENT.value
 
         response_payload = ChatEvent(message=response, chat_id=payload.chat_id)
@@ -100,6 +112,6 @@ class ChatConsumer(WebsocketConsumer):
             chat_id=payload.chat_id, message=payload.message, role=MessageRoles.USER.value, visible=True
         )
         response_message = Message(chat_id=payload.chat_id, message=response, role=agent, visible=True)
-        Message.objects.bulk_create([inbound_message, response_message])
+        await async_bulk_create_objects(Message, [inbound_message, response_message])
 
-        self.send(text_data=response_payload.json())
+        await self.send(text_data=response_payload.json())

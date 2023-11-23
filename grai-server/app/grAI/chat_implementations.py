@@ -4,9 +4,9 @@ import logging
 import operator
 import uuid
 from abc import ABC, abstractmethod
-from functools import partial, reduce
+from functools import cached_property, partial, reduce
 from itertools import accumulate
-from typing import Annotated, Any, Callable, Literal, Type, TypeVar, Union
+from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, Union
 
 import openai
 import tiktoken
@@ -16,6 +16,7 @@ from django.db.models import Q
 from grai_schemas.serializers import GraiYamlSerializer
 from pydantic import BaseModel, Field
 
+from channels.db import database_sync_to_async
 from connections.adapters.schemas import model_to_schema
 from grAI.models import Message
 from lineage.models import Edge, Node
@@ -27,6 +28,9 @@ logging.basicConfig(level=logging.DEBUG)
 MAX_RETURN_LIMIT = 20
 
 T = TypeVar("T")
+R = TypeVar("R")
+P = ParamSpec("P")
+
 RoleType = Union[Literal["user"], Literal["system"], Literal["assistant"]]
 
 
@@ -123,9 +127,9 @@ class API(ABC):
 
         return GraiYamlSerializer.dump(result)
 
-    def response(self, **kwargs) -> str:
+    async def response(self, **kwargs) -> str:
         logging.info(f"Calling {self.id} with {kwargs}")
-        obj, message = self.call(**kwargs)
+        obj, message = await self.call(**kwargs)
 
         logging.info(f"Building Response message for {self.id} with {kwargs}")
         if message is None:
@@ -137,22 +141,6 @@ class API(ABC):
 
     def gpt_definition(self) -> dict:
         return {"name": self.id, "description": self.description, "parameters": self.schema_model.schema()}
-
-
-class SummaryModel(API):
-    content: str
-
-
-class Summarize(API):
-    id = "Summarize API"
-    description: "Summarize a conversation to manage token lengths"
-    schema_model = SummaryModel
-
-    def __init__(self, encoder):
-        self.encoder = encoder
-
-    def call(self, content: str) -> str:
-        pass
 
 
 class NodeIdentifier(BaseModel):
@@ -173,7 +161,8 @@ class NodeLookupAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
-    def response_message(self, result_set: list[Node]) -> str | None:
+    @staticmethod
+    def response_message(result_set: list[Node]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching these query conditions."
@@ -182,6 +171,7 @@ class NodeLookupAPI(API):
 
         return message
 
+    @database_sync_to_async
     def call(self, **kwargs) -> (list[Node], str | None):
         try:
             validation = self.schema_model(**kwargs)
@@ -207,7 +197,8 @@ class FuzzyMatchNodesAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
-    def response_message(self, result_set: list[Node]) -> str | None:
+    @staticmethod
+    def response_message(result_set: list[Node]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching these query conditions."
@@ -216,6 +207,7 @@ class FuzzyMatchNodesAPI(API):
 
         return message
 
+    @database_sync_to_async
     def call(self, string: str) -> (list, str | None):
         result_set = (
             Node.objects.filter(workspace=self.workspace).filter(name__contains=string).order_by("-created_at").all()
@@ -251,7 +243,8 @@ class EdgeLookupAPI(API):
         self.workspace = workspace
         self.query_limit = MAX_RETURN_LIMIT
 
-    def response_message(self, result_set: list[Edge]) -> str | None:
+    @staticmethod
+    def response_message(result_set: list[Edge]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching these query conditions."
@@ -260,6 +253,7 @@ class EdgeLookupAPI(API):
 
         return message
 
+    @database_sync_to_async
     def call(self, **kwargs) -> (list[Edge], str | None):
         validation = self.schema_model(**kwargs)
         q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.edges)
@@ -321,7 +315,8 @@ class NHopQueryAPI(API):
     def __init__(self, workspace: str | uuid.UUID):
         self.workspace = workspace
 
-    def response_message(self, result_set: list[Edge | Node]) -> str | None:
+    @staticmethod
+    def response_message(result_set: list[Edge | Node]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching these query conditions."
@@ -330,6 +325,7 @@ class NHopQueryAPI(API):
 
         return message
 
+    @database_sync_to_async
     def call(self, **kwargs) -> (list[Edge | Node], str | None):
         n = kwargs.get("n", None)
         if n is None:
@@ -371,6 +367,7 @@ class InvalidAPI(API):
     def __init__(self, apis):
         self.function_string = ", ".join([f"`{api.id}`" for api in apis])
 
+    @database_sync_to_async
     def call(self, *args, **kwargs):
         return f"Invalid API Endpoint. That function does not exist. The supported apis are {self.function_string}"
 
@@ -408,13 +405,9 @@ class BaseConversation:
         self.verbose = verbose
 
         self.prompt_message = self.build_message(SystemMessage, content=self.system_context)
-        self.hydrate_chat()
 
     def build_message(self, message_type: Type[T], content: str, **kwargs) -> T:
-        return message_type(content=content, token_length=self.get_token_length(content), **kwargs)
-
-    def get_token_length(self, message):
-        return len(self.encoder.encode(message))
+        return message_type(content=content, token_length=len(self.encoder.encode(content)), **kwargs)
 
     @property
     def cached_messages(self) -> list[BaseMessage]:
@@ -425,6 +418,7 @@ class BaseConversation:
     def cached_messages(self, values: list[BaseMessage]):
         cache.set(self.cache_id, [v.dict() for v in values])
 
+    @database_sync_to_async
     def hydrate_chat(self):
         logging.info(f"Hydrating chat history for conversations: {self.chat_id}")
         messages = cache.get(self.cache_id, None)
@@ -438,7 +432,7 @@ class BaseConversation:
             messages_list = [ChatMessage(message=message).message for message in messages_iter]
             self.cached_messages = messages_list
 
-    def summarize(self, messages: list[BaseMessage]) -> AIMessage:
+    async def summarize(self, messages: list[BaseMessage]) -> AIMessage:
         summary_prompt = """
         Please summarize this conversation encoding the most important information a future agent would need to continue
         working on the problem with me. Please insure you do not call any functions providing an exclusively
@@ -447,7 +441,7 @@ class BaseConversation:
         message = self.build_message(UserMessage, summary_prompt)
         summary_messages = ChatMessages(messages=[*messages, message])
         logging.info(f"Summarizing conversation for chat: {self.chat_id}")
-        response = openai.ChatCompletion.create(
+        response = await openai.ChatCompletion.acreate(
             model=self.model_type, user=self.user, messages=summary_messages.to_gpt()
         )
 
@@ -455,21 +449,19 @@ class BaseConversation:
         summary_message = self.build_message(AIMessage, response.choices[0].message.content)
         return summary_message
 
-    @property
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
 
     @property
-    def model(self) -> Callable:
-        if len(self.functions) > 0:
-            model = partial(
-                openai.ChatCompletion.create, model=self.model_type, user=self.user, functions=self.functions
-            )
-        else:
-            model = partial(openai.ChatCompletion.create, model=self.model_type, user=self.user)
+    def model(self) -> Callable[P, R]:
+        model = partial(openai.ChatCompletion.acreate, model=self.model_type, user=self.user)
+
+        if len(functions := self.functions()) > 0:
+            model = partial(model, functions=functions)
+
         return model
 
-    def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
+    async def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
         model_limit = self.token_limit * 0.85
 
         requires_summary = messages.token_length() > model_limit
@@ -488,10 +480,10 @@ class BaseConversation:
             if i == len(messages) and accumulated_tokens < model_limit:
                 requires_summary = False
             elif available_tokens >= message.token_length:
-                summary = self.summarize(messages.messages[: (i + 1)])
+                summary = await self.summarize(messages.messages[: (i + 1)])
                 messages = [self.prompt_message, summary, *messages.messages[(i + 1) :]]
             else:
-                encoding = self.encoder.encode(message)
+                encoding = self.encoder.encode(message.content)
                 message_obj = copy.copy(message)
                 next_message_obj = copy.copy(message)
 
@@ -500,13 +492,13 @@ class BaseConversation:
                 next_message_obj.content = self.encoder.decode(encoding[available_tokens:])
                 next_message_obj.token_length = len(encoding[available_tokens:])
 
-                summary = self.summarize([*messages.messages[:i], message_obj])
+                summary = await self.summarize([*messages.messages[:i], message_obj])
                 messages = [self.prompt_message, summary, next_message_obj, *messages.messages[i:]]
 
             messages = ChatMessages(messages=messages)
         return messages
 
-    def request(self, user_input: str) -> str:
+    async def request(self, user_input: str) -> str:
         logging.info(f"Responding to request for: {self.chat_id}")
 
         messages = ChatMessages(
@@ -515,9 +507,12 @@ class BaseConversation:
 
         result = None
         stop = False
+        n = 0
         while not stop:
-            messages = self.evaluate_summary(messages)
-            response = self.model(messages=messages.to_gpt())
+            logging.info(f"Still in `{stop}` with n={n}")
+
+            messages = await self.evaluate_summary(messages)
+            response = await self.model(messages=messages.to_gpt())
 
             if result:
                 for choice in response.choices:
@@ -534,7 +529,7 @@ class BaseConversation:
                 func_id = result.message.function_call.name
                 func_kwargs = json.loads(result.message.function_call.arguments)
                 api = self.api_functions.get(func_id, InvalidAPI(self.api_functions.values()))
-                response = api.response(**func_kwargs)
+                response = await api.response(**func_kwargs)
 
                 if isinstance(api, InvalidAPI):
                     message = self.build_message(SystemMessage, response)
@@ -543,7 +538,7 @@ class BaseConversation:
                     message = self.build_message(FunctionMessage, content=response, name=func_id)
                     messages.append(message)
             elif result.finish_reason == "length":
-                summary = self.summarize(messages[:-1])
+                summary = await self.summarize(messages[:-1])
                 messages = ChatMessages(messages=[self.prompt_message, summary, messages[-1]])
             else:
                 # valid values include length, content_filter, null
@@ -553,7 +548,7 @@ class BaseConversation:
         return result.message.content
 
 
-def get_chat_conversation(
+async def get_chat_conversation(
     chat_id: str | uuid.UUID, workspace: str | uuid.UUID, model_type: str = settings.OPENAI_PREFERRED_MODEL
 ):
     chat_prompt = """
@@ -580,4 +575,5 @@ def get_chat_conversation(
     conversation = BaseConversation(
         prompt=chat_prompt, model_type=model_type, functions=functions, chat_id=str(chat_id)
     )
+    await conversation.hydrate_chat()
     return conversation
