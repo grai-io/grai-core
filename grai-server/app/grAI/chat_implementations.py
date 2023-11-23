@@ -509,8 +509,6 @@ class BaseConversation:
         stop = False
         n = 0
         while not stop:
-            logging.info(f"Still in `{stop}` with n={n}")
-
             messages = await self.evaluate_summary(messages)
             response = await self.model(messages=messages.to_gpt())
 
