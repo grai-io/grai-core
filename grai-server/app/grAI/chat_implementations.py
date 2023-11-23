@@ -9,6 +9,7 @@ from itertools import accumulate
 from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, Union
 
 import openai
+
 import tiktoken
 from django.conf import settings
 from django.core.cache import cache

@@ -17,9 +17,10 @@ class ChatErrorMessages(Enum):
 
 
 class ChatEvent(BaseModel):
-    type: Literal["chat.message"] = "chat.message"
+    type: Literal["chat.message", "group.broadcast"] = "chat.message"
     message: str
     chat_id: UUID
+    channel_name: str | None = None
 
     @validator("chat_id")
     def chat_id_is_uuid(cls, v):
