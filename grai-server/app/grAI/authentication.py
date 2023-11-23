@@ -42,5 +42,8 @@ class WorkspacePathAuthMiddleware(BaseMiddleware):
 
     @database_sync_to_async
     def get_membership(self, user: User, workspace: str) -> Membership | None:
-        membership = Membership.objects.filter(user=user.id, workspace=workspace, is_active=True).all()
-        return membership[0] if len(membership) > 0 else None
+        return (
+            Membership.objects.filter(user=user.id, workspace=workspace, is_active=True)
+            .select_related("workspace")
+            .first()
+        )
