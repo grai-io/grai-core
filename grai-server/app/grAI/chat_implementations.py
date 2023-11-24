@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property, partial, reduce
 from itertools import accumulate
 from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, Union
-
+import itertools
 import openai
 
 import tiktoken
@@ -317,43 +317,57 @@ class NHopQueryAPI(API):
         self.workspace = workspace
 
     @staticmethod
-    def response_message(result_set: list[Edge | Node]) -> str | None:
+    def response_message(result_set: list[str]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching these query conditions."
         else:
-            message = None
+            message = "Results are returned in the following format:  (source.name, source.namespace) -> (destination.name, destination.namespace)"
 
         return message
 
+    @staticmethod
+    def filter(queryset: list[Edge], source_nodes: list[Node], dest_nodes: list[Node]) -> tuple[list[Node], list[Node]]:
+        def get_id(node: Node) -> tuple[str, str]:
+            return node.name, node.namespace
+
+        source_ids: set[T] = {get_id(node) for node in source_nodes}
+        dest_ids: set[T] = {get_id(node) for node in dest_nodes}
+        query_hashes: set[tuple[T, T]] = {(get_id(node.source), get_id(node.destination)) for node in queryset}
+
+        source_resp = [n.destination for n, hashes in zip(queryset, query_hashes) if hashes[0] in source_ids]
+        dest_resp = [n.source for n, hashes in zip(queryset, query_hashes) if hashes[1] in dest_ids]
+        return source_resp, dest_resp
+
     @database_sync_to_async
     def call(self, **kwargs) -> (list[Edge | Node], str | None):
-        n = kwargs.get("n", None)
-        if n is None:
-            return [], "Invalid input, n is a required parameter"
-        elif n < 1:
-            return [], "Invalid input, n must be greater than 0"
+        def edge_label(edge: Edge):
+            return f"({edge.source.name}, {edge.source.namespace}) -> ({edge.destination.name}, {edge.destination.namespace})"
 
-        source_node = Node(workspace=Workspace(pk=self.workspace), name=kwargs["name"], namespace=kwargs["namespace"])
-        query = Q(source=source_node) | Q(destination=source_node)
-        hop_edges = list(Edge.objects.filter(workspace=self.workspace).filter(query).all())
-        search_nodes = [e.source if e.destination == source_node else e.destination for e in hop_edges]
+        try:
+            inp = self.schema_model(**kwargs)
+        except Exception as e:
+            return [], f"Invalid input: {e}"
 
-        return_nodes = search_nodes
-        return_edges = hop_edges
-        for i in range(kwargs["n"] - 1):
-            source_edges = Edge.objects.filter(source__in=search_nodes).all()
-            destination_edges = Edge.objects.filter(destination__in=search_nodes).all()
+        source_node = Node.objects.filter(workspace__id=self.workspace, name=inp.name, namespace=inp.namespace).first()
+        if source_node is None:
+            return [], self.response_message([])
 
-            search_nodes = [*[e.source for e in source_edges], *[e.destination for e in destination_edges]]
-            return_nodes.extend(search_nodes)
-            return_edges.extend(source_edges)
-            return_edges.extend(destination_edges)
+        source_nodes = [source_node]
+        dest_nodes = [source_node]
 
-        nodes = set(model_to_schema(return_nodes, "NodeV1"))
-        edges = set(model_to_schema(return_edges, "EdgeV1"))
-        result = [item.spec for item in (*nodes, *edges)]
-        return result, self.response_message(result)
+        return_edges = []
+        for i in range(inp.n):
+            query = Q(source__in=source_nodes) | Q(destination__in=dest_nodes)
+            edges = Edge.objects.filter(query).select_related("source", "destination").all()
+
+            source_nodes, dest_nodes = self.filter(edges, source_nodes, dest_nodes)
+            return_edges.extend((edge_label(item) for item in edges))
+
+            if len(source_nodes) == 0 and len(dest_nodes) == 0:
+                break
+
+        return return_edges, self.response_message(return_edges)
 
 
 class InvalidApiSchema(BaseModel):
@@ -379,6 +393,11 @@ class InvalidAPI(API):
 class FakeEncoder:
     def encode(self, text):
         return [1, 2, 3, 4]
+
+
+def pre_compute_graph(workspace: str | uuid.UUID):
+    query_filter = Q(workspace=workspace) & Q(is_active=True)
+    edges = Edge.objects.filter(query_filter).all()
 
 
 class BaseConversation:
@@ -463,7 +482,7 @@ class BaseConversation:
         return model
 
     async def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
-        model_limit = self.token_limit * 0.85
+        model_limit = int(self.token_limit * 0.85)
 
         requires_summary = messages.token_length() > model_limit
         while requires_summary:
