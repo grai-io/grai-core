@@ -10,6 +10,7 @@ from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, 
 import itertools
 import openai
 
+from pgvector.django import L2Distance
 import tiktoken
 from django.conf import settings
 from django.core.cache import cache
@@ -20,8 +21,9 @@ from pydantic import BaseModel, Field
 from channels.db import database_sync_to_async
 from connections.adapters.schemas import model_to_schema
 from grAI.models import Message
-from lineage.models import Edge, Node
+from lineage.models import Edge, Node, NodeEmbeddings
 from workspaces.models import Workspace
+from django.db.models.expressions import RawSQL
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -370,6 +372,56 @@ class NHopQueryAPI(API):
         return return_edges, self.response_message(return_edges)
 
 
+class EmbeddingSearchSchema(BaseModel):
+    search_term: str = Field(description="Search request string")
+    limit: int = Field(description="number of results to return", default=10)
+
+
+class EmbeddingSearchAPI(API):
+    id: str = "embedding_search_api"
+    description: str = "Search for nodes which match any query."
+    schema_model = EmbeddingSearchSchema
+
+    def __init__(self, workspace: str | uuid.UUID):
+        self.workspace = workspace
+        self.model_type = "text-embedding-ada-002"
+        self.token_limit = 4000
+        self.encoder = tiktoken.encoding_for_model(self.model_type)
+
+    @staticmethod
+    def response_message(result_set: list[str]) -> str | None:
+        total_results = len(result_set)
+        if total_results == 0:
+            message = "No results found matching these query conditions."
+        else:
+            message = "Results are returned in the following format:  (source.name, source.namespace) -> (destination.name, destination.namespace)"
+
+        return message
+
+    def nearest_neighbor_search(self, vector_query: list[int], limit=10) -> list[Node]:
+        node_result = (
+            NodeEmbeddings.objects.filter(node__workspace__id=self.workspace)
+            .order_by(L2Distance("embedding", vector_query))
+            .select_related("node")[:limit]
+        )
+
+        return [n.node for n in node_result]
+
+    @database_sync_to_async
+    def call(self, **kwargs):
+        try:
+            inp = self.schema_model(**kwargs)
+        except:
+            return [], self.response_message([])
+
+        search_term = self.encoder.decode(self.encoder.encode(inp.search_term)[: self.token_limit])
+        embedding_resp = openai.Embedding.create(input=search_term, model=self.model_type)
+        embedding = list(embedding_resp.data[0].embedding)
+        neighbors = self.nearest_neighbor_search(embedding, inp.limit)
+        response = [(n.name, n.namespace) for n in neighbors]
+        return response, self.response_message(response)
+
+
 class InvalidApiSchema(BaseModel):
     pass
 
@@ -482,7 +534,7 @@ class BaseConversation:
         return model
 
     async def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
-        model_limit = int(self.token_limit * 0.85)
+        model_limit = int(self.token_limit * 0.85)  # this needs to be calculated from the openai response
 
         requires_summary = messages.token_length() > model_limit
         while requires_summary:
@@ -493,7 +545,8 @@ class BaseConversation:
                 accumulated_tokens += message.token_length
                 if accumulated_tokens > model_limit:
                     break
-                prev_accumulated_tokens = accumulated_tokens
+                else:
+                    prev_accumulated_tokens = accumulated_tokens
 
             available_tokens = model_limit - prev_accumulated_tokens
             message = messages.messages[i]
@@ -504,6 +557,7 @@ class BaseConversation:
                 messages = [self.prompt_message, summary, *messages.messages[(i + 1) :]]
             else:
                 encoding = self.encoder.encode(message.content)
+
                 message_obj = copy.copy(message)
                 next_message_obj = copy.copy(message)
 
@@ -513,7 +567,7 @@ class BaseConversation:
                 next_message_obj.token_length = len(encoding[available_tokens:])
 
                 summary = await self.summarize([*messages.messages[:i], message_obj])
-                messages = [self.prompt_message, summary, next_message_obj, *messages.messages[i:]]
+                messages = [self.prompt_message, summary, next_message_obj, *messages.messages[(i + 1) :]]
 
             messages = ChatMessages(messages=messages)
         return messages
@@ -576,7 +630,8 @@ async def get_chat_conversation(
     * Unique pieces of data like a column in a database is identified by a (name, namespace) tuple or a unique uuid.
     * You can help users discover new data or identify and correct issues such as broken data pipelines, and BI dashboards.
     * Your responses must use Markdown syntax
-    * When a user asks you a question about their data you should proactively look up additional context about the data.
+    * You are proactive in looking up additional data to answer any user question.
+    * Attempt to explain your reasoning in each answer.
     * Nodes contain a metadata field with extra context about the node.
     * Nodes and Edges are typed. You can identify the type under `metadata.grai.node_type` or `metadata.grai.edge_type`
     * If a Node has a type like `Column` with a `TableToColumn` Edge connecting to a `Table` node, the Column node represents a column in the table.
@@ -586,7 +641,8 @@ async def get_chat_conversation(
         NodeLookupAPI(workspace=workspace),
         # Todo: edge lookup is broken
         # EdgeLookupAPI(workspace=workspace),
-        FuzzyMatchNodesAPI(workspace=workspace),
+        # FuzzyMatchNodesAPI(workspace=workspace),
+        EmbeddingSearchAPI(workspace=workspace),
         NHopQueryAPI(workspace=workspace),
     ]
 
