@@ -106,3 +106,65 @@ services:
       - 5557:5555
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
+
+  retake-core:
+    image: opensearchproject/opensearch:2.9.0
+    profiles:
+      - retake
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=false
+      - plugins.ml_commons.model_access_control_enabled=true
+      - plugins.ml_commons.only_run_on_ml_node=false
+
+  retake-api:
+    image: retake/retakesearch:latest
+    profiles:
+      - retake
+    ports:
+      - 8002:8000
+    depends_on:
+      - retake-core
+    environment:
+      API_KEY: retake-test-key
+      OPENSEARCH_HOST: retake-core
+      OPENSEARCH_PORT: 9200
+      OPENSEARCH_USER: admin
+      OPENSEARCH_PASSWORD: admin
+      OPENSEARCH_VERIFY_CERTS: False
+      PGSYNC_HOST: pgsync
+      PGSYNC_PORT: 7433
+
+  pgsync:
+    image: retake/retakesync:latest
+    profiles:
+      - retake
+    ports:
+      - 7433:7433
+    sysctls:
+      - net.ipv4.tcp_keepalive_time=200
+      - net.ipv4.tcp_keepalive_intvl=200
+      - net.ipv4.tcp_keepalive_probes=5
+    labels:
+      org.label-schema.name: "pgsync"
+      org.label-schema.description: "Postgres to OpenSearch sync"
+      com.label-schema.service-type: "daemon"
+    depends_on:
+      - retake-core
+      - retake-api
+      - redis
+    environment:
+      LOG_LEVEL: WARNING
+      ELASTICSEARCH_HOST: retake-core
+      ELASTICSEARCH_PORT: 9200
+      ELASTICSEARCH_USER: admin
+      ELASTICSEARCH_PASSWORD: admin
+      ELASTICSEARCH_SCHEME: https
+      ELASTICSEARCH_USE_SSL: True
+      ELASTICSEARCH_VERIFY_CERTS: False
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ELASTICSEARCH: false
+      OPENSEARCH: true
