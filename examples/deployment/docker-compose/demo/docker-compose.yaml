@@ -40,9 +40,7 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-      - REDIS_GRAPH_CACHE_HOST=redis
+      - REDIS_HOST=redis
       - CREATE_SAMPLE_DATA=true
     depends_on:
       - redis
@@ -64,8 +62,7 @@ services:
       - the_guide
 
   celery_worker:
-    image: ghcr.io/grai-io/grai-core/grai-server:latest
-    command: /start-celeryworker
+    image: ghcr.io/grai-io/grai-core/grai-worker:latest
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -78,16 +75,14 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis
     depends_on:
       - redis
       - db
     scale: 1
 
   celery_beat_worker:
-    image: ghcr.io/grai-io/grai-core/grai-server:latest
-    command: /start-celerybeat
+    image: ghcr.io/grai-io/grai-core/grai-beat-worker:latest
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -100,8 +95,7 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis
     depends_on:
       - redis
       - db
