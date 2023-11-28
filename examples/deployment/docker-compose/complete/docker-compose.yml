@@ -3,6 +3,8 @@ version: "3.7"
 services:
   db:
     image: postgres:14.3-alpine
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai
@@ -26,6 +28,9 @@ services:
 
   the_guide:
     image: ghcr.io/grai-io/grai-core/grai-server:latest
+    # extra_hosts are not required but provided so users can easily connect to services running on the host machine
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8000:8000
     environment:
@@ -63,6 +68,9 @@ services:
 
   celery_worker:
     image: ghcr.io/grai-io/grai-core/grai-worker:latest
+    # extra_hosts are not required but provided so users can easily connect to services running on the host machine
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -79,10 +87,12 @@ services:
     depends_on:
       - redis
       - db
-    scale: 1
 
   celery_beat_worker:
     image: ghcr.io/grai-io/grai-core/grai-beat-worker:latest
+    # extra_hosts are not required but provided so users can easily connect to services running on the host machine
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - DB_HOST=db
       - DB_PORT=5432
