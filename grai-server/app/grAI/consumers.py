@@ -82,7 +82,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await self.send(text_data=json.dumps(payload))
                     return
 
-                broadcast_payload = {**data, "type": "group.broadcast", "channel_name": self.channel_name}
+                broadcast_payload = {
+                    **data,
+                    "type": "group.broadcast",
+                    "channel_name": self.channel_name,
+                    "role": "user",
+                }
                 await self.channel_layer.group_send(self.group_name, broadcast_payload)
                 await self.chat_message(event)
             case None:
@@ -123,7 +128,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         response_message = Message(chat_id=event.chat_id, message=response, role=agent, visible=True)
 
         response = {"message": response, "chat_id": str(event.chat_id)}
-        broadcast_response = {**response, "type": "group.broadcast", "channel_name": self.channel_name}
+        broadcast_response = {
+            **response,
+            "type": "group.broadcast",
+            "channel_name": self.channel_name,
+            "role": "system",
+        }
 
         await gather(
             async_bulk_create_objects(Message, [inbound_message, response_message]),
