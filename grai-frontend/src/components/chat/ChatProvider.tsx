@@ -71,9 +71,11 @@ const ChatProvider: React.FC<ChatProviderProps> = ({
 
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     onMessage: event => {
+      const data = JSON.parse(event.data)
+
       addMessage({
-        message: JSON.parse(event.data).message,
-        role: "system",
+        message: data.message,
+        role: data.role,
       })
       setUnread(true)
     },
