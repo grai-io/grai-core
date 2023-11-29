@@ -137,7 +137,12 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
           </Drawer>
         )}
       </HoverState>
-      <Box sx={{ width: expanded ? 224 : 81 }} />
+      <Box
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+        }}
+      />
     </>
   )
 }
