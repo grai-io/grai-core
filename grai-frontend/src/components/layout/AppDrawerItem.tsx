@@ -11,6 +11,16 @@ import { Link, useLocation } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import TooltipWrap from "components/utils/TooltipWrap"
 
+export interface Page {
+  title: string
+  path: string
+  icon: JSX.Element
+  alt?: string
+  className?: string
+  alert?: boolean
+  otherPaths?: string[]
+}
+
 const Icon: React.FC<{ selected: boolean; children: JSX.Element }> = ({
   selected,
   children,
@@ -30,32 +40,24 @@ const Icon: React.FC<{ selected: boolean; children: JSX.Element }> = ({
 )
 
 type AppDrawerItemProps = {
-  title: string
-  path: string
-  icon: JSX.Element
-  className?: string
+  page: Page
   expanded: boolean
-  alert?: boolean
 }
 
-const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
-  title,
-  path,
-  icon,
-  className,
-  expanded,
-  alert,
-}) => {
+const AppDrawerItem: React.FC<AppDrawerItemProps> = ({ page, expanded }) => {
   const location = useLocation()
   const { routePrefix } = useWorkspace()
 
-  const to = `${routePrefix}/${path}`
+  const to = `${routePrefix}/${page.path}`
 
-  const selected = decodeURI(location.pathname).startsWith(to)
+  const url = decodeURI(location.pathname)
+  const otherPaths =
+    page.otherPaths?.map(path => `${routePrefix}/${path}`) ?? []
+  const selected = [to, ...otherPaths].some(path => url.startsWith(path))
 
   return (
-    <ListItem disablePadding key={path} className={className}>
-      <TooltipWrap show={!expanded} title={title} placement="right">
+    <ListItem disablePadding key={page.path} className={page.className}>
+      <TooltipWrap show={!expanded} title={page.title} placement="right">
         <ListItemButton
           component={Link}
           to={to}
@@ -70,22 +72,22 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
           }}
         >
           <ListItemIcon sx={{ mr: "16px" }}>
-            {alert ? (
+            {page.alert ? (
               <Badge
                 color="secondary"
                 variant="dot"
                 overlap="circular"
                 data-testid="app-drawer-item-alert"
               >
-                <Icon selected={selected}>{icon}</Icon>
+                <Icon selected={selected}>{page.icon}</Icon>
               </Badge>
             ) : (
-              <Icon selected={selected}>{icon}</Icon>
+              <Icon selected={selected}>{page.icon}</Icon>
             )}
           </ListItemIcon>
           {expanded && (
             <ListItemText
-              primary={title}
+              primary={page.title}
               primaryTypographyProps={{
                 className: "child-text",
                 sx: {
