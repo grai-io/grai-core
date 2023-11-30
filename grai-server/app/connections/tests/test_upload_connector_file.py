@@ -51,7 +51,9 @@ async def test_upload_connector_file_yaml_source_id(test_context, test_source):
     info = Info
     info.context = context
 
-    connector, created = await Connector.objects.aget_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
+    connector, created = await Connector.objects.aget_or_create(
+        name=ConnectorSlugs.YAMLFILE, slug=ConnectorSlugs.YAMLFILE
+    )
 
     with open(os.path.join(__location__, "test.yaml")) as reader:
         file = UploadedFile(reader, name="test.yaml")
