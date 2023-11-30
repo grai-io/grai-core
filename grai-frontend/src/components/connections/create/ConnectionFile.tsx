@@ -18,6 +18,7 @@ import {
 } from "./__generated__/UploadConnectorFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import { ConnectorType } from "../ConnectionsForm"
+import getAccept from "./getAccept"
 
 export const UPLOAD_CONNECTOR_FILE = gql`
   mutation UploadConnectorFile(
@@ -108,27 +109,9 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
       .then(() => enqueueSnackbar("File uploaded"))
       .catch(() => {})
 
-  const conn_extension = connector.metadata?.file?.extension;
+  const connExtension = connector.metadata?.file?.extension
 
-  let accept: Accept;
-  if (conn_extension === "json") {
-    accept = {
-        "application/json": [".json"],
-    };
-  } else if (conn_extension === "yaml") {
-    accept = {
-      "application/yaml": [".yaml", ".yml"],
-    }
-  } else if (conn_extension === "flat-file") {
-    accept = {
-      "application/octet-stream": [".csv", ".parquet", ".feather", ".arrow"],
-    }
-  } else {
-    accept = {
-      "*": ["*"],
-    }
-  };
-
+  const accept = getAccept(connExtension)
 
   return (
     <Form onSubmit={handleSubmit}>

@@ -24,6 +24,7 @@ test("renders other", async () => {
           connectors: [
             {
               id: "1",
+              priority: 1,
               name: "PostgreSQL",
               category: null,
               status: "general_release",
@@ -58,6 +59,7 @@ test("renders other", async () => {
             },
             {
               id: "2",
+              priority: 2,
               name: "Data Tool",
               category: "data tools",
               status: "coming_soon",

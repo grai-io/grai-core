@@ -10,6 +10,7 @@
 export interface GetConnectors_connectors {
   __typename: "Connector";
   id: any;
+  priority: number | null;
   name: string;
   metadata: any;
   icon: string | null;
