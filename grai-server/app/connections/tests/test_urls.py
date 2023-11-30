@@ -9,7 +9,7 @@ import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from connections.models import Connection, Connector
+from connections.models import Connection, Connector, ConnectorSlugs
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
 from users.models import User
@@ -92,14 +92,16 @@ def test_connector() -> Connector:
 
 @pytest.fixture
 def test_dbt_cloud_connector() -> Connector:
-    connector, created = Connector.objects.get_or_create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.DBT_CLOUD, slug=ConnectorSlugs.DBT_CLOUD)
 
     return connector
 
 
 @pytest.fixture
 def test_openlineage_connector(create_workspace) -> Connector:
-    connector, created = Connector.objects.get_or_create(name=Connector.OPEN_LINEAGE, slug=Connector.OPEN_LINEAGE)
+    connector, created = Connector.objects.get_or_create(
+        name=ConnectorSlugs.OPEN_LINEAGE, slug=ConnectorSlugs.OPEN_LINEAGE
+    )
 
     return connector
 

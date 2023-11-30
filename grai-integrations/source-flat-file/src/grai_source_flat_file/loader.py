@@ -6,36 +6,21 @@ import pandas as pd
 
 from grai_source_flat_file.models import ID, Column, Edge, Table
 
-
-def get_file_name(file_name: str) -> str:
-    """
-
-    Args:
-        file_name (str):
-
-    Returns:
-
-    Raises:
-
-    """
-    return os.path.splitext(file_name)[0]
-
-
 LOADER_MAP = {".csv": pd.read_csv, ".parquet": pd.read_parquet, ".feather": pd.read_feather}
 
 
-def load_file(file_name: str) -> pd.DataFrame:
+def load_file(file_name: str, file_ext: str) -> pd.DataFrame:
     """
 
     Args:
-        file_name (str):
+        file_name: The path to the file
+        file_ext: The type of file
 
     Returns:
 
     Raises:
 
     """
-    file_ext = os.path.splitext(file_name)[-1]
     assert file_ext in LOADER_MAP, f"{file_ext} not supported. Choose one of {set(LOADER_MAP.keys())}"
     return LOADER_MAP[file_ext](file_name)
 
@@ -130,11 +115,16 @@ def table_builder(namespace: str, table_name: str, file_location: str) -> Table:
     return Table(namespace=namespace, file_name=file_location, name=table_name)
 
 
-def build_nodes_and_edges(file_name: str, namespace: str) -> Tuple[List[Union[Table, Column]], List[Edge]]:
+def build_nodes_and_edges(
+    file_ref: str, file_type: str, table_name: str, file_location: str, namespace: str
+) -> Tuple[List[Union[Table, Column]], List[Edge]]:
     """
 
     Args:
-        file_name (str):
+        file_ref:
+        file_type:
+        table_name:
+        file_location:
         namespace (str):
 
     Returns:
@@ -142,13 +132,12 @@ def build_nodes_and_edges(file_name: str, namespace: str) -> Tuple[List[Union[Ta
     Raises:
 
     """
-    table_name = get_file_name(file_name)
-    df = load_file(file_name)
+    df = load_file(file_ref, file_type)
 
     builder = column_builder(namespace, table_name)
     columns = [builder(df[col]) for col in df.columns]
 
-    table = table_builder(namespace, table_name, file_name)
+    table = table_builder(namespace, table_name, file_location)
     table.columns = columns
 
     nodes = [table, *columns]

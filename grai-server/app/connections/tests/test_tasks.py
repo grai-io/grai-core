@@ -9,7 +9,7 @@ from django.core.files.uploadedfile import UploadedFile
 from grai_schemas.integrations.errors import NoConnectionError
 from grai_source_dbt_cloud.loader import Event
 
-from connections.models import Connection, Connector, Run, RunFile
+from connections.models import Connection, Connector, Run, RunFile, ConnectorSlugs
 from connections.tasks import get_adapter, process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
@@ -36,91 +36,100 @@ def test_source(test_workspace):
 
 @pytest.fixture
 def test_postgres_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.POSTGRESQL, slug=Connector.POSTGRESQL)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.POSTGRESQL, slug=ConnectorSlugs.POSTGRESQL)
 
     return connector
 
 
 @pytest.fixture
 def test_snowflake_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.SNOWFLAKE, slug=Connector.SNOWFLAKE)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.SNOWFLAKE, slug=ConnectorSlugs.SNOWFLAKE)
 
     return connector
 
 
 @pytest.fixture
 def test_mssql_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.MSSQL, slug=Connector.MSSQL)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.MSSQL, slug=ConnectorSlugs.MSSQL)
 
     return connector
 
 
 @pytest.fixture
 def test_bigquery_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.BIGQUERY, slug=Connector.BIGQUERY)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.BIGQUERY, slug=ConnectorSlugs.BIGQUERY)
 
     return connector
 
 
 @pytest.fixture
 def test_dbt_cloud_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.DBT_CLOUD, slug=ConnectorSlugs.DBT_CLOUD)
 
     return connector
 
 
 @pytest.fixture
 def test_fivetran_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.FIVETRAN, slug=Connector.FIVETRAN)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.FIVETRAN, slug=ConnectorSlugs.FIVETRAN)
 
     return connector
 
 
 @pytest.fixture
 def test_mysql_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.MYSQL, slug=Connector.MYSQL)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.MYSQL, slug=ConnectorSlugs.MYSQL)
 
     return connector
 
 
 @pytest.fixture
 def test_redshift_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.REDSHIFT, slug=Connector.REDSHIFT)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.REDSHIFT, slug=ConnectorSlugs.REDSHIFT)
 
     return connector
 
 
 @pytest.fixture
 def test_dbt_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.DBT, slug=ConnectorSlugs.DBT)
+
+    return connector
+
+
+@pytest.fixture
+def test_flat_file_connector():
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.FLAT_FILE, slug=ConnectorSlugs.FLAT_FILE)
 
     return connector
 
 
 @pytest.fixture
 def test_metabase_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.METABASE, slug=Connector.METABASE)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.METABASE, slug=ConnectorSlugs.METABASE)
 
     return connector
 
 
 @pytest.fixture
 def test_looker_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.LOOKER, slug=Connector.LOOKER)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.LOOKER, slug=ConnectorSlugs.LOOKER)
 
     return connector
 
 
 @pytest.fixture
 def test_openlineage_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.OPEN_LINEAGE, slug=Connector.OPEN_LINEAGE)
+    connector, created = Connector.objects.get_or_create(
+        name=ConnectorSlugs.OPEN_LINEAGE, slug=ConnectorSlugs.OPEN_LINEAGE
+    )
 
     return connector
 
 
 @pytest.fixture
 def test_yaml_file_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.YAMLFILE, slug=ConnectorSlugs.YAMLFILE)
 
     return connector
 
@@ -312,6 +321,20 @@ class TestUpdateServer:
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
+                workspace=test_workspace,
+                source=test_source,
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+            RunFile.objects.create(run=run, file=file)
+
+            process_run(str(run.id))
+
+    def test_run_update_server_flat_file(self, test_workspace, test_flat_file_connector, test_source):
+        with open(os.path.join(__location__, "airline-safety.csv")) as reader:
+            file = UploadedFile(reader, name="airline-safety.csv")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()),
+                connector=test_flat_file_connector,
                 workspace=test_workspace,
                 source=test_source,
             )

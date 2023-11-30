@@ -18,6 +18,7 @@ class ConnectorFilter:
 class ConnectorOrder:
     id: strawberry.auto
     name: strawberry.auto
+    priority: strawberry.auto
     is_active: strawberry.auto
     status: strawberry.auto
     category: strawberry.auto
@@ -35,3 +36,4 @@ class Connector:
     icon: Optional[str]
     category: Optional[str]
     events: strawberry.auto
+    priority: strawberry.auto

@@ -3,13 +3,8 @@
 # Run database migrations
 python manage.py migrate
 
-# Seed database from json files
-fixtures=$(ls seed/)
-while IFS= read -r fixture; do
-    echo -n "Seeding $fixture ..."
-    echo $fixture
-    python manage.py loaddata seed/$fixture
-done <<< "$fixtures"
+# load fixtures
+python manage.py loaddata connectors
 
 # Every call to manage.py imports telemetry/apps which have a log event but we only want the first.
 # These should be set to false first if we don't want workers to log their deployment

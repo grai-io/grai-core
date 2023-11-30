@@ -13,8 +13,9 @@ import ConnectorList from "../connectors/ConnectorList"
 
 export const GET_CONNECTORS = gql`
   query GetConnectors {
-    connectors(order: { name: ASC }) {
+    connectors(order: { priority: DESC, name: ASC }) {
       id
+      priority
       name
       metadata
       icon

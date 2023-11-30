@@ -108,14 +108,27 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
       .then(() => enqueueSnackbar("File uploaded"))
       .catch(() => {})
 
-  const accept: Accept =
-    connector.metadata?.file?.extension === "json"
-      ? {
-          "application/json": [".json"],
-        }
-      : {
-          "application/yaml": [".yaml", ".yml"],
-        }
+  const conn_extension = connector.metadata?.file?.extension;
+
+  let accept: Accept;
+  if (conn_extension === "json") {
+    accept = {
+        "application/json": [".json"],
+    };
+  } else if (conn_extension === "yaml") {
+    accept = {
+      "application/yaml": [".yaml", ".yml"],
+    }
+  } else if (conn_extension === "flat-file") {
+    accept = {
+      "application/octet-stream": [".csv", ".parquet", ".feather", ".arrow"],
+    }
+  } else {
+    accept = {
+      "*": ["*"],
+    }
+  };
+
 
   return (
     <Form onSubmit={handleSubmit}>

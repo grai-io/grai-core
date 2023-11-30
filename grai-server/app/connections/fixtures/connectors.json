@@ -1,12 +1,11 @@
 [
     {
         "model": "connections.connector",
-        "pk": "24f36cac-a9bc-4663-9613-5c2c2f63cfe5",
         "fields": {
             "name": "Amazon Redshift",
             "slug": "redshift",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/redshift",
+                "docs_url": "https://docs.grai.io/integrations/data_warehouses/redshift",
                 "fields": [
                     {
                         "name": "host",
@@ -39,20 +38,17 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/redshift.png",
-            "category": "databases",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:15:56.544Z",
-            "updated_at": "2023-01-11T21:15:56.544Z"
+            "category": "data warehouse",
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "533052b6-785b-4268-98a3-ded1215a1463",
         "fields": {
             "name": "MySQL",
             "slug": "mysql",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/mysql",
+                "docs_url": "https://docs.grai.io/integrations/databases/mysql",
                 "fields": [
                     {
                         "name": "host",
@@ -87,19 +83,16 @@
             "is_active": true,
             "icon": "/icons/data-sources/mysql.png",
             "category": "databases",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:16:48.728Z",
-            "updated_at": "2023-01-11T21:16:48.728Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "60e37eff-7b89-4bf7-983b-722d9e095a12",
         "fields": {
             "name": "Google BigQuery",
             "slug": "bigquery",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/bigquery",
+                "docs_url": "https://docs.grai.io/integrations/data_warehouses/bigquery",
                 "fields": [
                     {
                         "name": "project",
@@ -143,20 +136,17 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/bigquery.png",
-            "category": "databases",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:16:09.411Z",
-            "updated_at": "2023-01-11T21:16:09.411Z"
+            "category": "data warehouse",
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "65bb3f15-764f-4a64-8754-62a8c1445afd",
         "fields": {
             "name": "MongoDB",
             "metadata": {},
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/804ef5c917633c58b18f6cfc0d654b637cbc9a0e-128x128.png",
+            "icon": "/icons/data-sources/mongodb.png",
             "category": "databases",
             "status": "coming_soon",
             "created_at": "2023-01-11T21:16:34.291Z",
@@ -173,6 +163,7 @@
             "icon": "/icons/data-sources/stitch.png",
             "category": "data tools",
             "status": "coming_soon",
+            "priority": -1000,
             "created_at": "2023-01-11T21:17:27.425Z",
             "updated_at": "2023-01-11T21:17:27.425Z"
         }
@@ -184,7 +175,7 @@
             "name": "Microsoft SQL Server",
             "slug": "mssql",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/mssql",
+                "docs_url": "https://docs.grai.io/integrations/databases/mssql",
                 "fields": [
                     {
                         "name": "host",
@@ -218,14 +209,11 @@
             "is_active": true,
             "icon": "/icons/data-sources/mssql.png",
             "category": "databases",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:16:21.900Z",
-            "updated_at": "2023-01-11T21:16:21.900Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "768aea48-1146-4f14-9005-40e89504f4b3",
         "fields": {
             "name": "PostgreSQL",
             "slug": "postgres",
@@ -265,19 +253,16 @@
             "is_active": true,
             "icon": "/icons/data-sources/postgres.png",
             "category": "databases",
-            "status": "general_release",
-            "created_at": "2022-12-12T10:54:33.501Z",
-            "updated_at": "2023-01-11T21:15:11.705Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "77a47042-ad28-4e98-a4e3-fbb6c0280e36",
         "fields": {
             "name": "dbt",
             "slug": "dbt",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/dbt",
+                "docs_url": "https://docs.grai.io/integrations/etl/dbt",
                 "file": {
                     "name": "manifest.json",
                     "extension": "json"
@@ -286,19 +271,16 @@
             "is_active": true,
             "icon": "/icons/data-sources/dbt.png",
             "category": "data tools",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:17:01.683Z",
-            "updated_at": "2023-01-11T21:17:01.683Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "6de22766-66ec-4553-99ac-0f860f6883d6",
         "fields": {
             "name": "dbt Cloud",
             "slug": "dbt_cloud",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/dbt-cloud",
+                "docs_url": "https://docs.grai.io/integrations/etl/dbt-cloud",
                 "fields": [
                     {
                         "name": "api_key",
@@ -315,19 +297,16 @@
             "icon": "/icons/data-sources/dbt.png",
             "category": "data tools",
             "events": true,
-            "status": "general_release",
-            "created_at": "2023-05-03T09:51:00.000Z",
-            "updated_at": "2023-05-03T09:51:00.000Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "a80c528e-5149-4c0b-8e48-2fa995641d49",
         "fields": {
             "name": "Snowflake",
             "slug": "snowflake",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/snowflake",
+                "docs_url": "https://docs.grai.io/integrations/data_warehouses/snowflake",
                 "fields": [
                     {
                         "name": "account",
@@ -366,20 +345,17 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/snowflake.png",
-            "category": "databases",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:15:40.178Z",
-            "updated_at": "2023-01-11T21:15:40.178Z"
+            "category": "data warehouse",
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "bb3de047-fa4e-4b8e-b4af-d75b1063a1d8",
         "fields": {
             "name": "Metabase",
             "slug": "metabase",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/metabase",
+                "docs_url": "https://docs.grai.io/integrations/business_intelligence/metabase",
                 "fields": [
                     {
                         "name": "username",
@@ -406,20 +382,17 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/metabase.png",
-            "category": "data tools",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:17:16.264Z",
-            "updated_at": "2023-01-11T21:17:16.264Z"
+            "category": "business intelligence",
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
         "fields": {
             "name": "Fivetran",
             "slug": "fivetran",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/fivetran",
+                "docs_url": "https://docs.grai.io/integrations/etl/fivetran",
                 "fields": [
                     {
                         "name": "api_key",
@@ -457,28 +430,29 @@
             "is_active": true,
             "icon": "/icons/data-sources/fivetran.png",
             "category": "data tools",
-            "status": "general_release",
-            "created_at": "2023-01-11T21:17:16.264Z",
-            "updated_at": "2023-01-11T21:17:16.264Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "ec14066f-716b-413c-8b44-34bf78fb4256",
         "fields": {
             "name": "Flat File",
-            "metadata": {},
+            "slug": "flatfile",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/misc/flat-file",
+                "file": {
+                    "name": "flat file",
+                    "extension": "flat-file"
+                }
+            },
             "is_active": true,
-            "icon": "/icons/file-icon.png",
+            "icon": "/icons/data-sources/flatfile.png",
             "category": null,
-            "status": "coming_soon",
-            "created_at": "2023-01-11T21:17:47.540Z",
-            "updated_at": "2023-01-11T21:19:57.027Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "dbdc3704-5c01-4343-a11e-2e41c69e558c",
         "fields": {
             "name": "YAML File",
             "slug": "yaml_file",
@@ -492,19 +466,16 @@
             "is_active": true,
             "icon": "/icons/file-icon.png",
             "category": null,
-            "status": "general_release",
-            "created_at": "2023-01-11T21:17:47.540Z",
-            "updated_at": "2023-01-11T21:19:57.027Z"
+            "status": "general_release"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "612a024c-de4e-4f1d-a7e5-ff616cdd953a",
         "fields": {
             "name": "Airflow",
             "slug": "openlineage",
             "metadata": {
-                "docs_url": "https://docs.grai.io/integrations/airflow",
+                "docs_url": "https://docs.grai.io/integrations/orchestration/airflow",
                 "fields": [
                     {
                         "name": "namespaces",
@@ -515,99 +486,88 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/airflow.png",
-            "category": "data tools",
-            "status": "alpha",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "category": "orchestration",
+            "status": "alpha"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
         "fields": {
             "name": "Airbyte",
             "metadata": {},
             "is_active": true,
             "icon": "/icons/data-sources/airbyte.png",
             "category": "data tools",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "status": "coming_soon"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
         "fields": {
             "name": "Amazon Aurora",
             "metadata": {},
             "is_active": true,
             "icon": "/icons/data-sources/aurora.png",
             "category": "databases",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "status": "coming_soon"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "6d3a2356-8160-49a6-a888-956601117835",
         "fields": {
             "name": "Apache Spark",
-            "metadata": {},
+            "slug": "openlineage",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/query_engines/spark",
+                "fields": [
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 0
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "/icons/data-sources/spark.png",
             "category": "data tools",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "status": "alpha"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "badfb696-bc97-41a9-bec1-2321b17672d1",
         "fields": {
             "name": "Kedro",
             "metadata": {},
             "is_active": true,
             "icon": "/icons/data-sources/kedro.png",
             "category": "data tools",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "status": "coming_soon"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "019950c5-7907-4ef0-8eb4-92296ce71670",
         "fields": {
             "name": "Apache Atlas",
             "metadata": {},
             "is_active": true,
             "icon": "/icons/data-sources/atlas.png",
             "category": "data tools",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "status": "coming_soon"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "e8ec1a80-81e7-4184-94cd-4ba53628d431",
         "fields": {
             "name": "Apache Iceberg",
             "metadata": {},
             "is_active": true,
             "icon": "/icons/data-sources/iceberg.png",
-            "category": "databases",
-            "status": "coming_soon",
-            "created_at": "2023-06-05T10:00:00.000Z",
-            "updated_at": "2023-06-05T10:00:00.000Z"
+            "category": "data tools",
+            "status": "coming_soon"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "5ece5fa2-ddc7-45b6-bdbe-93a54a85c80a",
         "fields": {
             "name": "Looker",
             "slug": "looker",
@@ -645,15 +605,12 @@
             },
             "is_active": true,
             "icon": "/icons/data-sources/looker.png",
-            "category": "data tools",
-            "status": "alpha",
-            "created_at": "2023-08-03T21:17:16.264Z",
-            "updated_at": "2023-08-03T21:17:16.264Z"
+            "category": "business intelligence",
+            "status": "alpha"
         }
     },
     {
         "model": "connections.connector",
-        "pk": "d890b980-dd73-403c-ae64-0a805e3be7c4",
         "fields": {
             "name": "OpenLineage",
             "slug": "openlineage",
@@ -670,9 +627,91 @@
             "is_active": true,
             "icon": "/icons/data-sources/openlineage.png",
             "category": "data tools",
-            "status": "alpha",
-            "created_at": "2023-10-06T21:17:16.264Z",
-            "updated_at": "2023-10-06T21:17:16.264Z"
+            "status": "alpha"
         }
-    }
+    },
+    {
+      "model": "connections.connector",
+      "fields": {
+          "name": "Dagster",
+          "slug": "openlineage",
+          "metadata": {
+              "docs_url": "https://docs.grai.io/integrations/orchestration/dagster",
+              "fields": [
+                  {
+                      "name": "namespaces",
+                      "required": false,
+                      "order": 0
+                  }
+              ]
+          },
+          "is_active": true,
+          "icon": "/icons/data-sources/dagster.png",
+          "category": "orchestration",
+          "status": "alpha"
+      }
+  },
+  {
+      "model": "connections.connector",
+      "fields": {
+          "name": "Flink",
+          "slug": "openlineage",
+          "metadata": {
+              "docs_url": "https://docs.grai.io/integrations/streaming/flink",
+              "fields": [
+                  {
+                      "name": "namespaces",
+                      "required": false,
+                      "order": 0
+                  }
+              ]
+          },
+          "is_active": true,
+          "icon": "/icons/data-sources/flink.png",
+          "category": "streaming",
+          "status": "alpha"
+      }
+  },
+  {
+      "model": "connections.connector",
+      "fields": {
+          "name": "Great Expectations",
+          "slug": "openlineage",
+          "metadata": {
+              "docs_url": "https://docs.grai.io/integrations/data_quality/great_expectations",
+              "fields": [
+                  {
+                      "name": "namespaces",
+                      "required": false,
+                      "order": 0
+                  }
+              ]
+          },
+          "is_active": true,
+          "icon": "/icons/data-sources/great-expectations.png",
+          "category": "data tools",
+          "status": "alpha"
+      }
+  },
+  {
+      "model": "connections.connector",
+      "fields": {
+          "name": "Keboola",
+          "slug": "openlineage",
+          "metadata": {
+              "docs_url": "https://docs.grai.io/integrations/data_catalogs/keboola",
+              "fields": [
+                  {
+                      "name": "namespaces",
+                      "required": false,
+                      "order": 0
+                  }
+              ]
+          },
+          "is_active": true,
+          "icon": "/icons/data-sources/keboola.png",
+          "category": "data tools",
+          "status": "alpha"
+      }
+  }
 ]
