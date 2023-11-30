@@ -26,6 +26,12 @@ const icons: Icons = {
   "grai-source-fivetran": "/icons/data-sources/fivetran.png",
   "grai-source-looker": "/icons/data-sources/looker.png",
   "grai-source-openlineage": "/icons/data-sources/openlineage.png",
+  "grai-source-flatfile": "/icons/data-sources/flatfile.png",
+  "grai-source-dagster": "/icons/data-sources/dagster.png",
+  "grai-source-flink": "/icons/data-sources/flink.png",
+  "grai-source-great-expectations":
+    "/icons/data-sources/great-expectations.png",
+  "grai-source-keboola": "/icons/data-sources/keboola.png",
 }
 
 const heights = {

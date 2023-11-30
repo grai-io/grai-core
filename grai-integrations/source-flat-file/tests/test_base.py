@@ -8,9 +8,10 @@ class TestFileTypes:
     def test_parquet(self, mock_data):
         file_name = "test.parquet"
         namespace = "test"
+        table_name, extension = os.path.splitext(file_name)
         mock_data.to_parquet(file_name, index=False)
         try:
-            nodes, edges = build_nodes_and_edges(file_name, namespace)
+            nodes, edges = build_nodes_and_edges(file_name, extension, table_name, file_name, namespace)
         except Exception as e:
             raise e
         finally:
@@ -28,10 +29,11 @@ class TestFileTypes:
 
         """
         file_name = "test.csv"
+        table_name, extension = os.path.splitext(file_name)
         namespace = "test"
         mock_data.to_csv(file_name, index=False)
         try:
-            nodes, edges = build_nodes_and_edges(file_name, namespace)
+            nodes, edges = build_nodes_and_edges(file_name, extension, table_name, file_name, namespace)
         except Exception as e:
             raise e
         finally:
@@ -49,10 +51,11 @@ class TestFileTypes:
 
         """
         file_name = "test.feather"
+        table_name, extension = os.path.splitext(file_name)
         namespace = "test"
         mock_data.to_feather(file_name)
         try:
-            nodes, edges = build_nodes_and_edges(file_name, namespace)
+            nodes, edges = build_nodes_and_edges(file_name, extension, table_name, file_name, namespace)
         except Exception as e:
             raise e
         finally:
@@ -71,10 +74,11 @@ def test_adapt_nodes(mock_data, mock_source):
 
     """
     file_name = "test.csv"
+    table_name, extension = os.path.splitext(file_name)
     namespace = "test"
     mock_data.to_csv(file_name, index=False)
     try:
-        nodes, edges = build_nodes_and_edges(file_name, namespace)
+        nodes, edges = build_nodes_and_edges(file_name, extension, table_name, file_name, namespace)
         nodes = adapt_to_client(nodes, mock_source, "v1")
     except Exception as e:
         raise e

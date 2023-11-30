@@ -2,67 +2,72 @@ import uuid
 
 from django.db import models
 from django_multitenant.models import TenantModel
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
+from django.utils import timezone
+
+
+class ConnectorSlugs(models.TextChoices):
+    POSTGRESQL = "postgres", "Postgres"
+    SNOWFLAKE = "snowflake", "Snowflake"
+    DBT = "dbt", "dbt"
+    DBT_CLOUD = "dbt_cloud", "dbt Cloud"
+    YAMLFILE = "yaml_file", "YAML"
+    MSSQL = "mssql", "Microsoft SQL Server"
+    BIGQUERY = "bigquery", "Google BigQuery"
+    FIVETRAN = "fivetran", "Fivetran"
+    MYSQL = "mysql", "MySQL"
+    REDSHIFT = "redshift", "Amazon Redshift"
+    METABASE = "metabase", "Metabase"
+    LOOKER = "looker", "Looker"
+    OPEN_LINEAGE = "openlineage", "OpenLineage"
+    FLAT_FILE = "flatfile", "Flat File"
+
+
+class ConnectorStatus(models.TextChoices):
+    COMING_SOON = "coming_soon", "Coming Soon"
+    ALPHA = "alpha", "Alpha"
+    BETA = "beta", "beta"
+    GENERAL_RELEASE = "general_release", "General Release"
+
+
+DEFAULT_STATUS_PRIORITY = {
+    ConnectorStatus.COMING_SOON: -100,
+    ConnectorStatus.ALPHA: 0,
+    ConnectorStatus.BETA: 50,
+    ConnectorStatus.GENERAL_RELEASE: 100,
+}
+
+
+class ConnectorManager(models.Manager):
+    def get_by_natural_key(self, name: str) -> "Connector":
+        return self.get(name=name)
 
 
 class Connector(models.Model):
-    POSTGRESQL = "postgres"
-    SNOWFLAKE = "snowflake"
-    DBT = "dbt"
-    DBT_CLOUD = "dbt_cloud"
-    YAMLFILE = "yaml_file"
-    MSSQL = "mssql"
-    BIGQUERY = "bigquery"
-    FIVETRAN = "fivetran"
-    MYSQL = "mysql"
-    REDSHIFT = "redshift"
-    METABASE = "metabase"
-    LOOKER = "looker"
-    OPEN_LINEAGE = "openlineage"
-
-    CONNECTOR_SLUGS = [
-        (POSTGRESQL, "postgres"),
-        (SNOWFLAKE, "snowflake"),
-        (DBT, "dbt"),
-        (DBT_CLOUD, "dbt_cloud"),
-        (YAMLFILE, "yaml_file"),
-        (MSSQL, "mssql"),
-        (BIGQUERY, "bigquery"),
-        (FIVETRAN, "fivetran"),
-        (MYSQL, "mysql"),
-        (REDSHIFT, "redshift"),
-        (METABASE, "metabase"),
-        (LOOKER, "looker"),
-        (OPEN_LINEAGE, "openlineage"),
-    ]
-
-    COMING_SOON = "coming_soon"
-    ALPHA = "alpha"
-    BETA = "beta"
-    GENERAL_RELEASE = "general_release"
-
-    CONNECTOR_STATUSES = [
-        (COMING_SOON, "coming_soon"),
-        (ALPHA, "alpha"),
-        (BETA, "beta"),
-        (GENERAL_RELEASE, "general_release"),
-    ]
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255, choices=CONNECTOR_SLUGS, blank=True, null=True)
+    slug = models.CharField(max_length=255, choices=ConnectorSlugs.choices, blank=True, null=True)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
     icon = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=255, blank=True, null=True)
     events = models.BooleanField(default=False)
-    status = models.CharField(max_length=255, choices=CONNECTOR_STATUSES, default=GENERAL_RELEASE)
+    status = models.CharField(max_length=255, choices=ConnectorStatus.choices, default=ConnectorStatus.GENERAL_RELEASE)
+    priority = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = ConnectorManager()
+
+    def natural_key(self):
+        return (self.name,)
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = ["-priority", "name"]
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Name uniqueness"),
         ]
@@ -70,6 +75,17 @@ class Connector(models.Model):
             models.Index(fields=["is_active"]),
             models.Index(fields=["name"]),
         ]
+
+
+@receiver(pre_save, sender=Connector)
+def update_priority(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = DEFAULT_STATUS_PRIORITY.get(instance.status, 100)
+
+    # Handles fixture loading
+    if kwargs["raw"]:
+        instance.created_at = timezone.now()
+        instance.updated_at = instance.created_at
 
 
 class Connection(TenantModel):

@@ -24,15 +24,17 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from connections.adapters.flat_file import FlatFileAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 
-from .models import Connection, Connector, Run
+from .models import Connection, Connector, Run, ConnectorSlugs
+import logging
 
 
 @shared_task
 def process_run(runId):
-    print(f"Task starting {runId}")
+    logging.debug(f"Task starting {runId}")
     run = Run.objects.get(pk=runId)
     execute_run(run)
 
@@ -50,32 +52,34 @@ def run_connection_schedule(connectionId):
 
 
 def get_adapter(slug: str) -> Type[BaseAdapter]:
-    if slug == Connector.POSTGRESQL:
+    if slug == ConnectorSlugs.POSTGRESQL:
         return PostgresAdapter
-    elif slug == Connector.SNOWFLAKE:
+    elif slug == ConnectorSlugs.SNOWFLAKE:
         return SnowflakeAdapter
-    elif slug == Connector.DBT:
+    elif slug == ConnectorSlugs.DBT.value:
         return DbtAdapter
-    elif slug == Connector.DBT_CLOUD:
+    elif slug == ConnectorSlugs.DBT_CLOUD:
         return DbtCloudAdapter
-    elif slug == Connector.YAMLFILE:
+    elif slug == ConnectorSlugs.YAMLFILE:
         return YamlFileAdapter
-    elif slug == Connector.MSSQL:
+    elif slug == ConnectorSlugs.MSSQL:
         return MssqlAdapter
-    elif slug == Connector.BIGQUERY:
+    elif slug == ConnectorSlugs.BIGQUERY:
         return BigqueryAdapter
-    elif slug == Connector.FIVETRAN:
+    elif slug == ConnectorSlugs.FIVETRAN:
         return FivetranAdapter
-    elif slug == Connector.MYSQL:
+    elif slug == ConnectorSlugs.MYSQL:
         return MySQLAdapter
-    elif slug == Connector.REDSHIFT:
+    elif slug == ConnectorSlugs.REDSHIFT:
         return RedshiftAdapter
-    elif slug == Connector.METABASE:
+    elif slug == ConnectorSlugs.METABASE:
         return MetabaseAdapter
-    elif slug == Connector.LOOKER:
+    elif slug == ConnectorSlugs.LOOKER:
         return LookerAdapter
-    elif slug == Connector.OPEN_LINEAGE:
+    elif slug == ConnectorSlugs.OPEN_LINEAGE:
         return OpenLineageAdapter
+    elif slug == ConnectorSlugs.FLAT_FILE:
+        return FlatFileAdapter
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

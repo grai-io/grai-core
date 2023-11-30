@@ -36,6 +36,7 @@ const connectorsMock = {
         {
           id: "1",
           name: "PostgreSQL",
+          priority: 1,
           category: "databases",
           status: "general_release",
           icon: "",

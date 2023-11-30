@@ -3,7 +3,6 @@ import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Grid, TextField, Typography } from "@mui/material"
 import { useSnackbar } from "notistack"
-import { Accept } from "react-dropzone"
 import { clearWorkspace } from "helpers/cache"
 import useWorkspace from "helpers/useWorkspace"
 import FileUpload from "components/form/fields/FileUpload"
@@ -17,6 +16,7 @@ import {
   UploadConnectorFileVariables,
 } from "./__generated__/UploadConnectorFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
+import getAccept from "./getAccept"
 import { ConnectorType } from "../ConnectionsForm"
 
 export const UPLOAD_CONNECTOR_FILE = gql`
@@ -108,14 +108,9 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
       .then(() => enqueueSnackbar("File uploaded"))
       .catch(() => {})
 
-  const accept: Accept =
-    connector.metadata?.file?.extension === "json"
-      ? {
-          "application/json": [".json"],
-        }
-      : {
-          "application/yaml": [".yaml", ".yml"],
-        }
+  const connExtension = connector.metadata?.file?.extension
+
+  const accept = getAccept(connExtension)
 
   return (
     <Form onSubmit={handleSubmit}>
