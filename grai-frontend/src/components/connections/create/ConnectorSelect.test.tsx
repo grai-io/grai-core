@@ -14,6 +14,8 @@ test("renders", async () => {
 })
 
 test("renders other", async () => {
+  const user = userEvent.setup()
+
   const mocks = [
     {
       request: {
@@ -73,7 +75,11 @@ test("renders other", async () => {
   render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("others")).toBeInTheDocument()
+    expect(screen.getByText("Others")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByText("Others"))
   })
 
   await waitFor(() => {
