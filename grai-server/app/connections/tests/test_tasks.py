@@ -429,14 +429,14 @@ class TestUpdateServer:
 
             get_adapter(run.connection.connector.slug)
 
-    def test_get_flat_file_connector(self, test_workspace, test_fllat_file_connector, test_source):
+    def test_get_flat_file_connector(self, test_workspace, test_flat_file_connector, test_source):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
         with open(os.path.join(__location__, "airline-safety.csv")) as reader:
             file = UploadedFile(reader, name="airline-safety.csv")
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()),
-                connector=test_fllat_file_connector,
+                connector=test_flat_file_connector,
                 workspace=test_workspace,
                 source=test_source,
             )
