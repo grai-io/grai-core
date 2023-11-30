@@ -3,7 +3,6 @@ import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Grid, TextField, Typography } from "@mui/material"
 import { useSnackbar } from "notistack"
-import { Accept } from "react-dropzone"
 import { clearWorkspace } from "helpers/cache"
 import useWorkspace from "helpers/useWorkspace"
 import FileUpload from "components/form/fields/FileUpload"
@@ -17,8 +16,8 @@ import {
   UploadConnectorFileVariables,
 } from "./__generated__/UploadConnectorFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
-import { ConnectorType } from "../ConnectionsForm"
 import getAccept from "./getAccept"
+import { ConnectorType } from "../ConnectionsForm"
 
 export const UPLOAD_CONNECTOR_FILE = gql`
   mutation UploadConnectorFile(
