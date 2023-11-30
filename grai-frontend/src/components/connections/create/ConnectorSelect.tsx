@@ -61,7 +61,7 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
     category: "others",
   }
 
-  const connectors = [...(data?.connectors ?? []), emptySource]
+  const connectors = [...data.connectors, emptySource]
   const filteredConnectors = category
     ? connectors.filter(
         connector => (connector.category ?? "others") === category,

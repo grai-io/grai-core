@@ -73,7 +73,11 @@ test("renders other", async () => {
   render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("others")).toBeInTheDocument()
+    expect(screen.getByText("Others")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await userEvent.click(screen.getByText("Others"))
   })
 
   await waitFor(() => {
