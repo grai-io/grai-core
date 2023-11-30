@@ -429,7 +429,23 @@ class TestUpdateServer:
 
             get_adapter(run.connection.connector.slug)
 
-    def get_snowflake_connector_no_account(self, test_workspace, test_snowflake_connector, test_source):
+    def test_get_flat_file_connector(self, test_workspace, test_fllat_file_connector, test_source):
+        Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
+
+        with open(os.path.join(__location__, "airline-safety.csv")) as reader:
+            file = UploadedFile(reader, name="airline-safety.csv")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()),
+                connector=test_fllat_file_connector,
+                workspace=test_workspace,
+                source=test_source,
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+            RunFile.objects.create(run=run, file=file)
+
+            get_adapter(run.connection.connector.slug)
+
+    def test_get_snowflake_connector_no_account(self, test_workspace, test_snowflake_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_snowflake_connector,
