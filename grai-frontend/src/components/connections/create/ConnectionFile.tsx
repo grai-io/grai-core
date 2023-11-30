@@ -17,8 +17,8 @@ import {
   UploadConnectorFileVariables,
 } from "./__generated__/UploadConnectorFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
-import { ConnectorType } from "../ConnectionsForm"
 import getAccept from "./getAccept"
+import { ConnectorType } from "../ConnectionsForm"
 
 export const UPLOAD_CONNECTOR_FILE = gql`
   mutation UploadConnectorFile(
