@@ -14,6 +14,8 @@ test("renders", async () => {
 })
 
 test("renders other", async () => {
+  const user = userEvent.setup()
+
   const mocks = [
     {
       request: {
@@ -77,7 +79,7 @@ test("renders other", async () => {
   })
 
   await act(async () => {
-    await userEvent.click(screen.getByText("Others"))
+    await user.click(screen.getByText("Others"))
   })
 
   await waitFor(() => {
