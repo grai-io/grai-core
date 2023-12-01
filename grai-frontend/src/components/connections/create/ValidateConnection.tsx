@@ -1,12 +1,6 @@
 import React, { useEffect } from "react"
 import { gql, useQuery } from "@apollo/client"
-import {
-  Alert,
-  AlertTitle,
-  CircularProgress,
-  Link,
-  Typography,
-} from "@mui/material"
+import { Alert, AlertTitle, CircularProgress } from "@mui/material"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunValidation,
@@ -34,17 +28,25 @@ interface Run {
   id: string
 }
 
+interface RunResult {
+  id: string
+  status: string
+  metadata: any
+}
+
 type ValidateConnectionProps = {
   workspaceId: string
   run: Run
-  onValidate?: () => void
+  onSuccess?: () => void
+  onFail?: (run: RunResult) => void
   detailed?: boolean
 }
 
 const ValidateConnection: React.FC<ValidateConnectionProps> = ({
   workspaceId,
   run,
-  onValidate,
+  onSuccess,
+  onFail,
   detailed,
 }) => {
   const { error, data, startPolling, stopPolling } = useQuery<
@@ -65,14 +67,17 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
 
     if (success) {
       stopPolling()
-      onValidate && onValidate()
+      onSuccess && onSuccess()
     }
-    if (runError) stopPolling()
+    if (runError) {
+      stopPolling()
+      onFail && onFail(data.workspace.run)
+    }
 
     return () => {
       stopPolling()
     }
-  }, [success, runError, startPolling, stopPolling, onValidate])
+  }, [success, runError, startPolling, stopPolling, onSuccess, onFail, data])
 
   if (error) return <GraphError error={error} />
 
@@ -85,29 +90,29 @@ const ValidateConnection: React.FC<ValidateConnectionProps> = ({
     )
   }
 
-  if (runError)
-    return (
-      <Alert severity="error">
-        <AlertTitle>
-          Validation Failed
-          {data.workspace.run.metadata.error !== "Unknown"
-            ? ` - ${data.workspace.run.metadata.error}`
-            : ""}
-        </AlertTitle>
-        {data.workspace.run.metadata.message}
-        {data.workspace.run.metadata.error === "No connection" && (
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            You may need to whitelist the Grai Cloud IP address, see{" "}
-            <Link
-              href="https://docs.grai.io/cloud/security/ip_whitelisting"
-              target="_blank"
-            >
-              IP Whitelisting
-            </Link>
-          </Typography>
-        )}
-      </Alert>
-    )
+  // if (runError)
+  //   return (
+  //     <Alert severity="error">
+  //       <AlertTitle>
+  //         Validation Failed
+  //         {data.workspace.run.metadata.error !== "Unknown"
+  //           ? ` - ${data.workspace.run.metadata.error}`
+  //           : ""}
+  //       </AlertTitle>
+  //       {data.workspace.run.metadata.message}
+  //       {data.workspace.run.metadata.error === "No connection" && (
+  //         <Typography variant="body2" sx={{ mt: 1 }}>
+  //           You may need to whitelist the Grai Cloud IP address, see{" "}
+  //           <Link
+  //             href="https://docs.grai.io/cloud/security/ip_whitelisting"
+  //             target="_blank"
+  //           >
+  //             IP Whitelisting
+  //           </Link>
+  //         </Typography>
+  //       )}
+  //     </Alert>
+  //   )
 
   return (
     <Alert severity="success" icon={<CircularProgress />}>

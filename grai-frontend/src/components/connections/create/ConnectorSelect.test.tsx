@@ -3,10 +3,8 @@ import { GraphQLError } from "graphql"
 import { render, waitFor, screen, act } from "testing"
 import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 
-const onSelect = jest.fn()
-
 test("renders", async () => {
-  render(<ConnectorSelect onSelect={onSelect} />, { withRouter: true })
+  render(<ConnectorSelect />, { withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
@@ -74,7 +72,7 @@ test("renders other", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
+  render(<ConnectorSelect />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Others")).toBeInTheDocument()
@@ -101,7 +99,7 @@ test("error", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={onSelect} />, { mocks, withRouter: true })
+  render(<ConnectorSelect />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
@@ -111,7 +109,7 @@ test("error", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
+  render(<ConnectorSelect />, { withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
@@ -129,7 +127,7 @@ test("search", async () => {
 test("filter", async () => {
   const user = userEvent.setup()
 
-  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
+  render(<ConnectorSelect />, { withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()

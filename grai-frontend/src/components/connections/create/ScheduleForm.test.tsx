@@ -1,22 +1,9 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { render, waitFor, screen, act } from "testing"
-import SetSchedule, { UPDATE_CONNECTION } from "./SetSchedule"
+import ScheduleForm, { UPDATE_CONNECTION } from "./ScheduleForm"
 
 const onComplete = jest.fn()
-
-const opts = {
-  activeStep: 0,
-  setActiveStep: function (activeStep: number): void {
-    throw new Error("Function not implemented.")
-  },
-  forwardStep: function (): void {
-    throw new Error("Function not implemented.")
-  },
-  backStep: function (): void {
-    throw new Error("Function not implemented.")
-  },
-}
 
 const connection = {
   id: "1",
@@ -28,21 +15,17 @@ const connection = {
 }
 
 test("renders", async () => {
-  render(
-    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
-  )
+  render(<ScheduleForm connection={connection} onComplete={onComplete} />)
 
-  expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
+  expect(screen.getByText(/Schedule type/i)).toBeTruthy()
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(
-    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
-  )
+  render(<ScheduleForm connection={connection} onComplete={onComplete} />)
 
-  expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
+  expect(screen.getByText(/Schedule type/i)).toBeTruthy()
 
   await act(async () => await user.click(screen.getByTestId("cron-expression")))
 
@@ -96,12 +79,11 @@ test("error", async () => {
     },
   ]
 
-  render(
-    <SetSchedule opts={opts} connection={connection} onComplete={onComplete} />,
-    { mocks },
-  )
+  render(<ScheduleForm connection={connection} onComplete={onComplete} />, {
+    mocks,
+  })
 
-  expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
+  expect(screen.getByText(/Schedule type/i)).toBeTruthy()
 
   await act(async () => await user.click(screen.getByTestId("cron-expression")))
 

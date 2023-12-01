@@ -9,7 +9,6 @@ import {
   Theme,
   Box,
 } from "@mui/material"
-import { WizardSteps } from "./WizardLayout"
 
 function StepIcon(props: StepIconProps) {
   const { active, completed } = props
@@ -34,7 +33,7 @@ function StepIcon(props: StepIconProps) {
 }
 
 type WizardStepperProps = {
-  steps: WizardSteps
+  steps: string[]
   activeStep: number
   sx?: SxProps<Theme>
 }
@@ -43,42 +42,38 @@ const WizardStepper: React.FC<WizardStepperProps> = ({
   steps,
   activeStep,
   sx,
-}) => {
-  const stepTitles = steps.map(step => step.title)
-
-  return (
-    <Stepper
-      activeStep={activeStep}
-      connector={<ChevronRight sx={{ color: "#A7ABB3" }} />}
-      sx={{
-        ...sx,
-        // "& .MuiStep-root": {
-        //   border: "1px solid #EBEBEB",
-        // },
-        // "& .MuiStep-root.Mui-active": {
-        //   border: "1px solid #8338EC",
-        // },
-        // "& .MuiStep-root.Mui-completed": {
-        //   border: "1px solid #8338EC",
-        // },
-      }}
-    >
-      {stepTitles.map((step, index) => (
-        <Step
-          key={step}
-          sx={{
-            borderRadius: "73px",
-            border:
-              activeStep >= index ? "1px solid #8338EC" : "1px solid #EBEBEB",
-            p: "8px",
-            pr: "16px",
-          }}
-        >
-          <StepLabel StepIconComponent={StepIcon}>{step}</StepLabel>
-        </Step>
-      ))}
-    </Stepper>
-  )
-}
+}) => (
+  <Stepper
+    activeStep={activeStep}
+    connector={<ChevronRight sx={{ color: "#A7ABB3" }} />}
+    sx={{
+      ...sx,
+      // "& .MuiStep-root": {
+      //   border: "1px solid #EBEBEB",
+      // },
+      // "& .MuiStep-root.Mui-active": {
+      //   border: "1px solid #8338EC",
+      // },
+      // "& .MuiStep-root.Mui-completed": {
+      //   border: "1px solid #8338EC",
+      // },
+    }}
+  >
+    {steps.map((step, index) => (
+      <Step
+        key={step}
+        sx={{
+          borderRadius: "73px",
+          border:
+            activeStep >= index ? "1px solid #8338EC" : "1px solid #EBEBEB",
+          p: "8px",
+          pr: "16px",
+        }}
+      >
+        <StepLabel StepIconComponent={StepIcon}>{step}</StepLabel>
+      </Step>
+    ))}
+  </Stepper>
+)
 
 export default WizardStepper

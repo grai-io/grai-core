@@ -2,8 +2,6 @@ import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectorCard from "./ConnectorCard"
 
-const onSelect = jest.fn()
-
 test("renders", async () => {
   render(
     <ConnectorCard
@@ -13,7 +11,6 @@ test("renders", async () => {
         metadata: null,
         icon: null,
       }}
-      onSelect={onSelect}
     />,
     {
       withRouter: true,
@@ -31,7 +28,6 @@ test("coming soon", async () => {
         status: "coming_soon",
         icon: null,
       }}
-      onSelect={onSelect}
     />,
     {
       withRouter: true,
@@ -51,7 +47,6 @@ test("alpha", async () => {
         status: "alpha",
         icon: null,
       }}
-      onSelect={() => {}}
     />,
     {
       withRouter: true,
@@ -72,10 +67,10 @@ test("click", async () => {
         metadata: null,
         icon: null,
       }}
-      onSelect={onSelect}
     />,
     {
       withRouter: true,
+      routes: ["/:organisationName/:workspaceName/connections/create"],
     },
   )
 
@@ -83,7 +78,9 @@ test("click", async () => {
     await user.click(screen.getByText("connector 1"))
   })
 
-  expect(onSelect).toHaveBeenCalled()
+  await waitFor(() => {
+    expect(screen.getByText("New Page")).toBeTruthy()
+  })
 })
 
 test("to", async () => {
@@ -98,7 +95,6 @@ test("to", async () => {
         to: "a",
         icon: null,
       }}
-      onSelect={onSelect}
     />,
     {
       withRouter: true,
