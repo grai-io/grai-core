@@ -436,9 +436,9 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = config("SECURE_HSTS_INCLUDE_SUBDOMAINS", defaul
 SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 
 # Content Security Policy
-CSP_IMG_SRC = "'self'"
-CSP_STYLE_SRC = "'self'"
-CSP_SCRIPT_SRC = "'self'"
+CSP_IMG_SRC = "'self' data: http://www.w3.org/2000/svg"
+CSP_STYLE_SRC = "'self' https://unpkg.com"
+CSP_SCRIPT_SRC = "'self' 'unsafe-inline' https://unpkg.com"
 
 PERMISSIONS_POLICY = {
     "accelerometer": [],
