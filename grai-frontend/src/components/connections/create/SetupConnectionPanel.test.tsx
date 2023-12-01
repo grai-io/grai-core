@@ -38,9 +38,6 @@ const connector = {
   },
 }
 
-// jest.useFakeTimers()
-// jest.spyOn(global, "setTimeout")
-
 const submit = async (user: UserEvent, container: HTMLElement) => {
   await act(
     async () =>
@@ -208,10 +205,6 @@ test("submit", async () => {
   await screen.findByText("Running tests")
 
   await screen.findByText("All tests successfully passed!")
-
-  // jest.runAllTimers()
-
-  // expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000)
 
   await screen.findByText("New Page")
 })
