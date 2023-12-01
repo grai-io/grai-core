@@ -17,7 +17,7 @@ import Edge from "components/icons/Edge"
 import Settings from "components/icons/Settings"
 import HoverState from "components/utils/HoverState"
 import AppDrawerCollapse from "./AppDrawerCollapse"
-import AppDrawerItem from "./AppDrawerItem"
+import AppDrawerItem, { Page } from "./AppDrawerItem"
 import Profile, { User } from "./profile/Profile"
 
 type AppDrawerProps = {
@@ -30,7 +30,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
   const { unread } = useChat()
   const [expanded, setExpanded] = useLocalState("app-drawer", true)
 
-  const pages = [
+  const pages: Page[] = [
     {
       title: "Graph",
       path: "graph",
@@ -55,6 +55,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
       path: "sources",
       icon: <Connections />,
       alt: "Sources",
+      otherPaths: ["connections"],
     },
     {
       title: "Reports",
@@ -115,20 +116,19 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
               {pages.map(page => (
                 <AppDrawerItem
                   expanded={expanded}
+                  page={page}
                   key={page.path}
-                  title={page.title}
-                  path={page.path}
-                  icon={page.icon}
-                  className={page.className}
-                  alert={page.alert}
                 />
               ))}
             </List>
             <List>
               <AppDrawerItem
-                title="Settings"
-                path="settings/profile"
-                icon={<Settings />}
+                page={{
+                  title: "Settings",
+                  path: "settings/profile",
+                  icon: <Settings />,
+                  alt: "Settings",
+                }}
                 expanded={expanded}
               />
 
@@ -137,7 +137,12 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ profile, sampleData }) => {
           </Drawer>
         )}
       </HoverState>
-      <Box sx={{ width: expanded ? 224 : 81 }} />
+      <Box
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+        }}
+      />
     </>
   )
 }

@@ -17,6 +17,9 @@ services:
 
   the_guide:
     image: ghcr.io/grai-io/grai-core/grai-server:latest
+    # extra_hosts are not required but provided so users can easily connect to services running on the host machine
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8000:8000
     environment:

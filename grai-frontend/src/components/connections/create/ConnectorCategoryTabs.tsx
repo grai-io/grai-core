@@ -15,14 +15,17 @@ const ConnectorCategoryTabs: React.FC<ConnectorCategoryTabsProps> = ({
   return (
     <Tabs value={value} onChange={(_, newValue) => onChange(newValue)}>
       <Tab label="All Integrations" value={null} />
-      {categories.map(category => (
-        <Tab
-          label={category}
-          value={category}
-          key={category}
-          sx={{ textTransform: "capitalize" }}
-        />
-      ))}
+      {categories
+        .filter(c => c !== "others")
+        .map(category => (
+          <Tab
+            label={category}
+            value={category}
+            key={category}
+            sx={{ textTransform: "capitalize" }}
+          />
+        ))}
+      <Tab label="Others" value="others" />
     </Tabs>
   )
 }

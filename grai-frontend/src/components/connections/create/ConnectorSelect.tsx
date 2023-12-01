@@ -13,8 +13,9 @@ import ConnectorList from "../connectors/ConnectorList"
 
 export const GET_CONNECTORS = gql`
   query GetConnectors {
-    connectors(order: { name: ASC }) {
+    connectors(order: { priority: DESC, name: ASC }) {
       id
+      priority
       name
       metadata
       icon
@@ -61,7 +62,7 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
     category: "others",
   }
 
-  const connectors = [...(data?.connectors ?? []), emptySource]
+  const connectors = [...data.connectors, emptySource]
   const filteredConnectors = category
     ? connectors.filter(
         connector => (connector.category ?? "others") === category,

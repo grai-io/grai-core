@@ -63,6 +63,7 @@ def get_profile(info: Info) -> Profile:
 @strawberry_django.ordering.order(ConnectorModel)
 class ConnectorOrder:
     id: strawberry.auto
+    priority: strawberry.auto
     name: strawberry.auto
     category: strawberry.auto
 

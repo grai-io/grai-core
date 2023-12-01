@@ -23,7 +23,7 @@ from rest_framework import routers
 from workspaces.models import Workspace
 from workspaces.permissions import HasBearerWorkspaceAPIKey
 
-from .models import Connection, Connector, Run, RunFile
+from .models import Connection, ConnectorSlugs, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
 
 app_name = "connections"
@@ -263,7 +263,7 @@ def dbt_cloud(request):
 
     try:
         connection = Connection.objects.get(
-            connector__slug=Connector.DBT_CLOUD,
+            connector__slug=ConnectorSlugs.DBT_CLOUD,
             schedules__type="dbt-cloud",
             schedules__dbt_cloud__job_id=body["data"]["jobId"],
         )
@@ -302,7 +302,7 @@ def open_lineage(request, connection: Connection):
 
     try:
         connection = Connection.objects.get(
-            connector__slug=Connector.OPEN_LINEAGE,
+            connector__slug=ConnectorSlugs.OPEN_LINEAGE,
             id=connection,
         )
     except Connection.DoesNotExist:
