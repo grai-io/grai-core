@@ -33,7 +33,7 @@ class Workspace(TenantModel):
     )
     sample_data = models.BooleanField(default=False)
     search_enabled = models.BooleanField(default=True)
-    ai_enabled = models.BooleanField(default=True)
+    ai_enabled = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -44,6 +44,27 @@ class Workspace(TenantModel):
     @property
     def ref(self):
         return f"{self.organisation.name}/{self.name}"
+
+    def update_embeddings(self):
+        from lineage.models import Node
+        from lineage.tasks import update_node_vector_index
+
+        if not self.ai_enabled:
+            return
+
+        nodes_without_embeddings: list[uuid.UUID] = Node.objects.filter(
+            workspace_id=self.id, nodeembeddings__isnull=True
+        ).values_list("id", flat=True)
+
+        for node_id in nodes_without_embeddings:
+            update_node_vector_index.delay(node_id)
+
+    def save(self, *args, **kwargs):
+        current_state = Workspace.objects.filter(id=self.id).first()
+        super().save(*args, **kwargs)
+
+        if current_state is None or current_state.ai_enabled != self.ai_enabled:
+            self.update_embeddings()
 
     class TenantMeta:
         tenant_field_name = "id"

@@ -10,7 +10,7 @@ from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, 
 import itertools
 import openai
 
-from pgvector.django import L2Distance
+from pgvector.django import MaxInnerProduct
 import tiktoken
 from django.conf import settings
 from django.core.cache import cache
@@ -401,7 +401,7 @@ class EmbeddingSearchAPI(API):
     def nearest_neighbor_search(self, vector_query: list[int], limit=10) -> list[Node]:
         node_result = (
             NodeEmbeddings.objects.filter(node__workspace__id=self.workspace)
-            .order_by(L2Distance("embedding", vector_query))
+            .order_by(MaxInnerProduct("embedding", vector_query))
             .select_related("node")[:limit]
         )
 
@@ -636,6 +636,7 @@ async def get_chat_conversation(
     * Nodes and Edges are typed. You can identify the type under `metadata.grai.node_type` or `metadata.grai.edge_type`
     * If a Node has a type like `Column` with a `TableToColumn` Edge connecting to a `Table` node, the Column node represents a column in the table.
     * Node names for databases and datawarehouses are constructed following `{schema}.{table}.{column}` format e.g. a column named `id` in a table named `users` in a schema named `public` would be identified as `public.users.id`
+    * If a user asks about a specific node and you're unable to find an answer you should attempt to find a similar node and explain why you think it's similar.
     """
     functions = [
         NodeLookupAPI(workspace=workspace),

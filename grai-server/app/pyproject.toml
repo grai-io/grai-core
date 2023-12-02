@@ -79,7 +79,6 @@ pyjwt = "^2.8.0"
 django-csp = "^3.7"
 
 
-
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
 black = "^23.7.0"

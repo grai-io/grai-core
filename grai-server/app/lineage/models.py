@@ -36,6 +36,9 @@ class Node(TenantModel):
     #     "users.User", related_name="created_by", on_delete=models.PROTECT
     # )
 
+    def natural_key(self) -> tuple[uuid.UUID, str, str]:
+        return self.workspace.id, self.namespace, self.name
+
     def search_type(self):
         return self.metadata.get("grai", {}).get("node_type", "Node")
 
@@ -54,9 +57,6 @@ class Node(TenantModel):
         self.set_names()
         super().save(*args, **kwargs)
         self.cache_model()
-
-        # if self.workspace.ai_enabled and settings.HAS_OPENAI:
-        #     update_node_vector_index.delay(self.id)
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
@@ -96,24 +96,32 @@ class Node(TenantModel):
         ]
 
 
-# class NodeEmbeddings(models.Model):
-#     embedding = VectorField(dimensions=1536)
-#     node = models.OneToOneField(
-#         Node,
-#         on_delete=models.CASCADE,
-#         primary_key=True,
-#     )
-#
-#     class Meta:
-#         indexes = [
-#             HnswIndex(
-#                 name="node_embedding_index",
-#                 fields=["embedding"],
-#                 m=64,
-#                 ef_construction=128,  # should be at least 2x m.
-#                 opclasses=["vector_ip_ops"],
-#             )
-#         ]
+class NodeEmbeddings(models.Model):
+    embedding = VectorField(dimensions=1536)
+    node = models.OneToOneField(
+        Node,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def natural_key(self):
+        return self.node.natural_key()
+
+    def update_embedding(self):
+        update_node_vector_index.delay(self.node.id)
+
+    class Meta:
+        indexes = [
+            HnswIndex(
+                name="node_embedding_index",
+                fields=["embedding"],
+                m=64,
+                ef_construction=128,  # should be at least 2x m.
+                opclasses=["vector_ip_ops"],
+            )
+        ]
 
 
 class Edge(TenantModel):

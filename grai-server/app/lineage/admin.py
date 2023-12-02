@@ -7,7 +7,7 @@ from django.utils.html import format_html
 from common.admin.fields.json_widget import PrettyJSONWidget
 from connections.models import Connection, Run
 
-from .models import Edge, Event, Filter, Node, Source
+from .models import Edge, Event, Filter, Node, Source, NodeEmbeddings
 
 
 @admin.action(description="Force delete selected sources")
@@ -198,8 +198,30 @@ class SourceAdmin(admin.ModelAdmin):
     ]
 
 
+def update_embedding(modeladmin, request, queryset):  # pragma: no cover
+    from lineage.tasks import update_node_vector_index
+
+    for embedding in queryset:
+        embedding.update_embedding()
+
+
+class NodeEmbeddingAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "natural_key",
+        "created_at",
+        "updated_at",
+    )
+    search_fields = ["node", "created_at", "updated_at"]
+
+    actions = [
+        update_embedding,
+    ]
+
+
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Edge, EdgeAdmin)
 admin.site.register(Filter, FilterAdmin)
 admin.site.register(Event)
 admin.site.register(Source, SourceAdmin)
+admin.site.register(NodeEmbeddings, NodeEmbeddingAdmin)
