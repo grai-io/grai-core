@@ -1,9 +1,10 @@
 import React from "react"
-import { Link } from "@mui/material"
+import { Box, Link } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import HelpItem from "components/help/HelpItem"
-import HelpSection from "components/help/HelpSection"
+import Docs from "components/icons/Docs"
+import InviteUser from "components/icons/InviteUser"
 
 interface Connector {
   name: string
@@ -22,8 +23,15 @@ const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
   const { routePrefix } = useWorkspace()
 
   return (
-    <HelpSection>
-      <HelpItem title="Read our docs">
+    <Box>
+      <HelpItem title="Invite a teammate" icon={<InviteUser />} color="#FAF5FF">
+        If you're missing credentials or connection info,{" "}
+        <RouterLink to={`${routePrefix}/settings/memberships`}>
+          invite a teammate
+        </RouterLink>{" "}
+        to join you in this Grai workspace.
+      </HelpItem>
+      <HelpItem title="Docs" icon={<Docs />} color="#F0F6FF">
         Not sure where to start? Check out the{" "}
         <Link
           href={connector?.metadata?.docs_url ?? "https://docs.grai.io"}
@@ -33,18 +41,7 @@ const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
         </Link>{" "}
         for step-by-step instructions.
       </HelpItem>
-      <HelpItem title="Invite a teammate">
-        If you're missing credentials or connection info,{" "}
-        <RouterLink to={`${routePrefix}/settings/memberships`}>
-          invite a teammate
-        </RouterLink>{" "}
-        to join you in this Grai workspace.
-      </HelpItem>
-      <HelpItem title="Contact support">
-        We're here to help! Chat with us if you feel stuck or have any
-        questions.
-      </HelpItem>
-    </HelpSection>
+    </Box>
   )
 }
 

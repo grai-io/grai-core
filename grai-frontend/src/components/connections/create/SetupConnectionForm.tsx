@@ -1,14 +1,10 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
-import { ArrowForward } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
-import { Box, Grid, InputAdornment, TextField } from "@mui/material"
+import { Box, TextField } from "@mui/material"
 import Form from "components/form/Form"
 import { NewSource } from "components/sources/__generated__/NewSource"
 import GraphError from "components/utils/GraphError"
-import WizardBottomBar from "components/wizards/WizardBottomBar"
-import { ElementOptions } from "components/wizards/WizardLayout"
-import WizardSubtitle from "components/wizards/WizardSubtitle"
 import {
   CreateConnection,
   CreateConnectionVariables,
@@ -19,11 +15,8 @@ import {
   UpdateConnectionInitial,
   UpdateConnectionInitialVariables,
 } from "./__generated__/UpdateConnectionInitial"
-import CreateConnectionHelp from "./CreateConnectionHelp"
-import { Connection } from "./CreateConnectionWizard"
 import ConnectionsMetadata from "../ConnectionsMetadata"
 import { Connector } from "../connectors/ConnectorCard"
-import ConnectorIcon from "../connectors/ConnectorIcon"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -109,6 +102,10 @@ export const UPDATE_CONNECTION = gql`
   }
 `
 
+export interface Connection extends Values {
+  id: string
+}
+
 export type Values = {
   id?: string
   sourceName: string
@@ -120,42 +117,28 @@ export type Values = {
 
 type SetupConnectionFormProps = {
   workspaceId: string
-  opts: ElementOptions
   connector: Connector
   connection: Connection | null
   onSubmit: (connection: Connection) => void
-  onContinue: () => void
   disabled?: boolean
-  validated: boolean
   children?: React.ReactNode
 }
 
 const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
   workspaceId,
-  opts,
   connector,
   connection,
   onSubmit,
-  onContinue,
   disabled,
-  validated,
   children,
 }) => {
-  const [dirty, setDirty] = useState(false)
-  const [values, setValues] = useState<Values>(
-    connection ?? {
-      sourceName: connector.name,
-      name: connector.name,
-      namespace: "default",
-      metadata: {},
-      secrets: {},
-    },
-  )
-
-  const handleChange = (values: Values) => {
-    setDirty(true)
-    setValues(values)
-  }
+  const [values, setValues] = useState<Values>({
+    sourceName: connection?.sourceName ?? connector.name,
+    name: connection?.name ?? connector.name,
+    namespace: connection?.namespace ?? "default",
+    metadata: connection?.metadata,
+    secrets: connection?.secrets,
+  })
 
   const [createConnection, { loading: loadingCreate, error: errorCreate }] =
     useMutation<CreateConnection, CreateConnectionVariables>(
@@ -271,11 +254,6 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
     )
 
   const handleSubmit = () => {
-    if (validated && !dirty) {
-      onContinue()
-      return
-    }
-
     if (connection?.id) {
       updateConnection({
         variables: { ...values, connectionId: connection.id },
@@ -289,7 +267,6 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
               secrets: values.secrets,
             }),
         )
-        .then(() => setDirty(false))
         .catch(() => {})
       return
     }
@@ -306,121 +283,67 @@ const SetupConnectionForm: React.FC<SetupConnectionFormProps> = ({
             secrets: values.secrets,
           }),
       )
-      .then(() => setDirty(false))
       .catch(() => {})
   }
 
   return (
     <Form onSubmit={handleSubmit}>
-      <WizardSubtitle
-        title="Setup connection"
-        subTitle="Configure the connection to your source"
-      />
       {errorCreate && <GraphError error={errorCreate} />}
       {errorUpdate && <GraphError error={errorUpdate} />}
-      <Grid container sx={{ mt: 5 }}>
-        <Grid item md={8} sx={{ pr: 3 }}>
-          <TextField
-            label="Integration"
-            value={connector.name}
-            disabled
-            fullWidth
-            sx={{
-              mb: 3,
-              "& .MuiInputBase-input.Mui-disabled": {
-                WebkitTextFillColor: "black",
-              },
-            }}
-            InputProps={{
-              startAdornment: connector.icon ? (
-                <InputAdornment position="start">
-                  <Box
-                    sx={{
-                      width: "48px",
-                      height: "48px",
-                      backgroundColor: "#F8F8F8",
-                      borderRadius: "24px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <ConnectorIcon connector={connector} />
-                  </Box>
-                </InputAdornment>
-              ) : undefined,
-              sx: {
-                pt: "23px",
-                pb: "18px",
-                pl: "18px",
-              },
-            }}
-          />
-          <TextField
-            label="Source"
-            margin="normal"
-            value={values.sourceName}
-            onChange={event =>
-              handleChange({ ...values, sourceName: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          <TextField
-            label="Name"
-            margin="normal"
-            value={values.name}
-            onChange={event =>
-              handleChange({ ...values, name: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          <TextField
-            label="Namespace"
-            margin="normal"
-            value={values.namespace}
-            onChange={event =>
-              handleChange({ ...values, namespace: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          {connector && (
-            <ConnectionsMetadata
-              connector={connector}
-              metadata={values.metadata}
-              secrets={values.secrets}
-              onChangeMetadata={value =>
-                handleChange({ ...values, metadata: value })
-              }
-              onChangeSecrets={value =>
-                handleChange({ ...values, secrets: value })
-              }
-            />
-          )}
-          {children}
-          <WizardBottomBar opts={opts}>
-            <LoadingButton
-              variant="contained"
-              type="submit"
-              sx={{
-                minWidth: 120,
-                backgroundColor: "#FC6016",
-                boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
-              }}
-              endIcon={<ArrowForward />}
-              loading={loadingCreate || loadingUpdate}
-              disabled={!dirty && disabled}
-            >
-              Continue
-            </LoadingButton>
-          </WizardBottomBar>
-        </Grid>
-        <Grid item md={4} sx={{}}>
-          <CreateConnectionHelp connector={connector} />
-        </Grid>
-      </Grid>
+      <TextField
+        label="Source"
+        margin="normal"
+        value={values.sourceName}
+        onChange={event =>
+          setValues({ ...values, sourceName: event.target.value })
+        }
+        required
+        fullWidth
+      />
+      <TextField
+        label="Name"
+        margin="normal"
+        value={values.name}
+        onChange={event => setValues({ ...values, name: event.target.value })}
+        required
+        fullWidth
+      />
+      <TextField
+        label="Namespace"
+        margin="normal"
+        value={values.namespace}
+        onChange={event =>
+          setValues({ ...values, namespace: event.target.value })
+        }
+        required
+        fullWidth
+      />
+      {connector && (
+        <ConnectionsMetadata
+          connector={connector}
+          metadata={values.metadata}
+          secrets={values.secrets}
+          onChangeMetadata={value => setValues({ ...values, metadata: value })}
+          onChangeSecrets={value => setValues({ ...values, secrets: value })}
+          edit={!!connection}
+        />
+      )}
+      {children}
+      <Box sx={{ textAlign: "right", mt: 2 }}>
+        <LoadingButton
+          variant="contained"
+          type="submit"
+          sx={{
+            minWidth: 120,
+            backgroundColor: "#FC6016",
+            boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
+          }}
+          loading={loadingCreate || loadingUpdate}
+          disabled={disabled}
+        >
+          Test Connection
+        </LoadingButton>
+      </Box>
     </Form>
   )
 }

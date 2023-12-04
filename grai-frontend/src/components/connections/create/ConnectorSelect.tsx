@@ -8,7 +8,6 @@ import GraphError from "components/utils/GraphError"
 import { GetConnectors } from "./__generated__/GetConnectors"
 import ConnectorCategoryTabs from "./ConnectorCategoryTabs"
 import ConnectorSearch from "./ConnectorSearch"
-import { Connector } from "../connectors/ConnectorCard"
 import ConnectorList from "../connectors/ConnectorList"
 
 export const GET_CONNECTORS = gql`
@@ -25,11 +24,7 @@ export const GET_CONNECTORS = gql`
   }
 `
 
-type ConnectorSelectProps = {
-  onSelect: (connector: Connector) => void
-}
-
-const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
+const ConnectorSelect: React.FC = () => {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState<string | null>(null)
 
@@ -87,7 +82,7 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
         <ConnectorSearch value={search} onChange={setSearch} />
       </Box>
       <Box sx={{ mt: 5, pb: 5 }}>
-        <ConnectorList connectors={searchedConnectors} onSelect={onSelect} />
+        <ConnectorList connectors={searchedConnectors} />
       </Box>
     </>
   )

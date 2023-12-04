@@ -2,23 +2,9 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
-import SetupConnection, { CREATE_RUN } from "./SetupConnection"
+import SetupConnection from "./SetupConnection"
 import { CREATE_CONNECTION, UPDATE_CONNECTION } from "./SetupConnectionForm"
-
-const setConnection = jest.fn()
-
-const opts = {
-  activeStep: 0,
-  setActiveStep: function (activeStep: number): void {
-    throw new Error("Function not implemented.")
-  },
-  forwardStep: function (): void {
-    throw new Error("Function not implemented.")
-  },
-  backStep: function (): void {
-    throw new Error("Function not implemented.")
-  },
-}
+import { CREATE_RUN } from "./SetupConnectionPanel"
 
 const connector = {
   id: "1",
@@ -29,13 +15,7 @@ const connector = {
 
 test("renders", async () => {
   render(
-    <SetupConnection
-      workspaceId="1"
-      opts={opts}
-      connector={connector}
-      connection={null}
-      setConnection={setConnection}
-    />,
+    <SetupConnection workspaceId="1" connector={connector} connection={null} />,
     {
       withRouter: true,
     },
@@ -50,13 +30,7 @@ test("submit", async () => {
   const user = userEvent.setup()
 
   render(
-    <SetupConnection
-      workspaceId="1"
-      opts={opts}
-      connector={connector}
-      connection={null}
-      setConnection={setConnection}
-    />,
+    <SetupConnection workspaceId="1" connector={connector} connection={null} />,
     {
       withRouter: true,
     },
@@ -68,10 +42,12 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i })),
+      await user.click(
+        screen.getByRole("button", { name: /test connection/i }),
+      ),
   )
 
-  expect(setConnection).toHaveBeenCalled()
+  //TODO: Add test here
 })
 
 test("submit run error", async () => {
@@ -85,8 +61,6 @@ test("submit run error", async () => {
           sourceName: "Test Connector",
           name: "Test Connector",
           namespace: "default",
-          metadata: {},
-          secrets: {},
           workspaceId: "1",
           connectorId: "1",
         },
@@ -129,13 +103,7 @@ test("submit run error", async () => {
   ]
 
   render(
-    <SetupConnection
-      workspaceId="1"
-      opts={opts}
-      connector={connector}
-      connection={null}
-      setConnection={setConnection}
-    />,
+    <SetupConnection workspaceId="1" connector={connector} connection={null} />,
     {
       mocks,
       withRouter: true,
@@ -148,7 +116,9 @@ test("submit run error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i })),
+      await user.click(
+        screen.getByRole("button", { name: /test connection/i }),
+      ),
   )
 
   await waitFor(() => {
@@ -162,7 +132,6 @@ test("submit update", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={connector}
       connection={{
         id: "1",
@@ -172,7 +141,6 @@ test("submit update", async () => {
         secrets: {},
         sourceName: "default",
       }}
-      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -193,7 +161,9 @@ test("submit update", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i })),
+      await user.click(
+        screen.getByRole("button", { name: /test connection/i }),
+      ),
   )
 })
 
@@ -205,7 +175,6 @@ test("submit update error", async () => {
       request: {
         query: UPDATE_CONNECTION,
         variables: {
-          id: "1",
           namespace: "default",
           name: "connection 1",
           sourceName: "test",
@@ -223,7 +192,6 @@ test("submit update error", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={connector}
       connection={{
         id: "1",
@@ -233,7 +201,6 @@ test("submit update error", async () => {
         metadata: {},
         secrets: {},
       }}
-      setConnection={setConnection}
     />,
     {
       mocks,
@@ -247,7 +214,9 @@ test("submit update error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i })),
+      await user.click(
+        screen.getByRole("button", { name: /test connection/i }),
+      ),
   )
 
   await waitFor(() => {
@@ -259,7 +228,6 @@ test("renders file", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test File Connector",
@@ -272,7 +240,6 @@ test("renders file", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -288,7 +255,6 @@ test("renders file yaml", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test YAML Connector",
@@ -301,7 +267,6 @@ test("renders file yaml", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -319,7 +284,6 @@ test("upload file", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test File Connector",
@@ -332,7 +296,6 @@ test("upload file", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     {
       routes: ["/:organisationName/:workspaceName/runs/:runId"],
@@ -383,7 +346,6 @@ test("upload wrong file", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test File Connector",
@@ -396,7 +358,6 @@ test("upload wrong file", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     {
       withRouter: true,
@@ -450,7 +411,6 @@ test("upload file error", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test File Connector",
@@ -463,7 +423,6 @@ test("upload file error", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     { withRouter: true, mocks },
   )
@@ -504,7 +463,6 @@ test("renders coming soon", async () => {
   render(
     <SetupConnection
       workspaceId="1"
-      opts={opts}
       connector={{
         id: "1",
         name: "Test",
@@ -513,7 +471,6 @@ test("renders coming soon", async () => {
         icon: null,
       }}
       connection={null}
-      setConnection={setConnection}
     />,
     {
       withRouter: true,
