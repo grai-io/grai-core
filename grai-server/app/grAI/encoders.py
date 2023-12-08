@@ -34,4 +34,4 @@ class OpenAIEmbedder:
 
     def get_embedding(self, content: str) -> R:
         content = self.get_max_length_content(content)
-        return openai.Embedding.create(input=content, model=self.model)
+        return openai.embedding.create(input=content, model=self.model)
