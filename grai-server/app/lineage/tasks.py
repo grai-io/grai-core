@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from typing import TYPE_CHECKING, TypeVar
 from uuid import UUID
+import asyncio
 
 import openai
 from django.core.cache import cache
@@ -9,13 +10,11 @@ from django_celery_beat.models import PeriodicTask, PeriodicTasks
 from grai_schemas.serializers import GraiYamlSerializer
 
 from celery import shared_task
-from grAI.encoders import OpenAIEmbedder
+from grAI.encoders import Embedder
+
 
 T = TypeVar("T")
 R = TypeVar("R")
-
-
-Embedder = OpenAIEmbedder("text-embedding-ada-002", 8100)
 
 
 if TYPE_CHECKING:
@@ -42,7 +41,7 @@ def create_node_vector_index(node: "Node"):
     from lineage.models import NodeEmbeddings
 
     content = get_embedded_node_content(node)
-    embedding_resp = Embedder.get_embedding(content)
+    embedding_resp = asyncio.run(Embedder.get_embedding(content))
     NodeEmbeddings.objects.update_or_create(node=node, embedding=embedding_resp.data[0].embedding)
 
 
@@ -69,7 +68,7 @@ def update_node_vector_index(self, node_id: UUID, task_id: UUID | None = None):
     node = Node.objects.prefetch_related("data_sources").get(id=node_id)
     try:
         create_node_vector_index(node)
-    except openai.error.RateLimitError:
+    except openai.RateLimitError:
         logging.info(f"Openai rate limit reach retrying in 10 seconds")
         self.retry(countdown=10)
         return
