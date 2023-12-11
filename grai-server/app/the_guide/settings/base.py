@@ -436,10 +436,13 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = config("SECURE_HSTS_INCLUDE_SUBDOMAINS", defaul
 SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 
 # Content Security Policy
-CSP_IMG_SRC = "'self' data: http://www.w3.org/2000/svg https://cdn.redoc.ly"
+CSP_IMG_SRC = "'self' data: https://cdn.redoc.ly"
 CSP_STYLE_SRC = "'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com"
 CSP_SCRIPT_SRC = "'self' 'unsafe-inline' blob: https://unpkg.com https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"
-CSP_FONT_SRC = "'self' https://fonts.gstatic.com"
+CSP_FONT_SRC = "'self' data: https://fonts.gstatic.com"
+CSP_OBJECT_SRC = "'none'"
+CSP_REPORT_ONLY = config("CSP_REPORT_ONLY", default=False, cast=bool)
+CSP_REPORT_URI = config("CSP_REPORT_URI", default=None)
 
 PERMISSIONS_POLICY = {
     "accelerometer": [],
