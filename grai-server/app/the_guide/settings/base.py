@@ -438,7 +438,7 @@ SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 # Content Security Policy
 CSP_IMG_SRC = "'self' data: https://cdn.redoc.ly"
 CSP_STYLE_SRC = "'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com"
-CSP_SCRIPT_SRC = "'self' 'unsafe-inline' blob: https://unpkg.com https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"
+CSP_SCRIPT_SRC = "'self' blob: https://unpkg.com https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js 'sha256-Ri7Dq6kn4d1SzxucogauP62ISolkcXZOaUT8I/xEVGg=' 'sha256-J8pGp/Y6gm05ag6P7dPEm65mUl5R2czgNxQwp+oKbgY='"
 CSP_FONT_SRC = "'self' data: https://fonts.gstatic.com"
 CSP_OBJECT_SRC = "'none'"
 CSP_REPORT_ONLY = config("CSP_REPORT_ONLY", default=False, cast=bool)
