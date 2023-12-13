@@ -283,6 +283,28 @@ def test_table_tag_contains():
     assert query.parameters == {}
 
 
+def test_table_tag_contains_array():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "tag",
+                "operator": "contains",
+                "value": ["tag1"],
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "'tag1' IN table.tags"
+    assert query.parameters == {}
+
+
 def test_table_tag_doesnt_contain():
     query = GraphQuery(Match("Table"))
 
@@ -294,6 +316,28 @@ def test_table_tag_doesnt_contain():
                 "field": "tag",
                 "operator": "not-contains",
                 "value": "tag1",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "NOT 'tag1' IN table.tags"
+    assert query.parameters == {}
+
+
+def test_table_tag_doesnt_contain_array():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "tag",
+                "operator": "not-contains",
+                "value": ["tag1"],
             }
         ],
     )

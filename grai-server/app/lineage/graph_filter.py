@@ -30,22 +30,28 @@ def filter_by_dict(row, query: GraphQuery) -> GraphQuery:
             if row["operator"] == "equals":
                 query.where(f"table.namespace = '{value}'")
             elif row["operator"] == "in":
-                list = "['" + "', '".join(value) + "']"
-                query.where(f"table.namespace IN {list}")
+                value_list = "['" + "', '".join(value) + "']"
+                query.where(f"table.namespace IN {value_list}")
 
         elif row["field"] == "data-source":
             if row["operator"] == "in":
-                list = "['" + "', '".join(value) + "']"
-                query.where(f"any(x IN table.data_sources WHERE x IN {list})")
+                value_list = "['" + "', '".join(value) + "']"
+                query.where(f"any(x IN table.data_sources WHERE x IN {value_list})")
             elif row["operator"] == "not-in":
-                list = "['" + "', '".join(value) + "']"
-                query.where(f"NOT any(x IN table.data_sources WHERE x IN {list})")
+                value_list = "['" + "', '".join(value) + "']"
+                query.where(f"NOT any(x IN table.data_sources WHERE x IN {value_list})")
 
         elif row["field"] == "tag":
             if row["operator"] == "contains":
-                query.where(f"'{value}' IN table.tags")
+                if isinstance(value, list):
+                    query.where(f"'{value[0]}' IN table.tags")
+                else:
+                    query.where(f"'{value}' IN table.tags")
             elif row["operator"] == "not-contains":
-                query.where(f"NOT '{value}' IN table.tags")
+                if isinstance(value, list):
+                    query.where(f"NOT '{value[0]}' IN table.tags")
+                else:
+                    query.where(f"NOT '{value}' IN table.tags")
 
     elif row["type"] == "ancestor":
         if row["field"] == "tag":
