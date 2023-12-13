@@ -29,7 +29,7 @@ from grAI.chat_types import (
     ChatMessages,
     UsageMessage,
     ChatMessage,
-    UsageMessageTypes,
+    SupportedMessageTypes,
     to_gpt,
 )
 from grAI.tools import (
@@ -129,10 +129,7 @@ class BaseConversation:
         self.baseline_usage: CompletionUsage = CompletionUsage(
             completion_tokens=0, prompt_tokens=tool_prompt_token_allocation, total_tokens=tool_prompt_token_allocation
         )
-        self.prompt_message: UsageMessage = UsageMessage(
-            message=SystemMessage(content=self.system_context),
-            usage=self.baseline_usage,
-        )
+        self.prompt_message = SystemMessage(content=self.system_context)
 
         if client is None:
             client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
@@ -142,24 +139,12 @@ class BaseConversation:
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
 
-    def build_message(
-        self, message_type: Type[T], content: str, current_usage: CompletionUsage, **kwargs
-    ) -> UsageMessage:
-        message = message_type(content=content, **kwargs)
-        encoding = self.encoder.encode(content)
-        usage = CompletionUsage(
-            completion_tokens=len(encoding),
-            prompt_tokens=current_usage.total_tokens,
-            total_tokens=current_usage.total_tokens + len(encoding),
-        )
-        return UsageMessage(message=message, usage=usage, encoding=encoding)
-
     @property
-    def cached_messages(self) -> list[BaseMessage]:
+    def cached_messages(self) -> list[SupportedMessageTypes]:
         return [ChatMessage(message=message).message for message in cache.get(self.cache_id)]
 
     @cached_messages.setter
-    def cached_messages(self, values: list[BaseMessage]):
+    def cached_messages(self, values: list[SupportedMessageTypes]):
         cache.set(self.cache_id, [v.dict(exclude_none=True) for v in values])
 
     @database_sync_to_async
@@ -176,57 +161,40 @@ class BaseConversation:
                 {"role": m.role, "content": m.message}
                 for m in Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
             )
-            for item in messages_iter:
-                encoding = self.encoder.encode(item["content"])
-                usage = CompletionUsage(
-                    completion_tokens=len(encoding),
-                    prompt_tokens=usage.total_tokens,
-                    total_tokens=usage.total_tokens + len(encoding),
-                )
-                usage_message = UsageMessage(message=item, usage=usage, encoding=encoding)
-                chat_messages.append(usage_message)
-
-            self.cached_messages = chat_messages
+            self.cached_messages = [self.prompt_message.representation(), *messages_iter]
 
     @property
-    def model(self) -> R:
+    def model(self) -> Callable[[list], Coroutine[Any, Any, ChatCompletion]]:
         base_kwargs = {"model": self.model_type}
         if len(functions := self.functions()) > 0:
             base_kwargs |= {"tools": functions, "tool_choice": "auto"}
 
-        def inner(messages: list = None, **kwargs) -> Coroutine[Any, Any, ChatCompletion]:
-            if messages is None:
-                messages = [self.prompt_message.message.representation()]
-            else:
-                messages = [self.prompt_message.message.representation(), *messages]
-
+        def inner(messages: list) -> Coroutine[Any, Any, ChatCompletion]:
             return self.client.chat.completions.create(
                 messages=messages,
                 **base_kwargs,
-                **kwargs,
             )
 
         return inner
 
-    async def evaluate_summary(self, messages: ChatMessages) -> str:
-        summarizer = ProgressiveSummarization(model=self.model, client=self.client)
-        return await summarizer.call(messages.messages)
+    async def evaluate_summary(self, messages: list[SupportedMessageTypes]) -> list[SupportedMessageTypes]:
+        summarizer = ProgressiveSummarization(model=self.model, client=self.client, max_tokens=self.model_limit)
+        result = await summarizer.call(messages)
+        return [self.prompt_message, SystemMessage(content=result)]
 
     async def request(self, user_input: str) -> str:
-        messages = self.cached_messages
-        messages.append(self.build_message(UserMessage, content=user_input, current_usage=messages[-1].usage))
+        messages: list[SupportedMessageTypes] = self.cached_messages
+        messages.append(UserMessage(content=user_input))
 
         final_response: str | None = None
         while final_response is None:
-            response = await self.model(messages=messages.to_gpt())
+            response = await self.model(messages)
             response_choice = response.choices[0]
-            messages.append(UsageMessage(usage=response.usage, message=response_choice.message))
-            if messages.current_usage.total_tokens > self.model_limit:
-                messages = await self.evaluate_summary(messages)
+            messages.append(response_choice.message)
 
-            if finish_reason := response_choice.finish_reason == "stop":
+            if response_choice.finish_reason == "stop":
                 final_response = response_choice.message.content
-            elif finish_reason == "length":
+            elif response_choice.finish_reason == "length":
                 messages = await self.evaluate_summary(messages)
             elif tool_calls := response_choice.message.tool_calls:
                 tool_responses = []

@@ -37,16 +37,16 @@ class FunctionMessage(BaseMessage):
         return {"tool_call_id": self.tool_call_id, "role": self.role, "content": self.content, "name": self.name}
 
 
-UsageMessageTypes = Union[UserMessage, SystemMessage, AIMessage, FunctionMessage, ChatCompletionMessage]
+SupportedMessageTypes = Union[UserMessage, SystemMessage, AIMessage, FunctionMessage, ChatCompletionMessage]
 
 
 class ChatMessage(BaseModel):
-    message: UsageMessageTypes
+    message: SupportedMessageTypes
 
 
 class UsageMessage(BaseModel):
     usage: CompletionUsage
-    message: UsageMessageTypes
+    message: SupportedMessageTypes
     encoding: list | None = None
 
 

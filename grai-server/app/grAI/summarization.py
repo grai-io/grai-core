@@ -6,7 +6,7 @@ import openai
 from openai import AsyncOpenAI
 from django.conf import settings
 from asyncio import gather
-from grAI.chat_types import BaseMessage, SystemMessage
+from grAI.chat_types import SupportedMessageTypes, SystemMessage
 
 R = TypeVar("R")
 
@@ -16,13 +16,13 @@ class ContentLengthError(Exception):
 
 
 class BaseChat(ABC):
-    def __init__(self, model: str, client: AsyncOpenAI | None = None):
+    def __init__(self, model: str, client: AsyncOpenAI | None = None, max_tokens: int | None = None):
         if client is None:
             client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
 
         self.client = client
         self.model = model
-        self.max_tokens = get_token_limit(self.model)
+        self.max_tokens = get_token_limit(self.model) if max_tokens is None else max_tokens
 
     async def completion(self, messages: list[dict] | dict) -> R:
         messages = [messages] if isinstance(messages, dict) else messages
@@ -38,10 +38,10 @@ class BaseSummarizer(ABC, BaseChat):
         self.prompt_string = prompt_string
         super().__init__(model=model, client=client)
 
-    def prompt(self, content: BaseMessage):
+    def prompt(self, content: SupportedMessageTypes):
         return self.prompt_string.format(content=content.content, role=content.role)
 
-    def query(self, content: BaseMessage) -> dict:
+    def query(self, content: SupportedMessageTypes) -> dict:
         return {"role": "system", "content": self.prompt(content)}
 
 
@@ -57,7 +57,7 @@ class BasicSummarizer(BaseSummarizer):
         self.encoder = tiktoken.encoding_for_model(self.model)
         super().__init__(prompt_string=prompt_string, model=model, client=client)
 
-    async def call(self, input_obj: BaseMessage):
+    async def call(self, input_obj: SupportedMessageTypes):
         query = self.query(input_obj)
         self.validate(query["content"])
         return self.completion(query)
@@ -84,15 +84,15 @@ class Reduce(BasicSummarizer):
     def __init__(self, *args, prompt_string: str = DEFAULT_REDUCE_PROMPT, **kwargs):
         super().__init__(*args, prompt_string=prompt_string, **kwargs)
 
-    def prompt(self, input_obj: list[BaseMessage]) -> str:
+    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
         component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
         content = "\n---".join(component_iter)
         return self.prompt_string.format(content=content)
 
-    def query(self, content: list[BaseMessage]) -> dict:
+    def query(self, content: list[SupportedMessageTypes]) -> dict:
         return {"role": "system", "content": self.prompt(content)}
 
-    async def call(self, items: list[BaseMessage]) -> str:
+    async def call(self, items: list[SupportedMessageTypes]) -> str:
         query = self.query(items)
         encoding = self.validate(query["content"])
         response = await self.completion(query)
@@ -119,15 +119,15 @@ class Map(BasicSummarizer):
     def __init__(self, *args, prompt_string: str = DEFAULT_MAP_PROMPT, **kwargs):
         super().__init__(*args, prompt_string=prompt_string, **kwargs)
 
-    def prompt(self, input_obj: list[BaseMessage]) -> str:
+    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
         component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
         content = "\n---".join(component_iter)
         return self.prompt_string.format(content=content)
 
-    def query(self, content: list[BaseMessage]) -> dict:
+    def query(self, content: list[SupportedMessageTypes]) -> dict:
         return {"role": "system", "content": self.prompt(content)}
 
-    async def call(self, items: list[BaseMessage]) -> list[str]:
+    async def call(self, items: list[SupportedMessageTypes]) -> list[str]:
         encoding = self.encoder.encode(self.prompt(items))
 
         queries = (self.query(self.encoder.decode(chunk)) for chunk in chunker(encoding, self.num_tokens - 50))
@@ -141,7 +141,7 @@ class MapReduce(BaseChat):
         self.reduce = reduce
         super().__init__(*args, **kwargs)
 
-    async def call(self, items: list[BaseMessage]) -> str:
+    async def call(self, items: list[SupportedMessageTypes]) -> str:
         reduction: str | None = None
         while reduction is None:
             items = [SystemMessage(content=content) for content in await self.map.call(items)]
@@ -155,15 +155,15 @@ class MapReduce(BaseChat):
 
 
 class ProgressiveSummarization(BasicSummarizer):
-    def prompt(self, input_obj: list[BaseMessage]) -> str:
+    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
         component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
         content = "\n---".join(component_iter)
         return self.prompt_string.format(content=content)
 
-    def query(self, content: list[BaseMessage]) -> dict:
+    def query(self, content: list[SupportedMessageTypes]) -> dict:
         return {"role": "system", "content": self.prompt(content)}
 
-    async def call(self, items: list[BaseMessage]) -> str:
+    async def call(self, items: list[SupportedMessageTypes]) -> str:
         content = self.prompt(items)
         encoding = self.encoder.encode(content)
         while len(encoding) > self.max_tokens:
