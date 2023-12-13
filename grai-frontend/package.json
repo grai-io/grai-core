@@ -39,7 +39,7 @@
     "chartjs-chart-matrix": "^2.0.1",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
-    "eslint": "^8.54.0",
+    "eslint": "^8.55.0",
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.8.1",
     "jest-websocket-mock": "^2.5.0",
