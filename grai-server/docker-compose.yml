@@ -18,6 +18,7 @@ services:
       - DJANGO_SUPERUSER_PASSWORD=super_secret
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
+      - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
     depends_on:
       - redis
       - db
@@ -40,6 +41,7 @@ services:
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
+      - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
     depends_on:
       - redis
       - db
@@ -57,6 +59,7 @@ services:
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
+      - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
     depends_on:
       - redis
       - db

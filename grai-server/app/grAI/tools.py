@@ -69,18 +69,15 @@ class API(ABC):
 
 
 class NodeIdentifier(BaseModel):
-    name: str = Field(description="The name of the node to query for")
-    namespace: str = Field(description="The namespace of the node to query for")
-
-
-class NodeLookup(BaseModel):
-    nodes: list[NodeIdentifier] = Field(description="A list of nodes to lookup")
+    name: str = Field(description="The nodes name")
+    namespace: str = Field(description="The nodes namespace")
+    request_context: str = Field(description="A brief description of the relevant data needed about the node.")
 
 
 class NodeLookupAPI(API):
     id = "node_lookup"
-    description = "Lookup metadata about one or more nodes if you know precisely which node(s) to lookup"
-    schema_model = NodeLookup
+    description = "Lookup metadata about one or more nodes if you know precisely which node to lookup"
+    schema_model = NodeIdentifier
 
     def __init__(self, workspace: str | uuid.UUID):
         self.workspace = workspace
@@ -89,7 +86,7 @@ class NodeLookupAPI(API):
     def response_message(result_set: list[Node]) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
-            message = "No results found matching these query conditions."
+            message = "No results found matching the query."
         else:
             message = None
 
@@ -97,19 +94,9 @@ class NodeLookupAPI(API):
 
     @database_sync_to_async
     def call(self, **kwargs) -> (list[Node], str | None):
-        try:
-            validation = self.schema_model(**kwargs)
-        except Exception as e:
-            return [], f"Invalid input. {e}"
-        q_objects = (Q(**node.dict(exclude_none=True)) for node in validation.nodes)
-        query = reduce(operator.or_, q_objects, Q())
-        result_set = (
-            Node.objects.filter(workspace=self.workspace)
-            .filter(query)
-            .prefetch_related("data_sources")
-            .order_by("-created_at")
-            .all()
-        )
+        validation = self.schema_model(**kwargs)
+        query = Q(name=validation.name, namespace=validation.namespace)
+        result_set = Node.objects.filter(workspace=self.workspace).filter(query).prefetch_related("data_sources").all()
         response_items = model_to_schema(result_set, "NodeV1")
         return response_items, self.response_message(result_set)
 
@@ -153,6 +140,7 @@ class FuzzyMatchNodesAPI(API):
 class EdgeLookupSchema(BaseModel):
     source: NodeIdentifier = Field(description="The primary key of the source node on an edge")
     destination: NodeIdentifier = Field(description="The primary key of the destination node on an edge")
+    request_context: str = Field(description="A brief description of the relevant data needed about the node.")
 
 
 class EdgeLookupAPI(API):
@@ -198,11 +186,12 @@ class NHopQuerySchema(BaseModel):
     name: str = Field(description="The name of the node to query for")
     namespace: str = Field(description="The namespace of the node to query for")
     n: int = Field(description="The number of hops to query for", default=1)
+    request_context: str = Field(description="A brief description of the relevant data needed about the node.")
 
 
 class NHopQueryAPI(API):
     id: str = "n_hop_query"
-    description: str = "query for nodes and edges within a specified number of hops from a given node"
+    description: str = "query for nodes within a specified number of hops from a given node"
     schema_model = NHopQuerySchema
 
     def __init__(self, workspace: str | uuid.UUID):
@@ -318,6 +307,22 @@ class EmbeddingSearchAPI(API):
         response_str = "\n".join([", ".join(vals) for vals in response])
 
         return response_str, self.response_message(neighbors)
+
+
+class LoadGraph(API):
+    id = "load_graph"
+    description = ""
+    schema_model = BaseModel
+
+    def __init__(self, workspace):
+        self.workspace = workspace
+
+    @database_sync_to_async
+    def call(self):
+        nodes = model_to_schema(Node.objects.filter(workspace=self.workspace).all(), "NodeV1")
+        edges = model_to_schema(Edge.objects.filter(workspace=self.workspace).all(), "EdgeV1")
+
+        return [*nodes, *edges], None
 
 
 class InvalidApiSchema(BaseModel):

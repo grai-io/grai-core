@@ -40,4 +40,7 @@ class OpenAIEmbedder:
         return await self.client.embeddings.create(input=content, model=self.model)
 
 
-Embedder = OpenAIEmbedder("text-embedding-ada-002", 8100)
+if settings.HAS_OPENAI:
+    Embedder = OpenAIEmbedder("text-embedding-ada-002", 8100)
+else:
+    Embedder = None

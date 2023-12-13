@@ -29,9 +29,19 @@ from grAI.chat_types import (
     ChatMessages,
     UsageMessage,
     ChatMessage,
+    UsageMessageTypes,
     to_gpt,
 )
-from grAI.tools import NodeLookupAPI, EdgeLookupAPI, FuzzyMatchNodesAPI, EmbeddingSearchAPI, NHopQueryAPI, InvalidAPI
+from grAI.tools import (
+    NodeLookupAPI,
+    EdgeLookupAPI,
+    FuzzyMatchNodesAPI,
+    EmbeddingSearchAPI,
+    NHopQueryAPI,
+    InvalidAPI,
+    LoadGraph,
+)
+from grAI.summarization import ProgressiveSummarization
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -50,7 +60,13 @@ def chunker(it, size):
 
 
 def get_token_limit(model_type: str) -> int:
-    OPENAI_TOKEN_LIMITS = {"gpt-4": 8192, "gpt-3.5-turbo": 4096, "gpt-3.5-turbo-16k": 16385, "gpt-4-32k": 32768}
+    OPENAI_TOKEN_LIMITS = {
+        "gpt-4": 8192,
+        "gpt-3.5-turbo": 4096,
+        "gpt-3.5-turbo-16k": 16385,
+        "gpt-4-32k": 32768,
+        "gpt-4-1106-preview": 128000,
+    }
 
     if model_type in OPENAI_TOKEN_LIMITS:
         return OPENAI_TOKEN_LIMITS[model_type]
@@ -121,6 +137,7 @@ class BaseConversation:
         if client is None:
             client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
         self.client = client
+        self.load_graph = False
 
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
@@ -138,12 +155,12 @@ class BaseConversation:
         return UsageMessage(message=message, usage=usage, encoding=encoding)
 
     @property
-    def cached_messages(self) -> ChatMessages:
-        return ChatMessages(messages=cache.get(self.cache_id))
+    def cached_messages(self) -> list[BaseMessage]:
+        return [ChatMessage(message=message).message for message in cache.get(self.cache_id)]
 
     @cached_messages.setter
-    def cached_messages(self, values: ChatMessages):
-        cache.set(self.cache_id, [v.dict(exclude_none=True) for v in values.messages])
+    def cached_messages(self, values: list[BaseMessage]):
+        cache.set(self.cache_id, [v.dict(exclude_none=True) for v in values])
 
     @database_sync_to_async
     def hydrate_chat(self):
@@ -159,10 +176,6 @@ class BaseConversation:
                 {"role": m.role, "content": m.message}
                 for m in Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
             )
-
-            # default tokens should be computed based on the initial prompts this might be an issue in the future
-            usage = CompletionUsage(completion_tokens=0, prompt_tokens=0, total_tokens=0)
-            chat_messages = ChatMessages(messages=[])
             for item in messages_iter:
                 encoding = self.encoder.encode(item["content"])
                 usage = CompletionUsage(
@@ -195,80 +208,16 @@ class BaseConversation:
 
         return inner
 
-    async def summarize(self, messages: list[UsageMessage]) -> UsageMessage:
-        summary_messages = [self.prompt_message, *messages, self.summary_prompt.prompt]
-
-        logging.info(f"Summarizing conversation for chat: {self.chat_id}")
-        response = await self.client.chat.completions.create(model=self.model_type, messages=to_gpt(summary_messages))
-
-        summary_usage = CompletionUsage(
-            completion_tokens=response.usage.completion_tokens,
-            prompt_tokens=self.prompt_message.usage.total_tokens,
-            total_tokens=response.usage.total_tokens + self.prompt_message.usage.total_tokens,
-        )
-
-        return UsageMessage(
-            usage=summary_usage,
-            message=SystemMessage(content=response.choices[0].message.content),
-            encoding=self.encoder.encode(response.choices[0].message.content),
-        )
-
-    async def evaluate_summary(self, messages: ChatMessages) -> ChatMessages:
-        while True:
-            i = messages.index_over_token_limit(self.model_limit)
-
-            if i == 0:
-                raise Exception("Initial prompt is too long to summarize")
-
-            accumulated_tokens = messages[i].usage.total_tokens
-            available_tokens = self.model_limit - messages[i - 1].usage.total_tokens
-            assert available_tokens > 0
-            message = messages.messages[i]
-            if (i + 1) == len(messages) and accumulated_tokens < self.model_limit:
-                # Summary is no longer required
-                break
-            elif available_tokens >= message.usage.completion_tokens:
-                # Summary is required but the next message fits in the context window
-                summary = await self.summarize(messages.messages[: (i + 1)])
-                messages = ChatMessages(messages=[summary, *messages.messages[(i + 1) :]])
-                messages.recompute_usage()
-            elif message.message.content is None:
-                # If the message is missing content we can't summarize it. Attempt to summarize the previous
-                # message and continue
-                summary = await self.summarize(messages.messages[:i])
-                messages = ChatMessages(messages=[summary, *messages.messages[i:]])
-                messages.recompute_usage()
-            elif message.encoding is None:
-                # Message is missing an encoding. This can happen if the message was created by the agent
-                message.encoding = self.encoder.encode(message.message.content)
-            else:
-                # Summary is required but the next message is too large to fit in the context window
-                message_obj = copy.copy(message)
-                next_message_obj = copy.copy(message)
-
-                message_obj.message.content = self.encoder.decode(message.encoding[:available_tokens])
-                message_obj.encoding = message.encoding[:available_tokens]
-                message_obj.usage.completion_tokens = available_tokens
-
-                next_message_obj.message.content = self.encoder.decode(message.encoding[available_tokens:])
-                next_message_obj.encoding = message.encoding[available_tokens:]
-                next_message_obj.usage.completion_tokens = len(message.encoding[available_tokens:])
-
-                summary = await self.summarize([*messages.messages[:i], message_obj])
-                if isinstance(message, FunctionMessage):
-                    messages = ChatMessages(
-                        messages=[summary, messages[i - 1], next_message_obj, *messages.messages[(i + 1) :]]
-                    )
-                else:
-                    messages = ChatMessages(messages=[summary, next_message_obj, *messages.messages[(i + 1) :]])
-                messages.recompute_usage()
-        return messages
+    async def evaluate_summary(self, messages: ChatMessages) -> str:
+        summarizer = ProgressiveSummarization(model=self.model, client=self.client)
+        return await summarizer.call(messages.messages)
 
     async def request(self, user_input: str) -> str:
         messages = self.cached_messages
         messages.append(self.build_message(UserMessage, content=user_input, current_usage=messages[-1].usage))
 
-        while True:
+        final_response: str | None = None
+        while final_response is None:
             response = await self.model(messages=messages.to_gpt())
             response_choice = response.choices[0]
             messages.append(UsageMessage(usage=response.usage, message=response_choice.message))
@@ -276,20 +225,11 @@ class BaseConversation:
                 messages = await self.evaluate_summary(messages)
 
             if finish_reason := response_choice.finish_reason == "stop":
-                break
+                final_response = response_choice.message.content
             elif finish_reason == "length":
                 messages = await self.evaluate_summary(messages)
             elif tool_calls := response_choice.message.tool_calls:
-                tool_request = messages[-1]
-                tool_request_idx = len(messages) - 1
-                tool_responses = ChatMessages(messages=[])
-
-                # Clear some space for the tool response
-                if messages.current_usage.total_tokens > (self.model_limit * 0.6):
-                    summary = await self.summarize(messages.messages[:-1])
-                    messages = ChatMessages(messages=[summary, tool_request])
-
-                message_tokens = messages.current_usage.total_tokens
+                tool_responses = []
                 for i, tool_call in enumerate(tool_calls):
                     func_id = tool_call.function.name
                     func_kwargs = json.loads(tool_call.function.arguments)
@@ -304,20 +244,22 @@ class BaseConversation:
                         args=func_kwargs,
                     )
                     tool_responses.append(message)
-
-                if message_tokens + tool_responses.current_usage.total_tokens > self.model_limit:
-                    for response in tool_responses.messages:
-                        tool_responses[-1] = await self.summarize_tool(messages[:-1], response)
-
                 messages.extend(tool_responses.messages)
-                idx = messages.index_over_token_limit(self.model_limit)
-                if idx != (len(messages) - 1):
-                    response_choice.message.tool_calls = response_choice.message.tool_calls[:idx]
-                    messages[tool_request_idx] = response_choice.message
-                    messages = ChatMessages(messages=messages.messages[:idx])
+            else:
+                final_response = response_choice.message.content
+
+                # if message_tokens + tool_responses.current_usage.total_tokens > self.model_limit:
+                #     for response in tool_responses.messages:
+                #         tool_responses[-1] = await self.summarize_tool(messages[:-1], response)
+
+                # idx = messages.index_over_token_limit(self.model_limit)
+                # if idx != (len(messages) - 1):
+                #     response_choice.message.tool_calls = response_choice.message.tool_calls[:idx]
+                #     messages[tool_request_idx] = response_choice.message
+                #     messages = ChatMessages(messages=messages.messages[:idx])
 
         self.cached_messages = messages
-        return response_choice.message.content
+        return final_response
 
     async def summarize_tool(self, messages: ChatMessages | list[UsageMessage], message: UsageMessage):
         def create_question(chunk: str):
