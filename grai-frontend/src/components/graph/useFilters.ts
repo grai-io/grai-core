@@ -12,6 +12,7 @@ const useFilters = (
   const [filters, setFilters] = useLocalState<string[] | null>(
     localStorageKey,
     searchFilters,
+    true,
   )
 
   const handleFiltersChange = (filters: string[]) => {

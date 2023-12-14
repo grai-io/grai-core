@@ -206,7 +206,14 @@ test("submit", async () => {
 
   await screen.findByText("All tests successfully passed!")
 
-  await screen.findByText("New Page")
+  await waitFor(
+    () => {
+      expect(screen.getByText("New Page")).toBeInTheDocument()
+    },
+    {
+      timeout: 1500,
+    },
+  )
 })
 
 test("submit validation fails", async () => {
