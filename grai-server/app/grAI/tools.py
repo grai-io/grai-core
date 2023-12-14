@@ -1,10 +1,7 @@
-import operator
 import uuid
 from abc import ABC, abstractmethod
-from functools import reduce
-import logging
 
-from lineage.models import Edge, Node, NodeEmbeddings
+from lineage.models import Edge, Node, NodeEmbeddings, Source
 from pydantic import BaseModel, Field
 from grai_schemas.serializers import GraiYamlSerializer
 from django.db.models import Q
@@ -17,6 +14,7 @@ import tiktoken
 import openai
 from grai_schemas.v1.edge import EdgeV1
 from grAI.encoders import Embedder
+
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -71,7 +69,7 @@ class API(ABC):
 class NodeIdentifier(BaseModel):
     name: str = Field(description="The nodes name")
     namespace: str = Field(description="The nodes namespace")
-    request_context: str = Field(description="A brief description of the relevant data needed about the node.")
+    request_context: str = Field(description="A brief description of the relevant data needed from the node.")
 
 
 class NodeLookupAPI(API):
@@ -83,7 +81,7 @@ class NodeLookupAPI(API):
         self.workspace = workspace
 
     @staticmethod
-    def response_message(result_set: list[Node]) -> str | None:
+    def response_message(result_set: list) -> str | None:
         total_results = len(result_set)
         if total_results == 0:
             message = "No results found matching the query."
@@ -94,11 +92,66 @@ class NodeLookupAPI(API):
 
     @database_sync_to_async
     def call(self, **kwargs) -> (list[Node], str | None):
+        def reduce_response(response: Node) -> dict:
+            try:
+                parsed: dict = model_to_schema(response, "NodeV1").spec.dict()
+            except:
+                return {}
+
+            spec_keys = ["name", "namespace", "display_name", "metadata", "data_sources"]
+
+            reduced_response = {key: parsed[key] for key in spec_keys}
+            reduced_response["metadata"] = reduced_response["metadata"]["grai"]
+            return reduced_response
+
         validation = self.schema_model(**kwargs)
         query = Q(name=validation.name, namespace=validation.namespace)
-        result_set = Node.objects.filter(workspace=self.workspace).filter(query).prefetch_related("data_sources").all()
-        response_items = model_to_schema(result_set, "NodeV1")
-        return response_items, self.response_message(result_set)
+        result_query = Node.objects.filter(workspace=self.workspace).filter(query).prefetch_related("data_sources")
+        response_items = [reduce_response(node) for node in result_query.all()]
+
+        return response_items, self.response_message(response_items)
+
+
+class SourceIdentifier(BaseModel):
+    name: str | None = Field(description="The name of the source to lookup or None to return all sources", default=None)
+
+
+class SourceLookupAPI(API):
+    id = "source_lookup"
+    description = "Lookup metadata about one or more nodes if you know precisely which node to lookup"
+    schema_model = SourceIdentifier
+
+    def __init__(self, workspace: str | uuid.UUID):
+        self.workspace = workspace
+
+    def response_message(self, result_set: list) -> str | None:
+        total_results = len(result_set)
+        if total_results == 0:
+            message = "No results found matching the query."
+        else:
+            message = None
+
+        return message
+
+    @database_sync_to_async
+    def call(self, **kwargs) -> (list[Node], str | None):
+        def reduce_response(response: Node) -> dict:
+            try:
+                parsed: dict = model_to_schema(response, "SourceV1").spec.dict()
+            except:
+                parsed = {}
+
+            return parsed
+
+        validation = self.schema_model(**kwargs)
+        query = Q()
+        if validation.name is not None:
+            query |= Q(name=validation.name)
+
+        result_query = Source.objects.filter(workspace=self.workspace).filter(query)
+        response_items = [reduce_response(source) for source in result_query.all()]
+
+        return response_items, self.response_message(response_items)
 
 
 class FuzzyMatchQuery(BaseModel):
@@ -125,14 +178,11 @@ class FuzzyMatchNodesAPI(API):
 
     @database_sync_to_async
     def call(self, string: str) -> (list, str | None):
-        result_set = (
-            Node.objects.prefetch_related("data_sources")
-            .filter(workspace=self.workspace)
-            .filter(name__contains=string)
-            .order_by("-created_at")
-            .all()
-        )
-        response_items = [{"name": node.name, "namespace": node.namespace} for node in result_set]
+        query = Q(name__contains=string) | Q(display_name__contains=string)
+        result_set = Node.objects.filter(workspace=self.workspace).filter(query).order_by("-created_at").all()
+        response_items = [
+            {"name": node.name, "namespace": node.namespace, "display_name": node.display_name} for node in result_set
+        ]
 
         return response_items, self.response_message(result_set)
 
@@ -191,7 +241,13 @@ class NHopQuerySchema(BaseModel):
 
 class NHopQueryAPI(API):
     id: str = "n_hop_query"
-    description: str = "query for nodes within a specified number of hops from a given node"
+    description: str = """Query for a list of edges up to n hops in the graph from a node.
+    Edges are identified (source, destination node, edge type) e.g.
+
+    RESPONSE:
+    (name1,namespace1),(name2,namespace2),edge_type
+    ...
+    """
     schema_model = NHopQuerySchema
 
     def __init__(self, workspace: str | uuid.UUID):
@@ -203,17 +259,13 @@ class NHopQueryAPI(API):
         if total_results == 0:
             message = "No results found matching these query conditions."
         else:
-            message = (
-                "Results are returned in the following format:\n"
-                "(source name, source namespace) - (edge type) -> (destination name, destination namespace)\n"
-                "(source2 name, source2 namespace) - (edge type) -> (destination2 name, destination2 namespace)\n..."
-            )
+            message = None
 
         return message
 
     @staticmethod
     def filter(queryset: list[Edge], source_nodes: list[Node], dest_nodes: list[Node]) -> tuple[list[Node], list[Node]]:
-        def get_id(node: Node) -> tuple[str, str]:
+        def get_id(node: Edge) -> tuple[str, str]:
             return node.name, node.namespace
 
         source_ids: set[T] = {get_id(node) for node in source_nodes}
@@ -225,10 +277,16 @@ class NHopQueryAPI(API):
         return source_resp, dest_resp
 
     @database_sync_to_async
-    def call(self, **kwargs) -> (str, str | None):
-        def edge_label(edge: Edge):
-            edge_type = edge.metadata["grai"]["edge_type"]
-            return f"({edge.source.name}, {edge.source.namespace}) - {edge_type} -> ({edge.destination.name}, {edge.destination.namespace})"
+    def call(self, **kwargs) -> (list[dict], str | None):
+        def filter_edge(edge: EdgeV1) -> dict:
+            result = {
+                "name": edge.spec.name,
+                "namespace": edge.spec.namespace,
+                "source": edge.spec.source,
+                "destination": edge.spec.destination,
+                "edge_type": edge.spec.metadata.grai.edge_type,
+            }
+            return result
 
         try:
             inp = self.schema_model(**kwargs)
@@ -248,13 +306,14 @@ class NHopQueryAPI(API):
             edges = Edge.objects.filter(query).select_related("source", "destination").all()
 
             source_nodes, dest_nodes = self.filter(edges, source_nodes, dest_nodes)
-            return_edges.extend((edge_label(item) for item in edges))
+            return_edges.extend(list(edges))
 
             if len(source_nodes) == 0 and len(dest_nodes) == 0:
                 break
 
-        return_str = "\n".join(return_edges)
-        return return_str, self.response_message(return_edges)
+        results = set(model_to_schema(return_edges, "EdgeV1"))
+        results = [filter_edge(item) for item in results]
+        return results, self.response_message(return_edges)
 
 
 class EmbeddingSearchSchema(BaseModel):

@@ -1,30 +1,26 @@
-import copy
 import json
 import logging
 import uuid
 
-from typing import Annotated, Any, Callable, Literal, ParamSpec, Type, TypeVar, Union, Coroutine
+from typing import Any, Callable, ParamSpec, TypeVar, Coroutine
 
-from openai import AsyncStream
-from openai.types.chat import ChatCompletion, ChatCompletionChunk
+from openai.types.chat import ChatCompletion
 from openai.types.completion_usage import CompletionUsage
 import openai
-from openai.types.chat.chat_completion_message import ChatCompletionMessage
-from workspaces.models import Workspace
+
+from grAI.utils import get_token_limit, chunker
 import tiktoken
 from django.conf import settings
 from django.core.cache import cache
-from itertools import islice
 import asyncio
+from workspaces.models import Workspace
 
 from channels.db import database_sync_to_async
 
 from grAI.models import Message
 from grAI.chat_types import (
-    BaseMessage,
     UserMessage,
     SystemMessage,
-    AIMessage,
     FunctionMessage,
     ChatMessages,
     UsageMessage,
@@ -34,14 +30,14 @@ from grAI.chat_types import (
 )
 from grAI.tools import (
     NodeLookupAPI,
-    EdgeLookupAPI,
-    FuzzyMatchNodesAPI,
     EmbeddingSearchAPI,
     NHopQueryAPI,
     InvalidAPI,
-    LoadGraph,
+    EdgeLookupAPI,
+    FuzzyMatchNodesAPI,
+    SourceLookupAPI,
 )
-from grAI.summarization import ProgressiveSummarization
+from grAI.summarization import ProgressiveSummarization, ToolSummarization
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -51,33 +47,6 @@ MAX_RETURN_LIMIT = 20
 T = TypeVar("T")
 R = TypeVar("R")
 P = ParamSpec("P")
-
-
-def chunker(it, size):
-    iterator = iter(it)
-    while chunk := list(islice(iterator, size)):
-        yield chunk
-
-
-def get_token_limit(model_type: str) -> int:
-    OPENAI_TOKEN_LIMITS = {
-        "gpt-4": 8192,
-        "gpt-3.5-turbo": 4096,
-        "gpt-3.5-turbo-16k": 16385,
-        "gpt-4-32k": 32768,
-        "gpt-4-1106-preview": 128000,
-    }
-
-    if model_type in OPENAI_TOKEN_LIMITS:
-        return OPENAI_TOKEN_LIMITS[model_type]
-    elif model_type.endswith("k"):
-        return int(model_type.split("-")[-1]) * 1024
-    elif model_type.startswith("gpt-4"):
-        return 8192
-    elif model_type.startswith("gpt-3.5"):
-        return 4096
-    else:
-        return 2049
 
 
 class SummaryPrompt:
@@ -104,64 +73,60 @@ class BaseConversation:
         if functions is None:
             functions = []
 
+        if client is None:
+            client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
+
+        self.client = client
         self.model_type = model_type
-        self.token_limit = get_token_limit(self.model_type)
-
-        # Margin reserved for model response
-        self.model_limit = int(self.token_limit * 0.8)
-
         self.encoder = tiktoken.encoding_for_model(self.model_type)
         # self.encoder = FakeEncoder()
+
         self.chat_id = chat_id
         self.cache_id = f"grAI:chat_id:{chat_id}"
-        self.system_context = prompt
+
         self.api_functions = {func.id: func for func in functions}
         self.invalid_api = InvalidAPI(self.api_functions.values())
 
-        self.verbose = verbose
+        self.prompt_message = SystemMessage(content=prompt)
 
-        self.summary_prompt: SummaryPrompt = SummaryPrompt(self.encoder)
+        self.base_tokens = self.get_base_tokens()
+        self.max_model_tokens = get_token_limit(self.model_type)
+        self.max_tokens = self.max_model_tokens - self.base_tokens
 
-        # I don't have a clean way to identify the initial token allocation for the tool prompt
-        # without simply calling the api and seeing what the usage is.
-        # https://community.openai.com/t/how-to-calculate-the-tokens-when-using-function-call/266573/40
-        tool_prompt_token_allocation = 800
-        self.baseline_usage: CompletionUsage = CompletionUsage(
-            completion_tokens=0, prompt_tokens=tool_prompt_token_allocation, total_tokens=tool_prompt_token_allocation
-        )
-        self.prompt_message = SystemMessage(content=self.system_context)
-
-        if client is None:
-            client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
-        self.client = client
-        self.load_graph = False
+    def get_base_tokens(self) -> int:
+        tool_strings = (json.dumps(func, indent=2) for func in self.functions())
+        num_tool_tokens = sum(len(self.encoder.encode(tool)) for tool in tool_strings)
+        num_prompt_tokens = len(self.encoder.encode(self.prompt_message.content))
+        return int((num_tool_tokens + num_prompt_tokens) * 1.2)
 
     def functions(self):
         return [func.gpt_definition() for func in self.api_functions.values()]
 
     @property
-    def cached_messages(self) -> list[SupportedMessageTypes]:
-        return [ChatMessage(message=message).message for message in cache.get(self.cache_id)]
+    async def cached_messages(self) -> list[SupportedMessageTypes]:
+        cache_result = cache.get(self.cache_id, None)
+
+        if cache_result is None:
+            return await self.hydrate_chat()
+        else:
+            return [ChatMessage(message=message).message for message in cache_result]
 
     @cached_messages.setter
     def cached_messages(self, values: list[SupportedMessageTypes]):
         cache.set(self.cache_id, [v.dict(exclude_none=True) for v in values])
 
     @database_sync_to_async
-    def hydrate_chat(self):
+    def hydrate_chat(self) -> list[SupportedMessageTypes]:
         """
         Hydration doesn't currently capture function call context or summarization and will need to be updated to do so.
         """
-        logging.info(f"Hydrating chat history for conversations: {self.chat_id}")
-        messages = cache.get(self.cache_id, None)
-
-        if messages is None:
-            logging.info(f"Loading chat history for chat {self.chat_id} from database")
-            messages_iter = (
-                {"role": m.role, "content": m.message}
-                for m in Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
-            )
-            self.cached_messages = [self.prompt_message.representation(), *messages_iter]
+        messages_iter = (
+            ChatMessage(message={"role": m.role, "content": m.message}).message
+            for m in Message.objects.filter(chat_id=self.chat_id).order_by("-created_at").all()
+        )
+        messages = [self.prompt_message, *messages_iter]
+        self.cached_messages = messages
+        return messages
 
     @property
     def model(self) -> Callable[[list], Coroutine[Any, Any, ChatCompletion]]:
@@ -171,19 +136,20 @@ class BaseConversation:
 
         def inner(messages: list) -> Coroutine[Any, Any, ChatCompletion]:
             return self.client.chat.completions.create(
-                messages=messages,
+                messages=to_gpt(messages),
                 **base_kwargs,
             )
 
         return inner
 
     async def evaluate_summary(self, messages: list[SupportedMessageTypes]) -> list[SupportedMessageTypes]:
-        summarizer = ProgressiveSummarization(model=self.model, client=self.client, max_tokens=self.model_limit)
+        summarizer_strat = ProgressiveSummarization(model=self.model, client=self.client, max_tokens=self.max_tokens)
+        summarizer = ToolSummarization(strategy=summarizer_strat)
         result = await summarizer.call(messages)
         return [self.prompt_message, SystemMessage(content=result)]
 
     async def request(self, user_input: str) -> str:
-        messages: list[SupportedMessageTypes] = self.cached_messages
+        messages: list[SupportedMessageTypes] = await self.cached_messages
         messages.append(UserMessage(content=user_input))
 
         final_response: str | None = None
@@ -197,95 +163,27 @@ class BaseConversation:
             elif response_choice.finish_reason == "length":
                 messages = await self.evaluate_summary(messages)
             elif tool_calls := response_choice.message.tool_calls:
-                tool_responses = []
                 for i, tool_call in enumerate(tool_calls):
                     func_id = tool_call.function.name
                     func_kwargs = json.loads(tool_call.function.arguments)
                     api = self.api_functions.get(func_id, self.invalid_api)
                     response = await api.response(**func_kwargs)
-                    message = self.build_message(
-                        FunctionMessage,
+                    message = FunctionMessage(
                         content=response,
                         name=func_id,
                         tool_call_id=tool_call.id,
-                        current_usage=messages[-1].usage,
                         args=func_kwargs,
                     )
-                    tool_responses.append(message)
-                messages.extend(tool_responses.messages)
+                    messages.append(message)
             else:
                 final_response = response_choice.message.content
-
-                # if message_tokens + tool_responses.current_usage.total_tokens > self.model_limit:
-                #     for response in tool_responses.messages:
-                #         tool_responses[-1] = await self.summarize_tool(messages[:-1], response)
-
-                # idx = messages.index_over_token_limit(self.model_limit)
-                # if idx != (len(messages) - 1):
-                #     response_choice.message.tool_calls = response_choice.message.tool_calls[:idx]
-                #     messages[tool_request_idx] = response_choice.message
-                #     messages = ChatMessages(messages=messages.messages[:idx])
 
         self.cached_messages = messages
         return final_response
 
-    async def summarize_tool(self, messages: ChatMessages | list[UsageMessage], message: UsageMessage):
-        def create_question(chunk: str):
-            return f"""
-            Please summarize the following chunk of content.
-            The chunk is:
-            {chunk}
-            """
-
-        if isinstance(messages, list):
-            messages = ChatMessages(messages=messages)
-
-        assert isinstance(message.message, FunctionMessage)
-        prompt = f"""
-        You've requested a tool to help you with your problem, however the response from the tool was too long
-        to fit in the context window. The tool response requested was {message.message.name} with arguments
-        {message.message.args}. Please provide a brief description of the details you're looking for which a future
-        agent will use to summarize the tool response. Ensure you do not actually call any tools in your response.
-        """
-        chunk_question = self.build_message(SystemMessage, prompt, messages.current_usage)
-        chunk_messages = ChatMessages(messages=[*messages.messages, chunk_question])
-        response = await self.model(messages=chunk_messages.to_gpt())
-        while response.choices[0].message.tool_calls:
-            reiteration = self.build_message(
-                SystemMessage, "YOU MUST NOT CALL TOOLS OR FUNCTIONS", chunk_messages.current_usage
-            )
-            chunk_messages.append(reiteration)
-            response = await self.model(messages=chunk_messages.to_gpt())
-
-        summary_context = response.choices[0].message
-
-        chunk_size = self.model_limit - response.usage.completion_tokens - 100
-        content_chunk_iter = (self.encoder.decode(chunk) for chunk in chunker(message.encoding, chunk_size))
-        content_message_iter = (create_question(summary_context) for content in content_chunk_iter)
-        system_message_iter = (SystemMessage(content=content) for content in content_message_iter)
-
-        callbacks = (
-            self.client.chat.completions.create(model=self.model_type, messages=to_gpt([summary_context, message]))
-            for message in system_message_iter
-        )
-        responses = [r.choices[0].message for r in await asyncio.gather(*[callback for callback in callbacks])]
-        new_message = await self.client.chat.completions.create(
-            model=self.model_type, messages=to_gpt([summary_context, *responses])
-        )
-
-        message = self.build_message(
-            FunctionMessage,
-            content=new_message.choices[0].message.content,
-            name=message.message.name,
-            tool_call_id=message.message.tool_call_id,
-            current_usage=messages.current_usage,
-            args=message.message.args,
-        )
-        return message
-
 
 async def get_chat_conversation(
-    chat_id: str | uuid.UUID, workspace: str | uuid.UUID, model_type: str = settings.OPENAI_PREFERRED_MODEL
+    chat_id: str | uuid.UUID, workspace: Workspace | uuid.UUID, model_type: str = settings.OPENAI_PREFERRED_MODEL
 ):
     chat_prompt = """
     You are a helpful assistant with domain expertise about an organizations data and data infrastructure.
@@ -307,19 +205,20 @@ async def get_chat_conversation(
     """
     client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
 
-    functions = [
-        NodeLookupAPI(workspace=workspace),
-        # Todo: edge lookup is broken
-        # EdgeLookupAPI(workspace=workspace),
-        # FuzzyMatchNodesAPI(workspace=workspace),
-        EmbeddingSearchAPI(workspace=workspace),
-        NHopQueryAPI(workspace=workspace),
-    ]
+    if workspace.ai_enabled:
+        search_func = EmbeddingSearchAPI(workspace=workspace.id)
+    else:
+        search_func = FuzzyMatchNodesAPI(workspace=workspace.id)
 
-    # Use Embedding when enabled on workspace otherwise fuzzymatch
+    functions = [
+        NodeLookupAPI(workspace=workspace.id),
+        EdgeLookupAPI(workspace=workspace.id),
+        SourceLookupAPI(workspace=workspace.id),
+        NHopQueryAPI(workspace=workspace.id),
+        search_func,
+    ]
 
     conversation = BaseConversation(
         prompt=chat_prompt, model_type=model_type, functions=functions, chat_id=str(chat_id), client=client
     )
-    await conversation.hydrate_chat()
     return conversation

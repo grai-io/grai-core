@@ -372,7 +372,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 OPENAI_API_KEY = config("OPENAI_API_KEY", None)
 OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
-OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", default="", cast=lambda x: "gpt-3.5-turbo" if x == "" else x)
 
 openai.organization = OPENAI_ORG_ID
 openai.api_key = OPENAI_API_KEY
