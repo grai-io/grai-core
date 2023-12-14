@@ -75,6 +75,11 @@ class Query:
     connectors: List[Connector] = strawberry.django.field(
         permission_classes=[IsAuthenticated], order=ConnectorOrder, pagination=True
     )
+
+    @strawberry.django.field(permission_classes=[IsAuthenticated])
+    def connector(self, id: strawberry.ID) -> Connector:
+        return ConnectorModel.objects.get(id=id)
+
     profile: Profile = strawberry.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])
     # devices: DataWrapper[Device] = strawberry.field(
     #     resolver=get_devices, permission_classes=[IsAuthenticated]

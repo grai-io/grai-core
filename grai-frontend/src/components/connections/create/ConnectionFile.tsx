@@ -1,20 +1,20 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Grid, TextField, Typography } from "@mui/material"
+import { Box, Grid, TextField, Typography } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { clearWorkspace } from "helpers/cache"
 import useWorkspace from "helpers/useWorkspace"
 import FileUpload from "components/form/fields/FileUpload"
 import Form from "components/form/Form"
+import PageContent from "components/layout/PageContent"
 import GraphError from "components/utils/GraphError"
-import WizardBottomBar from "components/wizards/WizardBottomBar"
-import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
 import {
   UploadConnectorFile,
   UploadConnectorFileVariables,
 } from "./__generated__/UploadConnectorFile"
+import ConnectionToolbar from "./ConnectionToolbar"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import getAccept from "./getAccept"
 import { ConnectorType } from "../ConnectionsForm"
@@ -68,15 +68,13 @@ type Values = {
 type ConnectionFileProps = {
   connector: ConnectorType
   workspaceId: string
-  opts: ElementOptions
 }
 
 const ConnectionFile: React.FC<ConnectionFileProps> = ({
   connector,
   workspaceId,
-  opts,
 }) => {
-  const { workspaceNavigate } = useWorkspace()
+  const { workspaceNavigate, routePrefix } = useWorkspace()
   const { enqueueSnackbar } = useSnackbar()
 
   const [values, setValues] = useState<Values>({
@@ -113,63 +111,69 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
   const accept = getAccept(connExtension)
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <WizardSubtitle
-        title="Setup connection"
-        subTitle="Choose a file to upload"
+    <PageContent noPadding>
+      <ConnectionToolbar
+        title="Setup Connection"
+        activeStep={1}
+        onBack={`${routePrefix}/connections/create`}
       />
-      <Grid container sx={{ mt: 5 }}>
-        <Grid item md={8} sx={{ pr: 3 }}>
-          {error && <GraphError error={error} />}
-          <TextField
-            label="Source"
-            margin="normal"
-            value={values.sourceName}
-            onChange={event =>
-              setValues({ ...values, sourceName: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          <TextField
-            label="Namespace"
-            margin="normal"
-            value={values.namespace}
-            onChange={event =>
-              setValues({ ...values, namespace: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          <Typography variant="body1" sx={{ mt: 3, mb: 2 }}>
-            Select a {connector.metadata?.file?.name} file
-          </Typography>
-          <FileUpload
-            value={values.file}
-            onChange={file => setValues({ ...values, file })}
-            accept={accept}
-          />
-          <WizardBottomBar opts={opts}>
-            <LoadingButton
-              variant="contained"
-              type="submit"
-              sx={{
-                minWidth: 120,
-                backgroundColor: "#FC6016",
-                boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
-              }}
-              disabled={!values.file}
-              loading={loading}
-            >
-              Finish
-            </LoadingButton>
-          </WizardBottomBar>
-        </Grid>
-        <Grid item md={4} sx={{}}>
-          <CreateConnectionHelp connector={connector} />
-        </Grid>
-      </Grid>
-    </Form>
+      <Box sx={{ px: 3 }}>
+        <Form onSubmit={handleSubmit}>
+          <WizardSubtitle subTitle="Choose a file to upload" />
+          <Grid container sx={{ mt: 5 }}>
+            <Grid item md={8} sx={{ pr: 3, mb: 3 }}>
+              {error && <GraphError error={error} />}
+              <TextField
+                label="Source"
+                margin="normal"
+                value={values.sourceName}
+                onChange={event =>
+                  setValues({ ...values, sourceName: event.target.value })
+                }
+                required
+                fullWidth
+              />
+              <TextField
+                label="Namespace"
+                margin="normal"
+                value={values.namespace}
+                onChange={event =>
+                  setValues({ ...values, namespace: event.target.value })
+                }
+                required
+                fullWidth
+              />
+              <Typography variant="body1" sx={{ mt: 3, mb: 2 }}>
+                Select a {connector.metadata?.file?.name} file
+              </Typography>
+              <FileUpload
+                value={values.file}
+                onChange={file => setValues({ ...values, file })}
+                accept={accept}
+              />
+              <Box sx={{ textAlign: "right", mt: 2 }}>
+                <LoadingButton
+                  variant="contained"
+                  type="submit"
+                  sx={{
+                    minWidth: 120,
+                    backgroundColor: "#FC6016",
+                    boxShadow: "0px 4px 6px 0px rgba(252, 96, 22, 0.20)",
+                  }}
+                  disabled={!values.file}
+                  loading={loading}
+                >
+                  Finish
+                </LoadingButton>
+              </Box>
+            </Grid>
+            <Grid item md={4} sx={{}}>
+              <CreateConnectionHelp connector={connector} />
+            </Grid>
+          </Grid>
+        </Form>
+      </Box>
+    </PageContent>
   )
 }
 

@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react"
 import { Divider, FormLabel, TextField } from "@mui/material"
-import { CronValue, Values } from "./SetSchedule"
+import { CronValue, Values } from "./ScheduleForm"
 
 type SetCronProps = {
   values: Values

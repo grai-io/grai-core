@@ -45,7 +45,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
     _: React.SyntheticEvent<Element, Event>,
     newValue: Field | null,
   ) => {
-    let newFilter = { ...filter, field: newValue?.value ?? null }
+    let newFilter = { ...filter, field: newValue?.value ?? null, value: null }
 
     if (!operator && newValue?.operators && newValue?.operators.length > 0) {
       newFilter.operator = newValue?.operators[0].value

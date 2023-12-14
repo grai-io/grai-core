@@ -254,3 +254,30 @@ async def test_profile_devices(test_context):
             ]
         },
     }
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_connector(test_context, test_connector):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Connector($connectorId: ID!) {
+            connector(id: $connectorId) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "connectorId": str(test_connector.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["connector"] == {
+        "id": str(test_connector.id),
+    }

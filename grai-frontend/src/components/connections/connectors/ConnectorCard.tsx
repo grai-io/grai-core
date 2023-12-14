@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import ConnectorIcon from "./ConnectorIcon"
 
 export interface Connector {
@@ -23,14 +24,11 @@ export interface Connector {
 
 type ConnectorCardProps = {
   connector: Connector
-  onSelect: (connector: Connector) => void
 }
 
-const ConnectorCard: React.FC<ConnectorCardProps> = ({
-  connector,
-  onSelect,
-}) => {
+const ConnectorCard: React.FC<ConnectorCardProps> = ({ connector }) => {
   const navigate = useNavigate()
+  const { routePrefix } = useWorkspace()
 
   const comingSoon = connector.status === "coming_soon"
 
@@ -45,13 +43,12 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
         }}
       >
         <CardActionArea
-          onClick={() => {
-            if (connector.to) {
-              navigate(connector.to)
-              return
-            }
-            onSelect(connector)
-          }}
+          onClick={() =>
+            navigate(
+              connector.to ??
+                `${routePrefix}/connections/create?connectorId=${connector.id}`,
+            )
+          }
           sx={{ height: "100%" }}
         >
           <List>
