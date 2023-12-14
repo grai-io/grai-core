@@ -17,6 +17,7 @@ const useInlineFilters = (
   const [filters, setFilters] = useLocalState<Filter[] | null>(
     localStorageKey,
     searchFilters,
+    true,
   )
 
   const handleFiltersChange = (filters: Filter[]) => {
