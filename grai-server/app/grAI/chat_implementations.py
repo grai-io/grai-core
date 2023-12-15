@@ -38,6 +38,7 @@ from grAI.tools import (
     SourceLookupAPI,
 )
 from grAI.summarization import ProgressiveSummarization, ToolSummarization
+from grAI.utils import compute_total_tokens
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -129,31 +130,49 @@ class BaseConversation:
         return messages
 
     @property
-    def model(self) -> Callable[[list], Coroutine[Any, Any, ChatCompletion]]:
+    def model(self) -> Callable[[list[SupportedMessageTypes]], Coroutine[Any, Any, ChatCompletion]]:
         base_kwargs = {"model": self.model_type}
         if len(functions := self.functions()) > 0:
             base_kwargs |= {"tools": functions, "tool_choice": "auto"}
 
-        def inner(messages: list) -> Coroutine[Any, Any, ChatCompletion]:
-            return self.client.chat.completions.create(
-                messages=to_gpt(messages),
-                **base_kwargs,
-            )
+        async def inner(messages: list[SupportedMessageTypes]) -> ChatCompletion:
+            try:
+                response = await self.client.chat.completions.create(messages=to_gpt(messages), **base_kwargs)
+            except openai.BadRequestError as e:
+                # Just in case we hit a marginal difference from the calculation above.
+                if e.code == "context_length_exceeded":
+                    messages = await self.evaluate_summary(messages)
+                    response = await self.client.chat.completions.create(messages=to_gpt(messages), **base_kwargs)
+                else:
+                    raise e
+
+            return response
 
         return inner
 
-    async def evaluate_summary(self, messages: list[SupportedMessageTypes]) -> list[SupportedMessageTypes]:
-        summarizer_strat = ProgressiveSummarization(model=self.model, client=self.client, max_tokens=self.max_tokens)
-        summarizer = ToolSummarization(strategy=summarizer_strat)
+    async def evaluate_summary(
+        self, messages: list[SupportedMessageTypes], max_tokens: int | None = None
+    ) -> list[SupportedMessageTypes]:
+        max_tokens = max_tokens if max_tokens is not None else self.max_tokens
+        summarization_strategy = ProgressiveSummarization(
+            model=self.model_type, client=self.client, max_tokens=max_tokens
+        )
+        summarizer = ToolSummarization(strategy=summarization_strategy)
         result = await summarizer.call(messages)
         return [self.prompt_message, SystemMessage(content=result)]
 
     async def request(self, user_input: str) -> str:
-        messages: list[SupportedMessageTypes] = await self.cached_messages
-        messages.append(UserMessage(content=user_input))
+        original_messages: list[SupportedMessageTypes] = await self.cached_messages
+        messages = original_messages.copy()
+
+        user_query = UserMessage(content=user_input)
+        messages.append(user_query)
 
         final_response: str | None = None
         while final_response is None:
+            if compute_total_tokens(messages, self.encoder) > self.max_tokens:
+                messages = await self.evaluate_summary(messages)
+
             response = await self.model(messages)
             response_choice = response.choices[0]
             messages.append(response_choice.message)
@@ -162,8 +181,10 @@ class BaseConversation:
                 final_response = response_choice.message.content
             elif response_choice.finish_reason == "length":
                 messages = await self.evaluate_summary(messages)
-            elif tool_calls := response_choice.message.tool_calls:
-                for i, tool_call in enumerate(tool_calls):
+            elif response_choice.finish_reason == "content_filter":
+                final_response = "Warning: This message was filtered by the content filter."
+            elif response_choice.finish_reason == "tool_calls":
+                for i, tool_call in enumerate(response_choice.message.tool_calls):
                     func_id = tool_call.function.name
                     func_kwargs = json.loads(tool_call.function.arguments)
                     api = self.api_functions.get(func_id, self.invalid_api)
@@ -176,6 +197,7 @@ class BaseConversation:
                     )
                     messages.append(message)
             else:
+                logging.error(f"Encountered an unknown openai finish reason {response_choice.finish_reason}")
                 final_response = response_choice.message.content
 
         self.cached_messages = messages

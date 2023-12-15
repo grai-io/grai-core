@@ -28,7 +28,7 @@ def filter_node_content(node: "Node") -> dict:
 
     spec_keys = ["name", "namespace", "metadata", "data_sources"]
 
-    result: dict = model_to_schema(node, "NodeV1").spec.dict()
+    result: dict = model_to_schema(node, "NodeV1").spec.dict(exclude_none=True)
     result = {key: result[key] for key in spec_keys}
     result["metadata"] = result["metadata"]["grai"]
     return result
@@ -265,7 +265,7 @@ class NHopQueryAPI(API):
 
     @staticmethod
     def filter(queryset: list[Edge], source_nodes: list[Node], dest_nodes: list[Node]) -> tuple[list[Node], list[Node]]:
-        def get_id(node: Edge) -> tuple[str, str]:
+        def get_id(node: Edge | Node) -> tuple[str, str]:
             return node.name, node.namespace
 
         source_ids: set[T] = {get_id(node) for node in source_nodes}
@@ -303,7 +303,7 @@ class NHopQueryAPI(API):
         return_edges = []
         for i in range(inp.n):
             query = Q(source__in=source_nodes) | Q(destination__in=dest_nodes)
-            edges = Edge.objects.filter(query).select_related("source", "destination").all()
+            edges = Edge.objects.filter(query).prefetch_related("source", "destination").all()
 
             source_nodes, dest_nodes = self.filter(edges, source_nodes, dest_nodes)
             return_edges.extend(list(edges))

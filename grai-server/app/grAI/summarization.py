@@ -1,13 +1,15 @@
-from grAI.utils import get_token_limit, chunker
+from grAI.utils import get_token_limit, chunker, tool_segments, ToolSegmentReturnType
 from abc import ABC, abstractmethod
 import tiktoken
-from typing import Any, TypeVar
+from typing import Any, TypeVar, Coroutine
 import openai
 from openai import AsyncOpenAI
 from django.conf import settings
 from asyncio import gather
 from grAI.chat_types import SupportedMessageTypes, SystemMessage, FunctionMessage
 from openai.types.chat.chat_completion_message import ChatCompletionMessage
+from openai.types.chat import ChatCompletion
+
 
 R = TypeVar("R")
 
@@ -39,10 +41,8 @@ class BaseSummarizer(ABC):
         self,
         model: str,
         prompt_string: str,
-        *args,
         client: AsyncOpenAI | None = None,
         max_tokens: int | None = None,
-        **kwargs,
     ):
         if client is None:
             client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
@@ -50,10 +50,11 @@ class BaseSummarizer(ABC):
         self.client = client
         self.model = model
         self.max_tokens = get_token_limit(self.model) if max_tokens is None else max_tokens
+        self.encoder = tiktoken.encoding_for_model(self.model)
 
-    async def completion(self, messages: list[dict] | dict) -> R:
+    async def completion(self, messages: list[dict] | dict) -> ChatCompletion:
         messages = [messages] if isinstance(messages, dict) else messages
-        return self.client.chat.completions.create(model=self.model, messages=messages)
+        return await self.client.chat.completions.create(model=self.model, messages=messages)
 
     def prompt(self, content: SupportedMessageTypes):
         return self.prompt_string.format(content=content.content, role=content.role)
@@ -66,9 +67,10 @@ class BaseSummarizer(ABC):
         pass
 
 
-DEFAULT_SUMMARIZER_PROMPT = """Write a concise summary of the following:
-"{content}"
-CONCISE SUMMARY:"""
+DEFAULT_SUMMARIZER_PROMPT = """The following is a conversation between a user and an openai AI agent.
+'{content}'
+please distill the conversation such that a future agent can answer the user's question.
+"""
 
 
 class BasicSummarizer(BaseSummarizer):
@@ -79,7 +81,6 @@ class BasicSummarizer(BaseSummarizer):
         prompt_string: str | None = DEFAULT_SUMMARIZER_PROMPT,
         max_tokens: int | None = None,
     ):
-        self.encoder = tiktoken.encoding_for_model(self.model)
         super().__init__(prompt_string=prompt_string, model=model, client=client, max_tokens=max_tokens)
 
     async def call(self, input_obj: SupportedMessageTypes):
@@ -99,23 +100,40 @@ class BasicSummarizer(BaseSummarizer):
         return encoding
 
 
-DEFAULT_REDUCE_PROMPT = """The following is a conversation
-{content}
-Take these and distill it into a final, consolidated summary of the main themes.
-Helpful Answer:"""
-
-
-class Reduce(BasicSummarizer):
-    def __init__(self, *args, prompt_string: str = DEFAULT_REDUCE_PROMPT, **kwargs):
-        super().__init__(*args, prompt_string=prompt_string, **kwargs)
+class ConversationSummarizer(BasicSummarizer):
+    def __init__(
+        self,
+        model: str,
+        prompt_string: str,
+        client: AsyncOpenAI | None = None,
+        max_tokens: int | None = None,
+    ):
+        super().__init__(prompt_string=prompt_string, model=model, client=client, max_tokens=max_tokens)
 
     def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
         component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
-        content = "\n---".join(component_iter)
+        content = "\n---\n".join(component_iter)
         return self.prompt_string.format(content=content)
 
-    def query(self, content: list[SupportedMessageTypes]) -> dict:
-        return {"role": "system", "content": self.prompt(content)}
+    def query(self, content: list[SupportedMessageTypes] | str) -> dict:
+        if isinstance(content, list):
+            content = self.prompt(content)
+
+        return {"role": "system", "content": content}
+
+
+DEFAULT_REDUCE_PROMPT = DEFAULT_SUMMARIZER_PROMPT
+
+
+class Reduce(ConversationSummarizer):
+    def __init__(
+        self,
+        model: str,
+        prompt_string: str = DEFAULT_REDUCE_PROMPT,
+        client: AsyncOpenAI | None = None,
+        max_tokens: int | None = None,
+    ):
+        super().__init__(prompt_string=prompt_string, model=model, client=client, max_tokens=max_tokens)
 
     async def call(self, items: list[SupportedMessageTypes]) -> str:
         query = self.query(items)
@@ -134,23 +152,18 @@ class Reduce(BasicSummarizer):
         return encoding
 
 
-DEFAULT_MAP_PROMPT = """The following is a set of documents
-{content}
-Based on this list of docs, please identify the main themes
-Helpful Answer:"""
+DEFAULT_MAP_PROMPT = DEFAULT_SUMMARIZER_PROMPT
 
 
-class Map(BasicSummarizer):
-    def __init__(self, *args, prompt_string: str = DEFAULT_MAP_PROMPT, **kwargs):
-        super().__init__(*args, prompt_string=prompt_string, **kwargs)
-
-    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
-        component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
-        content = "\n---".join(component_iter)
-        return self.prompt_string.format(content=content)
-
-    def query(self, content: list[SupportedMessageTypes]) -> dict:
-        return {"role": "system", "content": self.prompt(content)}
+class Map(ConversationSummarizer):
+    def __init__(
+        self,
+        model: str,
+        prompt_string: str = DEFAULT_MAP_PROMPT,
+        client: AsyncOpenAI | None = None,
+        max_tokens: int | None = None,
+    ):
+        super().__init__(prompt_string=prompt_string, model=model, client=client, max_tokens=max_tokens)
 
     async def call(self, items: list[SupportedMessageTypes]) -> list[str]:
         encoding = self.encoder.encode(self.prompt(items))
@@ -179,20 +192,18 @@ class MapReduceSummarization(BaseChat):
         return reduction
 
 
-class ProgressiveSummarization(BasicSummarizer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+DEFAULT_PROGRESSIVE_PROMPT = DEFAULT_SUMMARIZER_PROMPT
 
-    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
-        component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
-        content = "\n---".join(component_iter)
-        return self.prompt_string.format(content=content)
 
-    def query(self, content: list[SupportedMessageTypes] | str) -> dict:
-        if isinstance(content, list):
-            content = self.prompt(content)
-
-        return {"role": "system", "content": content}
+class ProgressiveSummarization(ConversationSummarizer):
+    def __init__(
+        self,
+        model: str,
+        prompt_string: str = DEFAULT_PROGRESSIVE_PROMPT,
+        client: AsyncOpenAI | None = None,
+        max_tokens: int | None = None,
+    ):
+        super().__init__(prompt_string=prompt_string, model=model, client=client, max_tokens=max_tokens)
 
     async def call(self, items: list[SupportedMessageTypes]) -> str:
         content = self.prompt(items)
@@ -207,47 +218,18 @@ class ProgressiveSummarization(BasicSummarizer):
         return content
 
 
-ToolSegmentReturnType = tuple[list[SupportedMessageTypes], list[FunctionMessage] | None]
-
-
-class ToolSummarization(BasicSummarizer):
-    def __init__(self, *args, strategy: ProgressiveSummarization | MapReduceSummarization, **kwargs):
+class ToolSummarization(BaseChat):
+    def __init__(self, strategy: ProgressiveSummarization | MapReduceSummarization, **kwargs):
         self.strategy = strategy
         kwargs.setdefault("client", self.strategy.client)
         kwargs.setdefault("model", self.strategy.model)
+        kwargs.setdefault("max_tokens", self.strategy.max_tokens)
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
-    def prompt(self, input_obj: list[SupportedMessageTypes]) -> str:
-        component_iter = (f"{inp.role}\n---\n{inp.content}" for inp in input_obj)
-        content = "\n---".join(component_iter)
-        return self.prompt_string.format(content=content)
-
-    def query(self, content: list[SupportedMessageTypes]) -> dict:
-        return {"role": "system", "content": self.prompt(content)}
-
-    def tool_segments(self, items: list[SupportedMessageTypes]) -> ToolSegmentReturnType:
-        pre_tool_segment = []
-        tool_segment: list | None = None
-        for item in items:
-            if tool_segment is None:
-                if isinstance(item, ChatCompletionMessage) and item.tool_calls is not None:
-                    tool_segment = []
-                elif item.role == "tool":
-                    raise ValueError("Encountered a tool response message without a preceding tool call message.")
-                else:
-                    pre_tool_segment.append(item)
-            else:
-                if item.role == "tool":
-                    tool_segment.append(item)
-                elif len(tool_segment) == 1:
-                    raise ValueError("Encountered a tool call message without any subsequent tool responses.")
-                else:
-                    yield pre_tool_segment, tool_segment
-                    pre_tool_segment = []
-                    tool_segment = None
-
-        return pre_tool_segment, tool_segment
+    @staticmethod
+    def tool_segments(items: list[SupportedMessageTypes]) -> ToolSegmentReturnType:
+        return tool_segments(items)
 
     async def call(self, items: list[SupportedMessageTypes]) -> str:
         if len(items) == 0:
@@ -267,9 +249,49 @@ class ToolSummarization(BasicSummarizer):
         return segment[0].content
 
 
-prompt = """
-You've requested a tool to help you with your problem, however the response from the tool was too long
-to fit in the context window. The tool response requested was {message.message.name} with arguments
-{message.message.args}. Please provide a brief description of the details you're looking for which a future
-agent will use to summarize the tool response. Ensure you do not actually call any tools in your response.
+DEFAULT_GRAI_PROMPT = """The following is a conversation between a user and an openai AI agent.
+'{content}'
+The user is attempting to answer the following question:
+'{question}'
+Keeping in mind the user's question, please distill the conversation such that a future agent can answer the user's question.
 """
+
+
+class GraiSummarization(BaseChat):
+    def __init__(self, model, client, max_tokens, **kwargs):
+        self.progressive = ProgressiveSummarization(
+            model=model, prompt_string=DEFAULT_GRAI_PROMPT, client=client, max_tokens=max_tokens
+        )
+        self.map_reduce = MapReduceSummarization(
+            model=model,
+            client=client,
+            max_tokens=max_tokens,
+            map=Map(model=model, client=client, max_tokens=max_tokens),
+            reduce=Reduce(model=model, client=client, max_tokens=max_tokens),
+        )
+
+        super().__init__(**kwargs)
+
+    def user_messages(self, items: list[SupportedMessageTypes]) -> int:
+        i = 0
+
+        for i, item in enumerate(items[::-1]):
+            if item.role == "user":
+                break
+        idx = len(items) - i
+        return idx
+
+    async def call(self, items: list[SupportedMessageTypes]) -> str:
+        prompt = "Please identify the problem the user needs help with."
+        last_user_message_idx = self.user_messages(items)
+        prompt_items = [items[:last_user_message_idx], SystemMessage(content=prompt)]
+        content = await self.map_reduce.call(prompt_items)
+
+        self.progressive.call()
+
+        prompt = """
+        You've requested a tool to help you with your problem, however the response from the tool was too long
+        to fit in the context window. The tool response requested was {message.message.name} with arguments
+        {message.message.args}. Please provide a brief description of the details you're looking for which a future
+        agent will use to summarize the tool response. Ensure you do not actually call any tools in your response.
+        """
