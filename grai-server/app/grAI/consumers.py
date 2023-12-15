@@ -17,7 +17,7 @@ from grAI.chat_implementations import BaseConversation, get_chat_conversation
 from grAI.models import Message, MessageRoles, UserChat
 from grAI.websocket_payloads import ChatErrorMessages, ChatEvent
 from users.models import User
-from workspaces.models import Membership
+from workspaces.models import Membership, Workspace
 from asyncio import gather
 from grai_schemas.serializers import dump_json
 
@@ -50,8 +50,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return self.scope["user"]
 
     @property
-    def workspace(self) -> str:
-        return self.scope["metadata"]["workspace_id"]
+    def workspace(self) -> Workspace:
+        return self.membership.workspace
 
     @property
     def membership(self) -> Membership:
@@ -59,7 +59,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @property
     def group_name(self) -> str:
-        return f"{self.user.id}_{self.workspace}"
+        return f"{self.user.id}_{self.workspace.id}"
 
     async def connect(self):
         await self.channel_layer.group_add(self.group_name, self.channel_name)

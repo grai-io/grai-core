@@ -31,7 +31,6 @@ class WorkspacePathAuthMiddleware(BaseMiddleware):
             raise PermissionDeniedError("You do not have permission to access this resource.")
 
         scope.setdefault("metadata", {})
-        scope["metadata"]["workspace_id"] = workspace_id
         scope["metadata"]["membership"] = membership
         return await super().__call__(scope, receive, send)
 

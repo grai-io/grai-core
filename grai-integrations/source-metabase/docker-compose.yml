@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
+    image: ankane/pgvector
     environment:
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_USER: metabase

@@ -32,7 +32,7 @@ services:
       start_period: 20s
 
   db:
-    image: postgres:14.3-alpine
+    image: ankane/pgvector
     environment:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai

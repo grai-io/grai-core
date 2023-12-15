@@ -1,5 +1,5 @@
 import pprint
-from typing import Any, List, Literal, Optional, Sequence, Type
+from typing import Any, List, Literal, Optional, Sequence, Type, TypeVar
 from uuid import UUID
 
 from django.db.models import Q
@@ -19,6 +19,9 @@ from multimethod import multimethod
 
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
+
+T = TypeVar("T")
+R = TypeVar("R")
 
 
 def get_data_source_models(data_sources: Sequence[SourceSpec], workspace: Workspace) -> List[Source]:
@@ -198,7 +201,10 @@ def source_model_to_source_schema(model: Source, schema_type: Literal["SourceV1"
 @model_to_schema.register
 def node_model_to_node_v1_schema(model: Node, schema_type: Literal["NodeV1"]) -> NodeV1:
     # TODO: Add data_sources
-    return NodeV1.from_spec({**model.__dict__, "data_sources": []})
+
+    data_sources: list[SourceV1] = model_to_schema(model.data_sources.all(), "SourceV1")
+    result = NodeV1.from_spec({**model.__dict__, "data_sources": [source.spec for source in data_sources]})
+    return result
 
 
 @model_to_schema.register
@@ -220,11 +226,11 @@ def edge_model_to_edge_v1_schema(model: Edge, schema_type: Literal["EdgeV1"]) ->
 
 
 @model_to_schema.register
-def sequence_model_to_sequence_v1_schema(models: list | tuple, schema_type: str) -> list | tuple:
-    iter = (model_to_schema(model, schema_type) for model in models)
-    return type(models)(iter)
+def sequence_model_to_sequence_v1_schema(models: list[T] | tuple[T], schema_type: str) -> list[R]:
+    result = list(model_to_schema(model, schema_type) for model in models)
+    return result
 
 
 @model_to_schema.register
-def queryset_to_sequence_v1_schema(models: QuerySet, schema_type: str) -> list:
+def queryset_to_sequence_v1_schema(models: QuerySet[T], schema_type: str) -> list[R]:
     return [model_to_schema(model, schema_type) for model in models]

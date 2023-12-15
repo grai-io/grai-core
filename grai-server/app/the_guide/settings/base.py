@@ -372,15 +372,16 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 OPENAI_API_KEY = config("OPENAI_API_KEY", None)
 OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
-OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", default="", cast=lambda x: "gpt-3.5-turbo" if x == "" else x)
 
 openai.organization = OPENAI_ORG_ID
 openai.api_key = OPENAI_API_KEY
 
 if OPENAI_API_KEY is not None and OPENAI_ORG_ID is not None:
     try:
-        models = [item["id"] for item in openai.Model.list()["data"]]
-    except openai.error.AuthenticationError as e:
+        client = openai.Client(api_key=OPENAI_API_KEY, organization=OPENAI_ORG_ID)
+        models = [item.id for item in client.models.list().data]
+    except openai.AuthenticationError as e:
         warnings.warn("Could not authenticate with OpenAI API key and organization id.")
         HAS_OPENAI = False
     else:

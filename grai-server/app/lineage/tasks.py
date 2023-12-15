@@ -1,15 +1,21 @@
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
 from uuid import UUID
+import asyncio
 
 import openai
-from django.apps import apps
 from django.core.cache import cache
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 from grai_schemas.serializers import GraiYamlSerializer
 
 from celery import shared_task
+from grAI.encoders import Embedder
+
+
+T = TypeVar("T")
+R = TypeVar("R")
+
 
 if TYPE_CHECKING:
     from lineage.models import Node
@@ -19,13 +25,23 @@ class EmbeddingTaskStatus:
     WAIT = 0
 
 
-def create_node_vector_index(node: "Node"):
+def get_embedded_node_content(node: "Node") -> str:
     from connections.adapters.schemas import model_to_schema
+
+    spec_keys = ["name", "namespace", "metadata", "data_sources"]
+
+    result: dict = model_to_schema(node, "NodeV1").spec.dict()
+    result = {key: result[key] for key in spec_keys}
+    result["metadata"] = result["metadata"]["grai"]
+    content = GraiYamlSerializer.dump(result)
+    return content
+
+
+def create_node_vector_index(node: "Node"):
     from lineage.models import NodeEmbeddings
 
-    schema = model_to_schema(node, "NodeV1")
-    content = GraiYamlSerializer.dump(schema)
-    embedding_resp = openai.Embedding.create(input=content, model="text-embedding-ada-002")
+    content = get_embedded_node_content(node)
+    embedding_resp = asyncio.run(Embedder.get_embedding(content))
     NodeEmbeddings.objects.update_or_create(node=node, embedding=embedding_resp.data[0].embedding)
 
 
@@ -49,10 +65,10 @@ def update_node_vector_index(self, node_id: UUID, task_id: UUID | None = None):
         self.retry(countdown=10)
         return
 
-    node = Node.objects.get(id=node_id)
+    node = Node.objects.prefetch_related("data_sources").get(id=node_id)
     try:
         create_node_vector_index(node)
-    except openai.error.RateLimitError:
+    except openai.RateLimitError:
         logging.info(f"Openai rate limit reach retrying in 10 seconds")
         self.retry(countdown=10)
         return
@@ -65,5 +81,5 @@ def bulk_update_embeddings():
     task = PeriodicTask.objects.get(name="lineage:Node:bulk_update_embeddings")
     last_run_at = task.last_run_at if task.last_run_at is not None else datetime.min
 
-    for node in Node.objects.filter(updated_at__gt=last_run_at).all():
-        update_node_vector_index.delay(node.id)
+    for node_id in Node.objects.filter(updated_at__gt=last_run_at).values_list("id", flat=True):
+        update_node_vector_index.delay(node_id)

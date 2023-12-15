@@ -48,7 +48,7 @@ jobs:
 #        working-directory: ${{ env.project_dir }}
 #    services:
 #      postgres:
-#        image: postgres:latest
+#        image: postgankane/pgvectorres:latest
 #        env:
 #          POSTGRES_USER: grai
 #          POSTGRES_PASSWORD: grai

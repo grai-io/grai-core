@@ -2,7 +2,7 @@ import os
 
 import tiktoken
 
-supported_models = ["gpt-4", "gpt-4-32k", "gpt-3.5-turbo"]
+supported_models = ["gpt-4", "gpt-4-32k", "gpt-3.5-turbo", "gpt-4-1106-preview"]
 
 cache_dir = os.environ.get("TIKTOKEN_CACHE_DIR", None)
 print("CACHE DIR: ", cache_dir)

@@ -52,7 +52,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:latest
+        image: ankane/pgvector:latest
         env:
           POSTGRES_USER: ${{ env.DB_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
