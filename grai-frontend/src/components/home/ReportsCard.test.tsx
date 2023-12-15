@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import ReportsCard, { GET_REPORTS } from "./ReportsCard"
 
 test("renders", async () => {
@@ -55,11 +55,7 @@ test("renders", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Latest Reports/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Latest Reports/i })
 
   await screen.findAllByText("Connection 1")
 })
@@ -93,9 +89,7 @@ test("empty", async () => {
     route: "/org/demo/reports",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText(/No reports/i)).toBeInTheDocument()
-  })
+  await screen.findByText(/No reports/i)
 })
 
 test("error", async () => {
@@ -120,7 +114,5 @@ test("error", async () => {
     route: "/org/demo/reports",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

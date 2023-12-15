@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import WorkspaceRedirect, { GET_WORKSPACE } from "./WorkspaceRedirect"
 
 test("renders", async () => {
@@ -11,9 +11,7 @@ test("renders", async () => {
 
   expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("error", async () => {
@@ -37,7 +35,5 @@ test("error", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

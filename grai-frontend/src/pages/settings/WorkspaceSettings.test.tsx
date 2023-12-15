@@ -9,15 +9,11 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Hello World")
-  })
+  await waitFor(() =>
+    expect(screen.getByRole("textbox")).toHaveValue("Hello World"),
+  )
 })
 
 test("error", async () => {
@@ -38,15 +34,9 @@ test("error", async () => {
 
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -69,15 +59,9 @@ test("not found", async () => {
 
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("submit", async () => {
@@ -87,15 +71,11 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Hello World")
-  })
+  await waitFor(() =>
+    expect(screen.getByRole("textbox")).toHaveValue("Hello World"),
+  )
 
   await act(
     async () =>
@@ -151,21 +131,15 @@ test("submit error", async () => {
 
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Test Workspace")
-  })
+  await waitFor(() =>
+    expect(screen.getByRole("textbox")).toHaveValue("Test Workspace"),
+  )
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

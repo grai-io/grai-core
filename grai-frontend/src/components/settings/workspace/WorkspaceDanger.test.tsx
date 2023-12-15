@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { CLEAR_WORKSPACE } from "./ClearWorkspace"
 import WorkspaceDanger from "./WorkspaceDanger"
 
@@ -26,22 +26,16 @@ test("submit", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText(
-        "Are you sure you wish to clear the Test Workspace workspace?",
-      ),
-    ).toBeTruthy()
-  })
+  await screen.findByText(
+    "Are you sure you wish to clear the Test Workspace workspace?",
+  )
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Clear/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Workspace cleared")).toBeTruthy()
-  })
+  await screen.findByText("Workspace cleared")
 })
 
 test("submit error", async () => {
@@ -70,22 +64,14 @@ test("submit error", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText(
-        "Are you sure you wish to clear the Test Workspace workspace?",
-      ),
-    ).toBeTruthy()
-  })
+  await screen.findByText(
+    "Are you sure you wish to clear the Test Workspace workspace?",
+  )
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Clear/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Failed to clear workspace ApolloError: Error!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to clear workspace ApolloError: Error!")
 })

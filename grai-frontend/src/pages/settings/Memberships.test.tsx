@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { DELETE_MEMBERSHIP } from "components/settings/memberships/MembershipDelete"
 import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
@@ -9,13 +9,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeInTheDocument()
-  })
+  await screen.findByText("Memberships")
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("error", async () => {
@@ -36,9 +32,7 @@ test("error", async () => {
 
   render(<Memberships />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("empty", async () => {
@@ -64,13 +58,9 @@ test("empty", async () => {
 
   render(<Memberships />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeInTheDocument()
-  })
+  await screen.findByText("Memberships")
 
-  await waitFor(() => {
-    expect(screen.getByText("No memberships found")).toBeInTheDocument()
-  })
+  await screen.findByText("No memberships found")
 })
 
 test("no workspace", async () => {
@@ -93,11 +83,7 @@ test("no workspace", async () => {
 
   render(<Memberships />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Sorry something has gone wrong"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Sorry something has gone wrong")
 })
 
 test("renders and delete", async () => {
@@ -161,13 +147,9 @@ test("renders and delete", async () => {
 
   // console.log(JSON.stringify(cache.extract()))
 
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeInTheDocument()
-  })
+  await screen.findByText("Memberships")
 
-  await waitFor(() => {
-    expect(screen.getAllByText("test@example.com")).toBeTruthy()
-  })
+  await screen.findAllByText("test@example.com")
 
   await act(async () => await user.click(screen.getByTestId("MoreHorizIcon")))
 
@@ -181,7 +163,7 @@ test("renders and delete", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  // await waitFor(() => {
+  // await waitFor(() =>
   //   expect(screen.queryAllByText("test@example.com")).toBeFalsy()
-  // })
+  // )
 })

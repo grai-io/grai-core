@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import SourceGraph, { GET_WORKSPACE } from "./SourceGraph"
 
 export const source_graph = [
@@ -44,17 +44,11 @@ test("renders", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Hello World/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Hello World/i })
 
-  await waitFor(() => {
-    expect(screen.getByText("node A")).toBeTruthy()
-  })
+  await screen.findByText("node A")
 
-  await waitFor(() => {
-    expect(screen.getByText("node B")).toBeTruthy()
-  })
+  await screen.findByText("node B")
 })
 
 test("error", async () => {
@@ -75,9 +69,7 @@ test("error", async () => {
 
   render(<SourceGraph />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -100,7 +92,5 @@ test("not found", async () => {
 
   render(<SourceGraph />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })

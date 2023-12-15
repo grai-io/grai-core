@@ -28,9 +28,9 @@ test("renders", async () => {
   expect(screen.getByTestId("SearchIcon")).toBeInTheDocument()
   expect(screen.queryByText("Limit Graph")).toBeFalsy()
 
-  await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
-  })
+  await waitFor(() =>
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
+  )
 })
 
 test("renders options", async () => {

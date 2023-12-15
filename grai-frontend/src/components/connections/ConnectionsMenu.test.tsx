@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ConnectionsMenu from "./ConnectionsMenu"
 
 const connection = {
@@ -36,7 +36,5 @@ test("edit", async () => {
 
   await act(async () => await user.click(screen.getByTestId("EditIcon")))
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })

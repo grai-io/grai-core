@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Chat from "./Chat"
 
 jest.mock("remark-gfm", () => () => {})
@@ -6,13 +6,7 @@ jest.mock("remark-gfm", () => () => {})
 test("renders", async () => {
   render(<Chat />)
 
-  await waitFor(() => {
-    expect(screen.getByText("GrAI Chat")).toBeInTheDocument()
-  })
+  await screen.findByText("GrAI Chat")
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Is there a customer table in the prod namespace?"),
-    ).toBeTruthy()
-  })
+  await screen.findByText("Is there a customer table in the prod namespace?")
 })

@@ -121,9 +121,7 @@ test("submit run error", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("submit update", async () => {
@@ -219,9 +217,7 @@ test("submit update error", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("renders file", async () => {
@@ -454,9 +450,7 @@ test("upload file error", async () => {
       await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("renders coming soon", async () => {

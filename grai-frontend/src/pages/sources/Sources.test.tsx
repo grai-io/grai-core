@@ -85,13 +85,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Sources/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Sources/i })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeTruthy()
-  })
+  await screen.findByText("Source 1")
 })
 
 test("error", async () => {
@@ -112,9 +108,7 @@ test("error", async () => {
 
   render(<Sources />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("search", async () => {
@@ -127,19 +121,13 @@ test("search", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeTruthy()
-  })
+  await screen.findByText("Source 1")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
-  })
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Search"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No sources found")).toBeInTheDocument()
-  })
+  await screen.findByText("No sources found")
 })
 
 test("refresh", async () => {
@@ -152,9 +140,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Sources/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Sources/i })
 
   await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
@@ -172,9 +158,7 @@ test("click row", async () => {
     routes: [":sourceId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeTruthy()
-  })
+  await screen.findByText("Source 1")
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access

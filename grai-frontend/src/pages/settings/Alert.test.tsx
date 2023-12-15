@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Alert, { GET_ALERT } from "./Alert"
 
 test("renders", async () => {
@@ -7,17 +7,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Hello World/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Hello World/i })
 })
 
 test("error", async () => {
@@ -39,9 +31,7 @@ test("error", async () => {
 
   render(<Alert />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no workspace", async () => {
@@ -68,9 +58,5 @@ test("no workspace", async () => {
 
   render(<Alert />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Sorry something has gone wrong"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Sorry something has gone wrong")
 })

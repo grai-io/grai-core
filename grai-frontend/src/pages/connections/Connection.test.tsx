@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
@@ -10,9 +10,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Connection 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Connection 1")
 })
 
 test("refresh", async () => {
@@ -159,15 +157,11 @@ test("refresh", async () => {
 
   render(<Connection />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Connection 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Connection 1")
 
   await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Success")).toBeTruthy()
-  })
+  await screen.findAllByText("Success")
 })
 
 test("refresh no last_sucessful_run", async () => {
@@ -302,15 +296,11 @@ test("refresh no last_sucessful_run", async () => {
 
   render(<Connection />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Connection 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Connection 1")
 
   await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Success")).toBeTruthy()
-  })
+  await screen.findAllByText("Success")
 })
 
 test("delete", async () => {
@@ -401,9 +391,7 @@ test("delete", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Connection 1/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Connection 1/i })
 
   await act(async () => {
     await user.click(screen.getByTestId("MoreHorizIcon"))
@@ -419,9 +407,7 @@ test("delete", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("error", async () => {
@@ -443,9 +429,7 @@ test("error", async () => {
 
   render(<Connection />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -472,7 +456,5 @@ test("not found", async () => {
 
   render(<Connection />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })

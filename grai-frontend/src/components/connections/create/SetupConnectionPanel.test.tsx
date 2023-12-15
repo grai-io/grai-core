@@ -307,7 +307,5 @@ test("errors", async () => {
 
   await submit(user, container)
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

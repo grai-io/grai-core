@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import CreateMembershipDialog, {
   CREATE_MEMBERSHIPS,
 } from "./CreateMembershipDialog"
@@ -15,9 +15,7 @@ test("renders", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Invite users")).toBeInTheDocument()
-  })
+  await screen.findByText("Invite users")
 })
 
 test("submit", async () => {
@@ -30,9 +28,7 @@ test("submit", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Invite users")).toBeInTheDocument()
-  })
+  await screen.findByText("Invite users")
 
   await act(
     async () =>
@@ -77,9 +73,7 @@ test("error", async () => {
     { mocks },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Invite users")).toBeInTheDocument()
-  })
+  await screen.findByText("Invite users")
 
   await act(
     async () =>
@@ -95,7 +89,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

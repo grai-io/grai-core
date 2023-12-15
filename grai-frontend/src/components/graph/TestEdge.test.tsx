@@ -5,7 +5,7 @@ import ReactFlow, {
   Position,
   ReactFlowProvider,
 } from "reactflow"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import TestEdge, { TestData } from "./TestEdge"
 
 test("renders", async () => {
@@ -122,9 +122,7 @@ test("expand", async () => {
 
   render(<ReactFlow nodes={nodes} edges={edges} edgeTypes={edgeTypes} />)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("test-edge")).toBeTruthy()
-  })
+  await screen.findByTestId("test-edge")
 
   await act(async () => await user.click(screen.getByTestId("test-edge")))
 })
@@ -164,9 +162,7 @@ test("renders only success", async () => {
 
   render(<ReactFlow nodes={nodes} edges={edges} edgeTypes={edgeTypes} />)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("test-edge")).toBeTruthy()
-  })
+  await screen.findByTestId("test-edge")
 
   await act(async () => await user.click(screen.getByTestId("test-edge")))
 })
@@ -206,13 +202,9 @@ test("double click", async () => {
     routes: ["/:organisationName/:workspaceName/edges/:edgeId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("test-edge-path")).toBeTruthy()
-  })
+  await screen.findByTestId("test-edge-path")
 
   fireEvent.dblClick(screen.getByTestId("test-edge-path"))
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })

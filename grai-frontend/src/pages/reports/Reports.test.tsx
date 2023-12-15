@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import Reports, { GET_REPORTS } from "./Reports"
 
 test("renders", async () => {
@@ -8,9 +8,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Reports/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Reports/i })
 
   await screen.findAllByText("Hello World")
 })
@@ -22,9 +20,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Reports/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Reports/i })
 
   await screen.findAllByText("Hello World")
 
@@ -58,7 +54,5 @@ test("error", async () => {
     route: "/org/demo/reports",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

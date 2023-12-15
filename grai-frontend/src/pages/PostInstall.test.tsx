@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import PostInstall, { GET_WORKSPACES } from "./PostInstall"
 
 test("renders", async () => {
@@ -9,13 +9,9 @@ test("renders", async () => {
     routes: ["/"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-  })
+  await screen.findByRole("progressbar")
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("error", async () => {
@@ -37,7 +33,5 @@ test("error", async () => {
     routes: ["/"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

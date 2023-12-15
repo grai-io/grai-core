@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import TokenForm, { LOGIN } from "./TokenForm"
 
 const onBack = jest.fn()
@@ -49,9 +49,7 @@ test("submit multiple devices", async () => {
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("submit single device", async () => {
@@ -87,9 +85,7 @@ test("submit single device", async () => {
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("submit error", async () => {
@@ -143,7 +139,5 @@ test("submit error", async () => {
       await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

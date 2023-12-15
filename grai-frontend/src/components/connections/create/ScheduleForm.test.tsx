@@ -46,9 +46,7 @@ test("submit", async () => {
       await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
-  await waitFor(() => {
-    expect(onComplete).toHaveBeenCalled()
-  })
+  await waitFor(() => expect(onComplete).toHaveBeenCalled())
 })
 
 test("error", async () => {
@@ -104,7 +102,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

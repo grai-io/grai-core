@@ -14,29 +14,29 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
       }),
-    ).toHaveValue("test@example.com")
-  })
+    ).toHaveValue("test@example.com"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
       }),
-    ).toHaveValue("test")
-  })
+    ).toHaveValue("test"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
       }),
-    ).toHaveValue("example")
-  })
+    ).toHaveValue("example"),
+  )
 })
 
 test("submit", async () => {
@@ -46,29 +46,29 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
       }),
-    ).toHaveValue("test@example.com")
-  })
+    ).toHaveValue("test@example.com"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
       }),
-    ).toHaveValue("test")
-  })
+    ).toHaveValue("test"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
       }),
-    ).toHaveValue("example")
-  })
+    ).toHaveValue("example"),
+  )
 
   await act(
     async () =>
@@ -107,29 +107,29 @@ test("error", async () => {
 
   render(<ProfileForm profile={profile} />, { mocks, withRouter: true })
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Email/i,
       }),
-    ).toHaveValue("test@example.com")
-  })
+    ).toHaveValue("test@example.com"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /First Name/i,
       }),
-    ).toHaveValue("test")
-  })
+    ).toHaveValue("test"),
+  )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.getByRole("textbox", {
         name: /Last Name/i,
       }),
-    ).toHaveValue("example")
-  })
+    ).toHaveValue("example"),
+  )
 
   await act(
     async () =>
@@ -147,7 +147,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

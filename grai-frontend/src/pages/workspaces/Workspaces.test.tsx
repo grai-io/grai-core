@@ -10,11 +10,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Select workspace/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Select workspace/i })
 })
 
 test("no workspaces", async () => {
@@ -116,9 +112,7 @@ test("error", async () => {
 
   render(<Workspaces />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -137,9 +131,5 @@ test("not found", async () => {
     ],
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Please contact your administrator"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Please contact your administrator")
 })

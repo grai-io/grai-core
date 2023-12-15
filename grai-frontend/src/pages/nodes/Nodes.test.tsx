@@ -192,25 +192,17 @@ test("renders", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Nodes/i })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("table1")).toBeTruthy()
-  })
+  await screen.findAllByText("table1")
 
   await act(async () => await userEvent.click(screen.getByText("Name")))
 
-  await waitFor(() => {
-    expect(screen.getAllByText("table2")).toBeTruthy()
-  })
+  await screen.findAllByText("table2")
 
   await act(async () => await userEvent.click(screen.getByText("Name")))
 
-  await waitFor(() => {
-    expect(screen.getAllByText("table3")).toBeTruthy()
-  })
+  await screen.findAllByText("table3")
 })
 
 test("error", async () => {
@@ -234,9 +226,7 @@ test("error", async () => {
 
   render(<Nodes />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("search", async () => {
@@ -330,13 +320,9 @@ test("search", async () => {
 
   await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Se")
-  })
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Se"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeInTheDocument()
-  })
+  await screen.findByText("No nodes found")
 })
 
 test("refresh", async () => {
@@ -359,9 +345,7 @@ test("click row", async () => {
     routes: ["/:nodeId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
@@ -403,9 +387,7 @@ test("no nodes", async () => {
 
   render(<Nodes />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeInTheDocument()
-  })
+  await screen.findByText("No nodes found")
 })
 
 test("filter", async () => {
@@ -415,13 +397,9 @@ test("filter", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Nodes/i })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   const autocomplete = screen.getByTestId("table-filter-choice")
   autocomplete.focus()

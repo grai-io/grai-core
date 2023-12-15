@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import RunsTable from "./RunsTable"
 
 const runs = [
@@ -48,9 +48,7 @@ test("empty", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("No runs found")).toBeInTheDocument()
-  })
+  await screen.findByText("No runs found")
 })
 
 test("row click", async () => {

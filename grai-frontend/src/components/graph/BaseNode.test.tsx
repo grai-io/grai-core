@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { ReactFlowProvider } from "reactflow"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import BaseNode, { BaseNodeData } from "./BaseNode"
 
 const data: BaseNodeData = {
@@ -33,9 +33,7 @@ test("renders", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 })
 
 test("renders no columns", async () => {
@@ -48,9 +46,7 @@ test("renders no columns", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 })
 
 test("renders multiple columns", async () => {
@@ -75,17 +71,11 @@ test("renders multiple columns", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 
-  await waitFor(() => {
-    expect(screen.getByText("c1")).toBeInTheDocument()
-  })
+  await screen.findByText("c1")
 
-  await waitFor(() => {
-    expect(screen.getByText("c2")).toBeInTheDocument()
-  })
+  await screen.findByText("c2")
 })
 
 test("highlight", async () => {
@@ -103,9 +93,7 @@ test("highlight", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 })
 
 test("search highlight", async () => {
@@ -123,9 +111,7 @@ test("search highlight", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 })
 
 test("search dim", async () => {
@@ -143,9 +129,7 @@ test("search dim", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 })
 
 test("expanded", async () => {
@@ -163,13 +147,9 @@ test("expanded", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeInTheDocument()
-  })
+  await screen.findByText("Node Label")
 
-  await waitFor(() => {
-    expect(screen.getByText("c1")).toBeInTheDocument()
-  })
+  await screen.findByText("c1")
 })
 
 test("expand", async () => {
@@ -284,9 +264,7 @@ test("context menu show profile", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("double click", async () => {
@@ -299,7 +277,5 @@ test("double click", async () => {
 
   fireEvent.dblClick(screen.getByText("Node Label"))
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })

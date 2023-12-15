@@ -234,7 +234,5 @@ test("error", async () => {
     { mocks },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

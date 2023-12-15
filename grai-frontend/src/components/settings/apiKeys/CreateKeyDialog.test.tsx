@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import CreateKeyDialog, { CREATE_API_KEY } from "./CreateKeyDialog"
 
 const onClose = jest.fn()
@@ -27,9 +27,7 @@ test("submit", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("API key created")).toBeInTheDocument()
-  })
+  await screen.findByText("API key created")
 
   await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 
@@ -58,9 +56,7 @@ test("submit custom expiry date", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("API key created")).toBeInTheDocument()
-  })
+  await screen.findByText("API key created")
 
   await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 
@@ -99,15 +95,11 @@ test("submit error", async () => {
     target: { value: "none" },
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("No expiration")).toBeInTheDocument()
-  })
+  await screen.findByText("No expiration")
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

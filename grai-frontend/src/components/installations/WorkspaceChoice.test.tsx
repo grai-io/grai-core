@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import WorkspaceChoice, { ADD_INSTALLATION } from "./WorkspaceChoice"
 
 const workspaces = [
@@ -39,18 +39,14 @@ test("renders", async () => {
     routes: ["/Organisation1/Workspace1"],
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Workspace1")).toBeTruthy()
-  })
+  await screen.findAllByText("Workspace1")
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Workspace1/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("error", async () => {
@@ -77,16 +73,12 @@ test("error", async () => {
     route: "/post-install?installation_id=1234",
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Workspace1")).toBeTruthy()
-  })
+  await screen.findAllByText("Workspace1")
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Workspace1/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

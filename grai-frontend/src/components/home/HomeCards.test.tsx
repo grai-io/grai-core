@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import HomeCards, { GET_COUNTS } from "./HomeCards"
 
 test("renders", async () => {
@@ -42,9 +42,7 @@ test("renders", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Tables/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Tables/i })
 
   await screen.findAllByText("38")
 })
@@ -71,7 +69,5 @@ test("error", async () => {
     route: "/org/demo/reports",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

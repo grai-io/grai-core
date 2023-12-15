@@ -1,14 +1,12 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, waitFor, screen, act } from "testing"
+import { render, screen, act } from "testing"
 import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 
 test("renders", async () => {
   render(<ConnectorSelect />, { withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("renders other", async () => {
@@ -74,17 +72,13 @@ test("renders other", async () => {
 
   render(<ConnectorSelect />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Others")).toBeInTheDocument()
-  })
+  await screen.findByText("Others")
 
   await act(async () => {
     await user.click(screen.getByText("Others"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("PostgreSQL")).toBeInTheDocument()
-  })
+  await screen.findByText("PostgreSQL")
 })
 
 test("error", async () => {
@@ -101,9 +95,7 @@ test("error", async () => {
 
   render(<ConnectorSelect />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("search", async () => {
@@ -111,17 +103,13 @@ test("search", async () => {
 
   render(<ConnectorSelect />, { withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(
     async () => await user.type(screen.getByRole("textbox"), "PostgreSQL"),
   )
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("filter", async () => {
@@ -129,16 +117,12 @@ test("filter", async () => {
 
   render(<ConnectorSelect />, { withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(
     async () =>
       await user.click(screen.getByRole("tab", { name: /hello world/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })

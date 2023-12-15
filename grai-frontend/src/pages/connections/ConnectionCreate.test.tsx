@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import ConnectionCreate, { GET_WORKSPACE } from "./ConnectionCreate"
 
 test("renders", async () => {
@@ -7,17 +7,13 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Add Source")).toBeInTheDocument()
-  })
+  await screen.findByText("Add Source")
 
   expect(
     screen.getByRole("heading", { name: /Select integration/i }),
   ).toBeInTheDocument()
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("not found", async () => {
@@ -44,9 +40,7 @@ test("not found", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("errors", async () => {
@@ -70,7 +64,5 @@ test("errors", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

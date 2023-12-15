@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import CommitsList, { GET_BRANCH_COMMITS } from "./CommitsList"
 
 const repository = {
@@ -15,9 +15,7 @@ test("renders", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
-  })
+  await screen.findAllByText(/Hello world/i)
 })
 
 test("not found", async () => {
@@ -59,9 +57,7 @@ test("not found", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -93,7 +89,5 @@ test("error", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

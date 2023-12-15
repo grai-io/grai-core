@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import TooltipWrap from "./TooltipWrap"
 
 test("renders", async () => {
@@ -11,9 +11,7 @@ test("renders", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Hello")).toBeTruthy()
-  })
+  await screen.findByText("Hello")
 })
 
 test("renders no show", async () => {
@@ -26,7 +24,5 @@ test("renders no show", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Hello")).toBeTruthy()
-  })
+  await screen.findByText("Hello")
 })

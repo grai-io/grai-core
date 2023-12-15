@@ -149,15 +149,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
-    ).toBeTruthy()
-  })
+  await screen.findAllByRole("heading", { name: /Welcome to Grai/i })
 
-  await waitFor(() => {
-    expect(screen.getByText("test source graph")).toBeInTheDocument()
-  })
+  await screen.findByText("test source graph")
 })
 
 // test("tour", async () => {
@@ -170,32 +164,32 @@ test("renders", async () => {
 //     },
 //   )
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(
 //       screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
 //     ).toBeTruthy()
-//   })
+//   )
 
 //   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
 //   await waitFor(() => {})
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(
 //       screen.getByText(
 //         /Follow along our tour to get started with Grai and see what it can do for you./i,
 //       ),
 //     ).toBeInTheDocument()
-//   })
+//   )
 
 //   await act(async () => await userEvent.click(screen.getByText(/close/i)))
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(
 //       screen.queryByText(
 //         /Follow along our tour to get started with Grai and see what it can do for you./i,
 //       ),
 //     ).not.toBeInTheDocument()
-//   })
+//   )
 // })
 
 // test("search", async () => {
@@ -205,21 +199,21 @@ test("renders", async () => {
 //     withRouter: true,
 //   })
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(
 //       screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
 //     ).toBeTruthy()
-//   })
+//   )
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getByRole("textbox")).toBeTruthy()
-//   })
+//   )
 
 //   fireEvent.mouseDown(screen.getByRole("textbox"))
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getByRole("textbox")).toBeInTheDocument()
-//   })
+//   )
 
 //   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
@@ -247,9 +241,7 @@ test("error", async () => {
 
   render(<Home />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no workspace", async () => {
@@ -272,9 +264,7 @@ test("no workspace", async () => {
 
   render(<Home />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("missing workspace", async () => {
@@ -313,19 +303,11 @@ test("missing workspace", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-  })
+  await screen.findByRole("progressbar")
 
-  await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).toBeFalsy()
-  })
+  await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Create an organisation/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Create an organisation/i })
 })
 
 test("no reports", async () => {
@@ -369,17 +351,9 @@ test("no reports", async () => {
 
   render(<Home />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
-    ).toBeTruthy()
-  })
+  await screen.findAllByRole("heading", { name: /Welcome to Grai/i })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Getting started with Grai/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Getting started with Grai/i })
 })
 
 test("sample data", async () => {
@@ -432,20 +406,16 @@ test("sample data", async () => {
 
   render(<Home />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Welcome to your new workspace"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Welcome to your new workspace")
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Get started/i })),
   )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(
       screen.queryByText("Welcome to your new workspace"),
-    ).not.toBeInTheDocument()
-  })
+    ).not.toBeInTheDocument(),
+  )
 })

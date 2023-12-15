@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import HideDemoWorkspace, { UPDATE_WORKSPACE } from "./HideDemoWorkspace"
 
 const workspace = {
@@ -44,9 +44,5 @@ test("error", async () => {
     await user.click(screen.getByRole("button", { name: /Hide demo banner/i }))
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Failed to update workspace ApolloError: Error!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to update workspace ApolloError: Error!")
 })

@@ -18,9 +18,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("textbox", { name: /name/i })
 })
 
 test("submit", async () => {
@@ -30,9 +28,7 @@ test("submit", async () => {
     routes: ["/:organisationName/:workspaceName/settings/alerts"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("textbox", { name: /name/i })
 
   await act(
     async () =>
@@ -54,9 +50,7 @@ test("submit", async () => {
     async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("error", async () => {
@@ -85,9 +79,7 @@ test("error", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("textbox", { name: /name/i })
 
   await act(
     async () =>
@@ -97,11 +89,11 @@ test("error", async () => {
       ),
   )
 
-  await waitFor(() => {
+  await waitFor(() =>
     expect(screen.getByRole("textbox", { name: /name/i })).toHaveValue(
       "Test AlertTest Alert2",
-    )
-  })
+    ),
+  )
 
   await act(
     async () => await user.type(screen.getByRole("combobox"), "email2@grai.io"),
@@ -115,7 +107,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

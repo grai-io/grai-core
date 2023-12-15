@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ConnectionsMetadata from "./ConnectionsMetadata"
 
 const defaultProps = {
@@ -43,9 +43,7 @@ test("normal field", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Field 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Field 1")
 
   await act(
     async () =>
@@ -78,9 +76,7 @@ test("number field", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Field 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Field 1")
 
   await act(
     async () =>
@@ -113,9 +109,7 @@ test("secret field", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Field 1")).toBeTruthy()
-  })
+  await screen.findAllByText("Field 1")
 
   await act(
     async () =>
@@ -145,9 +139,7 @@ test("boolean field", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getByText("Field 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Field 1")
 
   expect(screen.queryByRole("checkbox")).not.toBeChecked()
 
@@ -173,9 +165,7 @@ test("no label", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getAllByText("field1")).toBeTruthy()
-  })
+  await screen.findAllByText("field1")
 })
 
 test("no label secret", async () => {
@@ -196,7 +186,5 @@ test("no label secret", async () => {
 
   render(<ConnectionsMetadata {...props} />)
 
-  await waitFor(() => {
-    expect(screen.getAllByText("field1")).toBeTruthy()
-  })
+  await screen.findAllByText("field1")
 })

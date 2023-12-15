@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import CreateDeviceForm, { CREATE_DEVICE } from "./CreateDeviceForm"
 
 const defaultProps = {
@@ -12,21 +12,13 @@ test("submit", async () => {
 
   render(<CreateDeviceForm {...defaultProps} />)
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Scan the qr code with an authenticator app"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Scan the qr code with an authenticator app")
 
   await act(async () => {
     await user.click(screen.getByRole("button", { name: /next/i }))
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Enter a code from your authenticator"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Enter a code from your authenticator")
 
   await act(async () => {
     await user.type(screen.getByRole("textbox"), "123456")
@@ -54,9 +46,7 @@ test("error", async () => {
 
   render(<CreateDeviceForm {...defaultProps} />, { mocks })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("back", async () => {
@@ -64,29 +54,17 @@ test("back", async () => {
 
   render(<CreateDeviceForm {...defaultProps} />)
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Scan the qr code with an authenticator app"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Scan the qr code with an authenticator app")
 
   await act(async () => {
     await user.click(screen.getByRole("button", { name: /next/i }))
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Enter a code from your authenticator"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Enter a code from your authenticator")
 
   await act(async () => {
     await user.click(screen.getByRole("button", { name: /back/i }))
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Scan the qr code with an authenticator app"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Scan the qr code with an authenticator app")
 })

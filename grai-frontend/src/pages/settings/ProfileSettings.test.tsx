@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import ProfileSettings, { GET_PROFILE } from "./ProfileSettings"
 
 test("renders", async () => {
@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Personal info")).toBeInTheDocument()
-  })
+  await screen.findByText("Personal info")
 })
 
 test("error", async () => {
@@ -26,9 +24,7 @@ test("error", async () => {
 
   render(<ProfileSettings />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -47,7 +43,5 @@ test("not found", async () => {
 
   render(<ProfileSettings />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })

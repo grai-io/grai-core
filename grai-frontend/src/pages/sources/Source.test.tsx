@@ -12,9 +12,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("error", async () => {
@@ -36,9 +34,7 @@ test("error", async () => {
 
   render(<Source />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -65,9 +61,7 @@ test("not found", async () => {
 
   render(<Source />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })
 
 const sourceMock = {
@@ -108,9 +102,7 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(
     async () =>
@@ -148,9 +140,7 @@ test("submit error", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Source 1")
 
   await act(
     async () =>
@@ -164,9 +154,7 @@ test("submit error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("renders nodes", async () => {
@@ -176,13 +164,9 @@ test("renders nodes", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
-  await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
-  })
+  await screen.findByRole("tab", { name: /nodes/i })
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
@@ -230,21 +214,15 @@ test("empty nodes", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Source 1")
 
-  await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
-  })
+  await screen.findByRole("tab", { name: /nodes/i })
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeInTheDocument()
-  })
+  await screen.findByText("No nodes found")
 })
 
 test("search nodes", async () => {
@@ -257,13 +235,9 @@ test("search nodes", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Source 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Source 1")
 
-  await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
-  })
+  await screen.findByRole("tab", { name: /nodes/i })
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
@@ -274,9 +248,7 @@ test("search nodes", async () => {
 
   await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeInTheDocument()
-  })
+  await screen.findByText("No nodes found")
 })
 
 test("nodes error", async () => {
@@ -305,17 +277,13 @@ test("nodes error", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
-  })
+  await screen.findByRole("tab", { name: /nodes/i })
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("nodes click row", async () => {
@@ -325,9 +293,7 @@ test("nodes click row", async () => {
     routes: ["/:organisationName/:workspaceName/nodes/:nodeId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("tab", { name: /nodes/i })).toBeTruthy()
-  })
+  await screen.findByRole("tab", { name: /nodes/i })
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /nodes/i })),
@@ -348,9 +314,7 @@ test("connections click row", async () => {
     routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
