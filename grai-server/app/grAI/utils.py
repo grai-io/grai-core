@@ -61,12 +61,6 @@ def tool_segments(items: list[SupportedMessageTypes]) -> list[ToolSegmentReturnT
                 tool_segment = []
                 # pre_tool_segment = []
             elif item.role == "tool":
-                for stuff in result:
-                    print(stuff)
-                print("value error items")
-                print(items)
-                print("value error item")
-                print(item)
                 raise ValueError("Encountered a tool response message without a preceding tool call message.")
             else:
                 pre_tool_segment.append(item)

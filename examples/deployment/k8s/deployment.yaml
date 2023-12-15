@@ -34,7 +34,7 @@ spec:
           - containerPort: 8000
             protocol: TCP
         - name: db-pod
-          image: postgres:14.3-alpine
+          image: ankane/pgvector
           env:
           - name: POSTGRES_USER
             value: grai

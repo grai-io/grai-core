@@ -3,7 +3,7 @@ version: "3.7"
 
 services:
   postgres:
-    image: postgres:latest
+    image: ankane/pgvector
     environment:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai

@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   postgres:
-    image: "postgres:latest"
+    image: ankane/pgvector
     volumes:
      - ./dev-database/schemas:/docker-entrypoint-initdb.d
     environment:
