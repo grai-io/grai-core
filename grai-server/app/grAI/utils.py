@@ -59,6 +59,7 @@ def tool_segments(items: list[SupportedMessageTypes]) -> list[ToolSegmentReturnT
         if tool_segment is None:
             if isinstance(item, ChatCompletionMessage) and item.tool_calls is not None:
                 tool_segment = []
+                # pre_tool_segment = []
             elif item.role == "tool":
                 for stuff in result:
                     print(stuff)
@@ -77,8 +78,12 @@ def tool_segments(items: list[SupportedMessageTypes]) -> list[ToolSegmentReturnT
             else:
                 result.append((pre_tool_segment, tool_segment))
                 # yield pre_tool_segment, tool_segment
-                pre_tool_segment = [item]
-                tool_segment = None
+                if isinstance(item, ChatCompletionMessage) and item.tool_calls is not None:
+                    tool_segment = []
+                    pre_tool_segment = []
+                else:
+                    pre_tool_segment = [item]
+                    tool_segment = None
     result.append((pre_tool_segment, tool_segment))
     return result
     # yield pre_tool_segment, tool_segment
