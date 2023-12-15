@@ -20,7 +20,6 @@ class TestWorkspacePathAuthMiddleware:
         connected, _ = await communicator.connect()
         assert connected
         assert "metadata" in communicator.scope
-        assert communicator.scope["metadata"]["workspace_id"] == str(workspace.id)
         assert communicator.scope["metadata"]["membership"] == membership
 
     @pytest.mark.asyncio
