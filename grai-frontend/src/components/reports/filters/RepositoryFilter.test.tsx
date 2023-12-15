@@ -15,13 +15,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Repository")).toBeInTheDocument()
-  })
+  await screen.findByText("Repository")
 
-  await waitFor(() => {
-    expect(screen.queryByText("owner/repo")).toBeFalsy()
-  })
+  await waitFor(() => expect(screen.queryByText("owner/repo")).toBeFalsy())
 })
 
 test("renders value", async () => {
@@ -30,9 +26,7 @@ test("renders value", async () => {
     route: "/org/demo/reports?repository=owner/repo",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Repository")).toBeInTheDocument()
-  })
+  await screen.findByText("Repository")
 
   const combobox = screen.getByRole("combobox")
   expect(combobox).toHaveProperty("value", "owner/repo")
@@ -43,9 +37,7 @@ test("change", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Repository")).toBeInTheDocument()
-  })
+  await screen.findByText("Repository")
 
   const autocomplete = screen.getByTestId("autocomplete")
   autocomplete.focus()
@@ -65,9 +57,7 @@ test("clear", async () => {
     route: "/org/demo/reports?repository=owner/repo",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Repository")).toBeInTheDocument()
-  })
+  await screen.findByText("Repository")
 
   const combobox = screen.getByRole("combobox")
   expect(combobox).toHaveProperty("value", "owner/repo")

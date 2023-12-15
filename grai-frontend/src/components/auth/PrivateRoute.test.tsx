@@ -14,7 +14,5 @@ test("renders logged out", async () => {
     routes: [{ path: "/login", element: <>Login</> }],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Login")).toBeInTheDocument()
-  })
+  await screen.findByText("Login")
 })

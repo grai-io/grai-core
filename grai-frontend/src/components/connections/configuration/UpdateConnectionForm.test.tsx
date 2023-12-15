@@ -230,9 +230,7 @@ test("submit", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("button", { name: /edit/i })
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /edit/i })),
@@ -252,11 +250,7 @@ test("submit", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("All tests successfully passed!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("All tests successfully passed!")
 })
 
 test("submit error", async () => {
@@ -317,9 +311,7 @@ test("submit error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("submit run error", async () => {
@@ -370,9 +362,7 @@ test("submit run error", async () => {
       ),
   )
 
-  await waitFor(() => {
-    expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("button", { name: /edit/i })
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /edit/i })),
@@ -392,7 +382,5 @@ test("submit run error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(async () => {
-    expect(await screen.findByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

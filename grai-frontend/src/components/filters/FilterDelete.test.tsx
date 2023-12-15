@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import FilterDelete, { DELETE_FILTER } from "./FilterDelete"
 
 const onClose = jest.fn()
@@ -36,9 +36,7 @@ test("delete", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Filter deleted")).toBeInTheDocument()
-  })
+  await screen.findByText("Filter deleted")
 })
 
 test("error", async () => {
@@ -70,9 +68,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Failed to delete filter ApolloError: Error!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to delete filter ApolloError: Error!")
 })

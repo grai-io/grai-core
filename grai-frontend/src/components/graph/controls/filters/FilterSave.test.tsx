@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import FilterSave, { CREATE_FILTER } from "./FilterSave"
 
 test("renders empty", async () => {
@@ -94,7 +94,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

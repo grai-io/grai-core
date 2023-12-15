@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ResetChat, { CREATE_CHAT } from "./ResetChat"
 
 test("submit", async () => {
@@ -46,7 +46,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /restart chat/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Failed to restart chat")).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to restart chat")
 })

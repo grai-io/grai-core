@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { tableMock } from "pages/nodes/Node.test"
 import SourceLineage, { GET_TABLES_AND_EDGES } from "./SourceLineage"
@@ -81,9 +81,7 @@ test("renders", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("source-lineage")).toBeInTheDocument()
-  })
+  await screen.findByTestId("source-lineage")
 })
 
 test("error", async () => {
@@ -114,9 +112,7 @@ test("error", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no tables", async () => {
@@ -152,7 +148,5 @@ test("no tables", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
-  })
+  await screen.findByText("No tables found")
 })

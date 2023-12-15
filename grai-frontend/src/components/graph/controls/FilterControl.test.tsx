@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act } from "react-dom/test-utils"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import FilterControl, { GET_FILTERS } from "./FilterControl"
 
 const combinedFilters = {
@@ -51,17 +51,13 @@ test("renders no filters", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Filters")).toBeInTheDocument()
-  })
+  await screen.findByText("Filters")
 
   await act(async () => {
     user.click(screen.getByText("Filters"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("button", { name: /add row/i })).toBeInTheDocument()
-  })
+  await screen.findByRole("button", { name: /add row/i })
 
   await act(async () => {
     user.click(screen.getByRole("button", { name: /cancel/i }))
@@ -115,17 +111,13 @@ test("renders filters", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Filters")).toBeInTheDocument()
-  })
+  await screen.findByText("Filters")
 
   await act(async () => {
     user.click(screen.getByText("Filters"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText(/saved filters/i)).toBeInTheDocument()
-  })
+  await screen.findByText(/saved filters/i)
 
   expect(
     screen.getByRole("button", { name: /add new filter/i }),
@@ -159,11 +151,7 @@ test("errors", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Filters")).toBeInTheDocument()
-  })
+  await screen.findByText("Filters")
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

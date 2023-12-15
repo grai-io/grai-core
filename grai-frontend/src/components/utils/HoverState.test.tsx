@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import { fireEvent, render, screen, waitFor } from "testing"
+import { fireEvent, render, screen } from "testing"
 import HoverState from "./HoverState"
 
 test("renders", async () => {
@@ -9,9 +9,7 @@ test("renders", async () => {
     </HoverState>,
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Test")).toBeInTheDocument()
-  })
+  await screen.findByText("Test")
 })
 
 test("hover", async () => {
@@ -21,19 +19,13 @@ test("hover", async () => {
     </HoverState>,
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Test")).toBeInTheDocument()
-  })
+  await screen.findByText("Test")
 
   fireEvent.mouseEnter(screen.getByText("Test"))
 
-  await waitFor(() => {
-    expect(screen.getByText("Testhover")).toBeInTheDocument()
-  })
+  await screen.findByText("Testhover")
 
   fireEvent.mouseLeave(screen.getByText("Testhover"))
 
-  await waitFor(() => {
-    expect(screen.getByText("Test")).toBeInTheDocument()
-  })
+  await screen.findByText("Test")
 })

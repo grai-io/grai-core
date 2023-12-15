@@ -28,7 +28,5 @@ test("close", async () => {
     user.click(screen.getByText("Cancel"))
   })
 
-  await waitFor(() => {
-    expect(onClose).toHaveBeenCalled()
-  })
+  await waitFor(() => expect(onClose).toHaveBeenCalled())
 })

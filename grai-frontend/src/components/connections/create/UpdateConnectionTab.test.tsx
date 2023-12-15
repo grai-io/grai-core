@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import UpdateConnectionTab, { GET_CONNECTION } from "./UpdateConnectionTab"
 
 test("errors", async () => {
@@ -20,9 +20,7 @@ test("errors", async () => {
 
   render(<UpdateConnectionTab workspaceId="1" connectionId="1" />, { mocks })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -48,7 +46,5 @@ test("not found", async () => {
 
   render(<UpdateConnectionTab workspaceId="1" connectionId="1" />, { mocks })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })

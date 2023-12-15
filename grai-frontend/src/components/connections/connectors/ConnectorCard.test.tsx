@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ConnectorCard from "./ConnectorCard"
 
 test("renders", async () => {
@@ -78,9 +78,7 @@ test("click", async () => {
     await user.click(screen.getByText("connector 1"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
-  })
+  await screen.findByText("New Page")
 })
 
 test("to", async () => {
@@ -106,7 +104,5 @@ test("to", async () => {
     await user.click(screen.getByText("connector 1"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
-  })
+  await screen.findByText("New Page")
 })

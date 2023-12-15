@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
 
 test("renders", async () => {
@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeInTheDocument()
-  })
+  await screen.findByText("Memberships")
 })
 
 test("open", async () => {
@@ -19,9 +17,7 @@ test("open", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeInTheDocument()
-  })
+  await screen.findByText("Memberships")
 
   await act(
     async () =>

@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import { GET_REPOSITORIES } from "components/settings/installations/GitHubInstallation"
 import Installations from "./Installations"
 
@@ -8,21 +8,11 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Installations/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Installations/i })
 
-  await waitFor(() => {
-    expect(screen.getAllByTestId("GitHubIcon")).toBeTruthy()
-  })
+  await screen.findAllByTestId("GitHubIcon")
 })
 
 test("error", async () => {
@@ -43,9 +33,7 @@ test("error", async () => {
 
   render(<Installations />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no workspace", async () => {
@@ -68,11 +56,7 @@ test("no workspace", async () => {
 
   render(<Installations />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Sorry something has gone wrong"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Sorry something has gone wrong")
 })
 
 test("renders no installations", async () => {
@@ -100,7 +84,5 @@ test("renders no installations", async () => {
 
   render(<Installations />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Connect GitHub")).toBeInTheDocument()
-  })
+  await screen.findByText("Connect GitHub")
 })

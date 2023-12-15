@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
 import Node, { GET_NODE } from "./Node"
@@ -80,9 +80,7 @@ test("renders", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeInTheDocument()
-  })
+  await screen.findByText("Profile")
 })
 
 test("error", async () => {
@@ -104,9 +102,7 @@ test("error", async () => {
 
   render(<Node />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -134,9 +130,7 @@ test("not found", async () => {
 
   render(<Node />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })
 
 test("lineage", async () => {
@@ -190,17 +184,13 @@ test("lineage", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Lineage")).toBeInTheDocument()
-  })
+  await screen.findByText("Lineage")
 
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /Lineage/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByTestId("table-lineage")).toBeInTheDocument()
-  })
+  await screen.findByTestId("table-lineage")
 })
 
 test("expand all", async () => {
@@ -213,13 +203,9 @@ test("expand all", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeInTheDocument()
-  })
+  await screen.findByText("Profile")
 
-  await waitFor(() => {
-    expect(screen.getByText("Namespace")).toBeInTheDocument()
-  })
+  await screen.findByText("Namespace")
 
   await act(
     async () =>
@@ -246,13 +232,9 @@ test("click row", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeInTheDocument()
-  })
+  await screen.findByText("Profile")
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Table1")).toBeTruthy()
-  })
+  await screen.findAllByText("Table1")
 
   await act(
     async () =>
@@ -281,13 +263,9 @@ test("search", async () => {
     route: "/default/demo/",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeInTheDocument()
-  })
+  await screen.findByText("Profile")
 
-  await waitFor(() => {
-    expect(screen.getByText("Namespace")).toBeInTheDocument()
-  })
+  await screen.findByText("Namespace")
 
   await act(
     async () =>

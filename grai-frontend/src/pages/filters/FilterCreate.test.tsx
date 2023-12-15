@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Create Filter")).toBeInTheDocument()
-  })
+  await screen.findByText("Create Filter")
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -35,9 +33,7 @@ test("not found", async () => {
 
   render(<FilterCreate />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -58,7 +54,5 @@ test("error", async () => {
 
   render(<FilterCreate />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Run, { GET_RUN } from "./Run"
 
 test("renders", async () => {
@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Started")).toBeInTheDocument()
-  })
+  await screen.findByText("Started")
 })
 
 test("renders errors", async () => {
@@ -70,9 +68,7 @@ test("renders errors", async () => {
 
   render(<Run />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("You got an error")).toBeInTheDocument()
-  })
+  await screen.findByText("You got an error")
 })
 
 test("error", async () => {
@@ -94,9 +90,7 @@ test("error", async () => {
 
   render(<Run />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -123,7 +117,5 @@ test("not found", async () => {
 
   render(<Run />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })

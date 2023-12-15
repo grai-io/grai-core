@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import PullRequests, { GET_PULL_REQUESTS } from "./PullRequests"
 
 test("renders", async () => {
@@ -8,9 +8,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
-  })
+  await screen.findAllByText(/Hello world/i)
 })
 
 test("click row", async () => {
@@ -20,9 +18,7 @@ test("click row", async () => {
     routes: ["/undefined/undefined/reports//:owner/:repo/pulls/:reference"],
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
-  })
+  await screen.findAllByText(/Hello world/i)
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
@@ -62,9 +58,7 @@ test("not found", async () => {
     route: "/org/demo/reports/github/owner/repo/pulls",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -92,7 +86,5 @@ test("error", async () => {
     route: "/org/demo/reports/github/owner/repo/pulls",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Settings from "./Settings"
 
 test("redirects", async () => {
@@ -8,7 +8,5 @@ test("redirects", async () => {
     routes: ["/default/demo/settings/profile"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })

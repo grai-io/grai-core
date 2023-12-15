@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { input } from "testing/autocomplete"
 import { GET_WORKSPACE } from "pages/filters/FilterCreate"
 import CreateFilter, { CREATE_FILTER } from "./CreateFilter"
@@ -83,9 +83,7 @@ test("submit namespace", async () => {
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "equals", 1)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "t")
 
@@ -117,9 +115,7 @@ test("submit namespace in", async () => {
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "in", 2)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "t")
 
@@ -151,9 +147,7 @@ test("submit data sources", async () => {
   input(screen.getByTestId("autocomplete-field"), "tag", 3)
   input(screen.getByTestId("autocomplete-operator"), "contains")
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "s")
 
@@ -185,9 +179,7 @@ test("submit data sources not in", async () => {
   input(screen.getByTestId("autocomplete-field"), "tag", 3)
   input(screen.getByTestId("autocomplete-operator"), "contains", 2)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "s")
 
@@ -219,9 +211,7 @@ test("submit tags", async () => {
   input(screen.getByTestId("autocomplete-field"), "tag", 4)
   input(screen.getByTestId("autocomplete-operator"), "contains", 2)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "t")
 
@@ -253,9 +243,7 @@ test("submit tags doesnt contain", async () => {
   input(screen.getByTestId("autocomplete-field"), "tag", 4)
   input(screen.getByTestId("autocomplete-operator"), "contains", 3)
 
-  await waitFor(() => {
-    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
-  })
+  await screen.findByTestId("autocomplete-value")
 
   input(screen.getByTestId("autocomplete-value"), "t")
 
@@ -332,7 +320,5 @@ test("submit error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import NodeProfile from "./NodeProfile"
 
 const other_table = {
@@ -34,9 +34,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Table 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Table 1")
 })
 
 test("renders no sources or destinations", async () => {
@@ -62,7 +60,5 @@ test("renders no sources or destinations", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Table 1")).toBeInTheDocument()
-  })
+  await screen.findByText("Table 1")
 })

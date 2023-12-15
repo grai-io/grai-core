@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import CompleteSignupForm, { COMPLETE_SIGNUP } from "./CompleteSignupForm"
 
 test("submit", async () => {
@@ -34,13 +34,9 @@ test("submit", async () => {
       await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText(
-        "You are all signed up, please login to view your workspace.",
-      ),
-    ).toBeTruthy()
-  })
+  await screen.findByText(
+    "You are all signed up, please login to view your workspace.",
+  )
 })
 
 test("error", async () => {
@@ -93,7 +89,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

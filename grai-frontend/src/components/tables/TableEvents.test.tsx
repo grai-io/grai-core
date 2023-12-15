@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import TableEvents from "./TableEvents"
 
 const table = {
@@ -10,7 +10,5 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Status")).toBeInTheDocument()
-  })
+  await screen.findByText("Status")
 })

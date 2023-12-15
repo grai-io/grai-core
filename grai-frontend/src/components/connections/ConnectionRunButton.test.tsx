@@ -27,15 +27,13 @@ test("open", async () => {
     async () => await user.click(screen.getByTestId("ArrowDropDownIcon")),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Run Events")).toBeInTheDocument()
-  })
+  await screen.findByText("Run Events")
 
   await user.click(document.body)
 
-  await waitFor(() => {
-    expect(screen.queryByText("Run Events")).not.toBeInTheDocument()
-  })
+  await waitFor(() =>
+    expect(screen.queryByText("Run Events")).not.toBeInTheDocument(),
+  )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})

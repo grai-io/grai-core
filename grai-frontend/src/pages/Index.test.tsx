@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Index, { GET_WORKSPACES } from "./Index"
 
 test("renders", async () => {
@@ -7,9 +7,7 @@ test("renders", async () => {
     routes: ["/:organisationName/:workspaceName"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("no workspaces", async () => {
@@ -28,9 +26,7 @@ test("no workspaces", async () => {
 
   render(<Index />, { routes: ["/workspaces"], mocks })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("error", async () => {
@@ -47,7 +43,5 @@ test("error", async () => {
 
   render(<Index />, { mocks })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

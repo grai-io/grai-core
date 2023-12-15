@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { GET_FILTERS } from "components/graph/controls/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
@@ -182,9 +182,7 @@ test("renders", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument()
-  })
+  await screen.findByText("N2 Node")
 })
 
 // test("renders placeholder", async () => {
@@ -212,13 +210,13 @@ test("renders", async () => {
 //     mocks,
 //   })
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.queryByText("N2 Node")).not.toBeInTheDocument()
-//   })
+//   )
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getAllByTestId("placeholder")).toBeTruthy()
-//   })
+//   )
 // })
 
 afterEach(() => {
@@ -276,9 +274,9 @@ test("renders empty", async () => {
     ],
   })
 
-  // await waitFor(() => {
+  // await waitFor(() =>
   //   expect(screen.getByText("Your graph is empty!")).toBeInTheDocument()
-  // })
+  // )
 })
 
 // test("expand", async () => {
@@ -292,9 +290,9 @@ test("renders empty", async () => {
 
 //   renderWithMocks(<Graph />, [mock])
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     screen.getByText("N2 Node")
-//   })
+//   )
 
 //   await user.click(screen.getByTestId("ArrowDropDownIcon"))
 // })
@@ -325,13 +323,9 @@ test("renders with errors", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("N1")).toBeTruthy()
-  })
+  await screen.findAllByText("N1")
 
-  await waitFor(() => {
-    expect(screen.getAllByText(/1/i)).toBeTruthy()
-  })
+  await screen.findAllByText(/1/i)
 })
 
 test("renders with limitGraph", async () => {
@@ -372,13 +366,11 @@ test("renders with limitGraph", async () => {
   //   })
   // }
 
-  // await waitFor(() => {
+  // await waitFor(() =>
   //   expect(screen.getAllByTestId("placeholder")).toBeTruthy()
-  // })
+  // )
 
-  await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument()
-  })
+  await screen.findByText("N2 Node")
 })
 
 test("error", async () => {
@@ -409,9 +401,7 @@ test("error", async () => {
     route: "/default/demo/graph",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no nodes", async () => {
@@ -450,9 +440,9 @@ test("no nodes", async () => {
     route: "/default/demo/graph",
   })
 
-  // await waitFor(() => {
+  // await waitFor(() =>
   //   expect(screen.getByText("Your graph is empty!")).toBeInTheDocument()
-  // })
+  // )
 })
 
 test("search", async () => {
@@ -482,25 +472,21 @@ test("search", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument()
-  })
+  await screen.findByText("N2 Node")
 
   await act(async () => {
     await user.click(screen.getByTestId("SearchIcon"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("search-input")).toBeInTheDocument()
-  })
+  await screen.findByTestId("search-input")
 
   await act(
     async () => await user.type(screen.getByTestId("search-input"), "s"),
   )
 
-  // await waitFor(() => {
+  // await waitFor(() =>
   //   expect(screen.getByText("test table")).toBeInTheDocument()
-  // })
+  // )
 })
 
 test("filter", async () => {
@@ -539,29 +525,21 @@ test("filter", async () => {
     ],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument()
-  })
+  await screen.findByText("N2 Node")
 
-  await waitFor(() => {
-    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
-  })
+  await screen.findByTestId("FilterAltIcon")
 
   await act(async () => {
     await user.click(screen.getByTestId("FilterAltIcon"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Saved Filters")).toBeInTheDocument()
-  })
+  await screen.findByText("Saved Filters")
 
   await act(async () => {
     await user.click(screen.getByRole("link", { name: "Manage" }))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("inline filter", async () => {
@@ -648,21 +626,15 @@ test("inline filter", async () => {
     ],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument()
-  })
+  await screen.findByText("N2 Node")
 
-  await waitFor(() => {
-    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
-  })
+  await screen.findByTestId("FilterAltIcon")
 
   await act(async () => {
     await user.click(screen.getByTestId("FilterAltIcon"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText(/Saved Filters/i)).toBeInTheDocument()
-  })
+  await screen.findByText(/Saved Filters/i)
 
   expect(
     screen.getByRole("button", { name: /add new filter/i }),

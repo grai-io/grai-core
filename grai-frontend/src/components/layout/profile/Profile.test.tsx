@@ -14,9 +14,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("First Last")).toBeTruthy()
-  })
+  await screen.findByText("First Last")
 })
 
 test("renders collapsed", async () => {
@@ -24,9 +22,7 @@ test("renders collapsed", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("FL")).toBeTruthy()
-  })
+  await screen.findByText("FL")
 })
 
 const emptyProfile = {
@@ -41,9 +37,7 @@ test("renders empty", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("PersonOutlineIcon")).toBeTruthy()
-  })
+  await screen.findByTestId("PersonOutlineIcon")
 
   expect(screen.getByText("Profile")).toBeTruthy()
 })
@@ -53,9 +47,7 @@ test("renders empty collapsed", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("PersonOutlineIcon")).toBeTruthy()
-  })
+  await screen.findByTestId("PersonOutlineIcon")
 })
 
 test("renders no profile", async () => {
@@ -63,9 +55,9 @@ test("renders no profile", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.queryByText("Profile")).not.toBeInTheDocument()
-  })
+  await waitFor(() =>
+    expect(screen.queryByText("Profile")).not.toBeInTheDocument(),
+  )
 })
 
 test("logout", async () => {
@@ -73,15 +65,11 @@ test("logout", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("First Last")).toBeTruthy()
-  })
+  await screen.findByText("First Last")
 
   await act(async () => await userEvent.click(screen.getByText("First Last")))
 
-  await waitFor(() => {
-    expect(screen.getByText("Logout")).toBeInTheDocument()
-  })
+  await screen.findByText("Logout")
 
   await act(async () => await userEvent.click(screen.getByText("Logout")))
 })

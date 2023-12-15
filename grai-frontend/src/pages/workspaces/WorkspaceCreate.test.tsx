@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { CREATE_WORKSPACE } from "components/workspaces/WorkspaceForm"
 import WorkspaceCreate from "./WorkspaceCreate"
 
@@ -11,11 +11,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Create a workspace/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Create a workspace/i })
 })
 
 test("renders no organisation", async () => {
@@ -23,11 +19,7 @@ test("renders no organisation", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Create a workspace/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /Create a workspace/i })
 
   expect(screen.getByText("No organisationId found")).toBeInTheDocument()
 })
@@ -56,9 +48,7 @@ test("submit", async () => {
     async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("submit error", async () => {
@@ -99,7 +89,5 @@ test("submit error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

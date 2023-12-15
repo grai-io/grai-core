@@ -1,6 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
-// import { DELETE_FILTER } from "components/filters/FilterDelete"
+import { render, screen } from "testing"
 import Filter, { GET_FILTER } from "./Filter"
 
 test("renders", async () => {
@@ -8,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("error", async () => {
@@ -32,9 +29,7 @@ test("error", async () => {
 
   render(<Filter />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -64,7 +59,5 @@ test("not found", async () => {
 
   render(<Filter />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })

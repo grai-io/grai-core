@@ -48,18 +48,16 @@ test("submit required 2fa", async () => {
     async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
-  await waitFor(() => {
-    expect(screen.getByTestId("password")).toHaveValue("password")
-  })
+  await waitFor(() =>
+    expect(screen.getByTestId("password")).toHaveValue("password"),
+  )
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /log in/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Two Factor Authentication")).toBeInTheDocument()
-  })
+  await screen.findByText("Two Factor Authentication")
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /back/i })),

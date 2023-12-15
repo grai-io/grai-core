@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Report, { GET_RUN } from "./Report"
 
@@ -9,13 +9,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Failures")).toBeTruthy()
-  })
+  await screen.findByText("Failures")
 
-  await waitFor(() => {
-    expect(screen.getByText("Failed")).toBeTruthy()
-  })
+  await screen.findByText("Failed")
 })
 
 test("renders failed", async () => {
@@ -25,21 +21,15 @@ test("renders failed", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Failures")).toBeTruthy()
-  })
+  await screen.findByText("Failures")
 
-  await waitFor(() => {
-    expect(screen.getByText("Failed")).toBeTruthy()
-  })
+  await screen.findByText("Failed")
 
   await act(async () => {
     await user.click(screen.getByText("Failed"))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Changed Node")).toBeTruthy()
-  })
+  await screen.findByText("Changed Node")
 })
 
 test("not found", async () => {
@@ -71,9 +61,7 @@ test("not found", async () => {
     route: "/org/demo/reports/github/owner/repo/reports/1234",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -99,7 +87,5 @@ test("error", async () => {
     route: "/org/demo/reports/github/owner/repo/reports/1234",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

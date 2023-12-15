@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import EditScheduleForm, { UPDATE_CONNECTION } from "./EditScheduleForm"
 
 const connection = {
@@ -49,7 +49,7 @@ test("submit", async () => {
   expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
@@ -61,42 +61,42 @@ test("submit cron", async () => {
   expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await act(
-    async () => await user.click(screen.getByLabelText("Cron expression"))
+    async () => await user.click(screen.getByLabelText("Cron expression")),
   )
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /minutes/i }), "30")
+      await user.type(screen.getByRole("textbox", { name: /minutes/i }), "30"),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /hours/i }), "1")
+      await user.type(screen.getByRole("textbox", { name: /hours/i }), "1"),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /days of the week/i }),
-        "1"
-      )
+        "1",
+      ),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /days of the month/i }),
-        "2"
-      )
+        "2",
+      ),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /months of the year/i }),
-        "3"
-      )
+        "3",
+      ),
   )
   await act(async () => await user.click(screen.getByLabelText("Enabled")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
@@ -127,13 +127,13 @@ test("submit dbt cloud", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: /job id/i }), "1234")
+      await user.type(screen.getByRole("textbox", { name: /job id/i }), "1234"),
   )
 
   await act(async () => await user.click(screen.getByLabelText("Enabled")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
@@ -168,10 +168,8 @@ test("error", async () => {
   expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

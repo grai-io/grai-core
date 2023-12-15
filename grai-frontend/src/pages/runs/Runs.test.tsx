@@ -8,13 +8,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: "Runs" })).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Runs" })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("refresh", async () => {
@@ -24,13 +20,9 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: "Runs" })).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Runs" })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(async () => await user.click(screen.getByTestId("RefreshIcon")))
 })
@@ -56,9 +48,7 @@ test("error", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("search", async () => {
@@ -68,17 +58,11 @@ test("search", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
-  })
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Search"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No runs found")).toBeInTheDocument()
-  })
+  await screen.findByText("No runs found")
 })

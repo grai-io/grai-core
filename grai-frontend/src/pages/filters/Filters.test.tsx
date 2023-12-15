@@ -9,13 +9,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Filters/i })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 })
 
 test("empty", async () => {
@@ -47,13 +43,9 @@ test("empty", async () => {
     ],
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Filters/i })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("No filters found")).toBeTruthy()
-  })
+  await screen.findAllByText("No filters found")
 })
 
 test("refresh", async () => {
@@ -63,9 +55,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Filters/i })
 
   await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
@@ -80,9 +70,7 @@ test("row click", async () => {
     routes: ["/:filterId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
-  })
+  await screen.findAllByText(/Hello world/i)
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
@@ -156,13 +144,13 @@ test("row click", async () => {
 //     mocks,
 //   })
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
-//   })
+//   )
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getAllByText("Filter 1")).toBeTruthy()
-//   })
+//   )
 
 //   await act(async () => {
 //     await user.click(screen.getByTestId("MoreHorizIcon"))
@@ -206,13 +194,13 @@ test("row click", async () => {
 //     mocks,
 //   })
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
-//   })
+//   )
 
-//   await waitFor(() => {
+//   await waitFor(() =>
 //     expect(screen.getAllByText("Filter 1")).toBeTruthy()
-//   })
+//   )
 
 //   await act(async () => {
 //     await user.click(screen.getByTestId("MoreHorizIcon"))
@@ -247,9 +235,7 @@ test("error", async () => {
 
   render(<Filters />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("search", async () => {
@@ -259,17 +245,11 @@ test("search", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
+  await screen.findAllByText("Hello World")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
-  })
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Search"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No filters found")).toBeInTheDocument()
-  })
+  await screen.findByText("No filters found")
 })

@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import VerifyEmail, { VERIFY_EMAIL } from "./VerifyEmail"
 
 test("renders", async () => {
@@ -57,7 +57,5 @@ test("error", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

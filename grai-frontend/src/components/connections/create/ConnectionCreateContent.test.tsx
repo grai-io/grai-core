@@ -10,9 +10,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.queryAllByText("Select Integration")).toHaveLength(2)
-  })
+  await waitFor(() =>
+    expect(screen.queryAllByText("Select Integration")).toHaveLength(2),
+  )
 
   await waitFor(() =>
     expect(screen.queryAllByText("Hello World")).toHaveLength(3),
@@ -26,9 +26,7 @@ test("renders schedule", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText(/Schedule type/i)).toBeInTheDocument()
-  })
+  await screen.findByText(/Schedule type/i)
 })
 
 test("renders schedule missing connectionId", async () => {
@@ -38,9 +36,9 @@ test("renders schedule missing connectionId", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.queryByText(/Schedule type/i)).not.toBeInTheDocument()
-  })
+  await waitFor(() =>
+    expect(screen.queryByText(/Schedule type/i)).not.toBeInTheDocument(),
+  )
 
   expect(screen.getByText("Page not found")).toBeInTheDocument()
 })
@@ -52,9 +50,7 @@ test("renders connection", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Invite a teammate")).toBeInTheDocument()
-  })
+  await screen.findByText("Invite a teammate")
 })
 
 test("renders connectorId", async () => {
@@ -64,7 +60,5 @@ test("renders connectorId", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Invite a teammate")).toBeInTheDocument()
-  })
+  await screen.findByText("Invite a teammate")
 })

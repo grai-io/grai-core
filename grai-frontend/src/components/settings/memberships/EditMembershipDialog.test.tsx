@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import EditMembershipDialog, { UPDATE_MEMBERSHIP } from "./EditMembershipDialog"
 
 const onClose = jest.fn()
@@ -28,9 +28,7 @@ test("renders", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Edit Membership")).toBeInTheDocument()
-  })
+  await screen.findByText("Edit Membership")
 })
 
 test("submit", async () => {
@@ -47,9 +45,7 @@ test("submit", async () => {
     },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Edit Membership")).toBeInTheDocument()
-  })
+  await screen.findByText("Edit Membership")
 
   fireEvent.change(screen.getByTestId("role-select"), {
     target: { value: "admin" },
@@ -92,9 +88,7 @@ test("error", async () => {
     { mocks },
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Edit Membership")).toBeInTheDocument()
-  })
+  await screen.findByText("Edit Membership")
 
   fireEvent.change(screen.getByTestId("role-select"), {
     target: { value: "admin" },
@@ -104,7 +98,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

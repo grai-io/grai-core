@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Repositories, { GET_REPOSITORIES } from "./Repositories"
 
 test("renders", async () => {
@@ -46,18 +46,10 @@ test("renders", async () => {
     route: "/org/demo/reports/github/owner",
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Select Repository/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Select Repository/i })
 
-  await waitFor(() => {
-    expect(screen.getByText("repo1")).toBeTruthy()
-  })
-  await waitFor(() => {
-    expect(screen.getByText("repo2")).toBeTruthy()
-  })
+  await screen.findByText("repo1")
+  await screen.findByText("repo2")
 })
 
 test("error", async () => {
@@ -84,9 +76,7 @@ test("error", async () => {
     route: "/org/demo/reports/github/owner",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("empty", async () => {
@@ -118,9 +108,5 @@ test("empty", async () => {
     route: "/org/demo/reports/github/owner",
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Select Repository/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Select Repository/i })
 })

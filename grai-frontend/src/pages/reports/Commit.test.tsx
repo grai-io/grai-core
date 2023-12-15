@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Commit, { GET_COMMIT } from "./Commit"
@@ -9,11 +9,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Hello world/i }),
-    ).toBeTruthy()
-  })
+  await screen.findAllByRole("heading", { name: /Hello world/i })
 })
 
 test("renders no pr", async () => {
@@ -66,11 +62,7 @@ test("renders no pr", async () => {
     route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /commit message/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /commit message/i })
 })
 
 test("not found", async () => {
@@ -112,9 +104,7 @@ test("not found", async () => {
     route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -145,7 +135,5 @@ test("error", async () => {
     route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

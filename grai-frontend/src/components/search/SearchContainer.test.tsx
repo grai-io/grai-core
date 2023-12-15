@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react"
+import { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import {
@@ -37,9 +37,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toBeTruthy()
-  })
+  await screen.findByRole("textbox")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 })
@@ -78,28 +76,20 @@ test("renders results", async () => {
 
   const textbox = screen.getByRole("textbox")
 
-  await waitFor(() => {
-    expect(textbox).toBeTruthy()
-  })
+  await waitFor(() => expect(textbox).toBeTruthy())
 
   await act(async () => await user.type(textbox, "test"))
 
-  await waitFor(() => {
-    expect(screen.getByText("hit1")).toBeTruthy()
-  })
+  await screen.findByText("hit1")
 
-  await waitFor(() => {
-    expect(screen.getByText("hit2")).toBeTruthy()
-  })
+  await screen.findByText("hit2")
 
   await act(async () => await user.keyboard("{arrowdown}"))
   await act(async () => await user.keyboard("{arrowdown}"))
   await act(async () => await user.keyboard("{arrowup}"))
   await act(async () => await user.keyboard("{enter}"))
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })
 
 test("renders no results", async () => {
@@ -121,15 +111,11 @@ test("renders no results", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toBeTruthy()
-  })
+  await screen.findByRole("textbox")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
-  await waitFor(() => {
-    expect(screen.getByText("No search results")).toBeTruthy()
-  })
+  await screen.findByText("No search results")
 })
 
 test("error", async () => {
@@ -152,9 +138,7 @@ test("error", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("algolia error", async () => {
@@ -176,9 +160,7 @@ test("algolia error", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("textbox")).toBeTruthy()
-  })
+  await screen.findByRole("textbox")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 })

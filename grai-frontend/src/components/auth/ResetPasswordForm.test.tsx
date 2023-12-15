@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ResetPasswordForm, { RESET_PASSWORD } from "./ResetPasswordForm"
 
 test("submit", async () => {
@@ -20,9 +20,7 @@ test("submit", async () => {
       await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Password reset, please login")).toBeInTheDocument()
-  })
+  await screen.findByText("Password reset, please login")
 })
 
 test("error", async () => {
@@ -59,7 +57,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /submit/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

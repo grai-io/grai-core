@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import Test, { CONFIRM_DEVICE } from "./Test"
 
 test("submit test error", async () => {
@@ -42,7 +42,5 @@ test("submit test error", async () => {
     await user.click(screen.getByRole("button", { name: /continue/i }))
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import HomeCard from "./HomeCard"
 
 test("renders", async () => {
@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("test")).toBeInTheDocument()
-  })
+  await screen.findByText("test")
 })
 
 test("renders link", async () => {
@@ -20,13 +18,9 @@ test("renders link", async () => {
     routes: ["new"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("test")).toBeInTheDocument()
-  })
+  await screen.findByText("test")
 
   await act(async () => await user.click(screen.getByText("test")))
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  await screen.findByText("New Page")
 })

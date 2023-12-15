@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import ApiKeyDelete, { DELETE_API_KEY } from "./ApiKeyDelete"
 
 const onClose = jest.fn()
@@ -90,9 +90,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Failed to delete API key ApolloError: Error!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to delete API key ApolloError: Error!")
 })

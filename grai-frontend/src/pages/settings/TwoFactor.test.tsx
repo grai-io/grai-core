@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import TwoFactor, { GET_PROFILE } from "./TwoFactor"
 
 test("renders", async () => {
@@ -7,17 +7,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: "Settings" }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: "Settings" })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /2FA Keys/i }),
-    ).toBeInTheDocument()
-  })
+  await screen.findByRole("heading", { name: /2FA Keys/i })
 })
 
 test("error", async () => {
@@ -34,9 +26,7 @@ test("error", async () => {
 
   render(<TwoFactor />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("no profile", async () => {
@@ -55,9 +45,5 @@ test("no profile", async () => {
 
   render(<TwoFactor />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Sorry something has gone wrong"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Sorry something has gone wrong")
 })

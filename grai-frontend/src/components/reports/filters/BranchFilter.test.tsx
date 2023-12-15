@@ -12,13 +12,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Branch")).toBeInTheDocument()
-  })
+  await screen.findByText("Branch")
 
-  await waitFor(() => {
-    expect(screen.queryByText("branchName")).toBeFalsy()
-  })
+  await waitFor(() => expect(screen.queryByText("branchName")).toBeFalsy())
 })
 
 test("renders value", async () => {
@@ -27,9 +23,7 @@ test("renders value", async () => {
     route: "/org/demo/reports/github/owner/repo?branch=branchName",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Branch")).toBeInTheDocument()
-  })
+  await screen.findByText("Branch")
 
   const combobox = screen.getByRole("combobox")
   expect(combobox).toHaveProperty("value", "branchName")
@@ -40,9 +34,7 @@ test("change", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Branch")).toBeInTheDocument()
-  })
+  await screen.findByText("Branch")
 
   const autocomplete = screen.getByTestId("autocomplete")
   autocomplete.focus()

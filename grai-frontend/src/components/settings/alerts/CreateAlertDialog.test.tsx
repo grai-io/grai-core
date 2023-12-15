@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen } from "testing"
 import CreateAlertDialog, { CREATE_ALERT } from "./CreateAlertDialog"
 
 const onClose = jest.fn()
@@ -10,9 +10,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Add alert")).toBeInTheDocument()
-  })
+  await screen.findByText("Add alert")
 })
 
 test("submit", async () => {
@@ -22,9 +20,7 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Add alert")).toBeInTheDocument()
-  })
+  await screen.findByText("Add alert")
 
   await act(
     async () =>
@@ -84,9 +80,7 @@ test("error", async () => {
     mocks,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Add alert")).toBeInTheDocument()
-  })
+  await screen.findByText("Add alert")
 
   await act(
     async () =>
@@ -114,7 +108,5 @@ test("error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

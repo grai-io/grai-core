@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import { CREATE_SOURCE } from "components/sources/CreateSource"
 import SourceCreate, { GET_WORKSPACE } from "./SourceCreate"
 
@@ -9,9 +9,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Create Source")).toBeInTheDocument()
-  })
+  await screen.findByText("Create Source")
 })
 
 test("submit", async () => {
@@ -21,9 +19,7 @@ test("submit", async () => {
     routes: ["/:organisationName/:workspaceName/sources/:sourceId"],
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Create Source")).toBeInTheDocument()
-  })
+  await screen.findByText("Create Source")
 
   await act(
     async () =>
@@ -89,9 +85,7 @@ test("submit error", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Create Source")).toBeInTheDocument()
-  })
+  await screen.findByText("Create Source")
 
   await act(
     async () =>
@@ -105,9 +99,7 @@ test("submit error", async () => {
     async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("error", async () => {
@@ -128,9 +120,7 @@ test("error", async () => {
 
   render(<SourceCreate />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })
 
 test("not found", async () => {
@@ -153,7 +143,5 @@ test("not found", async () => {
 
   render(<SourceCreate />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
-  })
+  await screen.findAllByText("Page not found")
 })

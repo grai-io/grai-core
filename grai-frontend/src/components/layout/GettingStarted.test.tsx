@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import GettingStarted from "./GettingStarted"
 
 test("renders", async () => {
@@ -6,7 +6,5 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Getting Started")).toBeTruthy()
-  })
+  await screen.findByText("Getting Started")
 })

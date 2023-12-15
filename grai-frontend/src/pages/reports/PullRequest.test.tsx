@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
@@ -9,15 +9,9 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getAllByRole("heading", { name: /Hello world/i }),
-    ).toBeTruthy()
-  })
+  await screen.findAllByRole("heading", { name: /Hello world/i })
 
-  await waitFor(() => {
-    expect(screen.getByText("Failed")).toBeTruthy()
-  })
+  await screen.findByText("Failed")
 })
 
 test("renders errors", async () => {
@@ -99,15 +93,9 @@ test("renders errors", async () => {
     route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Pull Request Title/i }),
-    ).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Pull Request Title/i })
 
-  await waitFor(() => {
-    expect(screen.getByTestId("test-edge")).toBeTruthy()
-  })
+  await screen.findByTestId("test-edge")
 })
 
 test("not found", async () => {
@@ -150,9 +138,7 @@ test("not found", async () => {
     route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Page not found")).toBeInTheDocument()
-  })
+  await screen.findByText("Page not found")
 })
 
 test("error", async () => {
@@ -181,7 +167,5 @@ test("error", async () => {
     route: "/default/demo/reports/github/owner/repo/pulls/123",
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
+  await screen.findByText("Error!")
 })

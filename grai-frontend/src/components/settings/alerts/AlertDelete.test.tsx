@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, render, screen } from "testing"
 import AlertDelete, { DELETE_ALERT } from "./AlertDelete"
 
 const onClose = jest.fn()
@@ -66,9 +66,5 @@ test("error", async () => {
       await user.click(screen.getByRole("button", { name: /delete/i })),
   )
 
-  await waitFor(() => {
-    expect(
-      screen.getByText("Failed to delete alert ApolloError: Error!"),
-    ).toBeInTheDocument()
-  })
+  await screen.findByText("Failed to delete alert ApolloError: Error!")
 })

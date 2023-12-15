@@ -7,9 +7,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Graph")).toBeTruthy()
-  })
+  await screen.findByText("Graph")
 })
 
 test("collapse", async () => {
@@ -19,19 +17,15 @@ test("collapse", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByText("Graph")).toBeTruthy()
-  })
+  await screen.findByText("Graph")
 
   fireEvent.mouseEnter(screen.getByText("Graph"))
 
-  await waitFor(() => {
-    expect(screen.getByTestId("LeftIcon")).toBeInTheDocument()
-  })
+  await screen.findByTestId("LeftIcon")
 
   await act(async () => await user.click(screen.getByTestId("LeftIcon")))
 
-  await waitFor(() => {
-    expect(screen.queryByTestId("LeftIcon")).not.toBeInTheDocument()
-  })
+  await waitFor(() =>
+    expect(screen.queryByTestId("LeftIcon")).not.toBeInTheDocument(),
+  )
 })

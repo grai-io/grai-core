@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import Login from "./Login"
 
 test("renders", async () => {
@@ -6,7 +6,5 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Welcome Back!/i })).toBeTruthy()
-  })
+  await screen.findByRole("heading", { name: /Welcome Back!/i })
 })

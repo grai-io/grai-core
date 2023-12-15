@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import ForgotPassword from "./ForgotPassword"
 
 test("renders", async () => {
@@ -6,11 +6,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", {
-        name: /Enter your email to reset your password/i,
-      }),
-    ).toBeTruthy()
+  await screen.findByRole("heading", {
+    name: /Enter your email to reset your password/i,
   })
 })
