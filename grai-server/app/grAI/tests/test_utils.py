@@ -10,6 +10,11 @@ example_tool_call = ChatCompletionMessageToolCall(
 )
 chat_completion = ChatCompletionMessage(content=None, role="assistant", tool_calls=[example_tool_call])
 
+example_tool_call2 = ChatCompletionMessageToolCall(
+    id="tool_call_2", function={"arguments": "", "name": ""}, type="function"
+)
+chat_completion2 = ChatCompletionMessage(content=None, role="assistant", tool_calls=[example_tool_call2])
+
 
 class TestToolSegmentation:
     def test_no_tools(self):
@@ -61,6 +66,17 @@ class TestToolSegmentation:
         assert len(result) == 1
         assert result[0][0] == messages[0:2]
         assert result[0][1] == messages[-2:]
+
+    def test_messages_with_tools_multiple2(self):
+        messages = [
+            SystemMessage(content="Hello"),
+            UserMessage(content="Hello"),
+            chat_completion,
+            FunctionMessage(content="I'm good too!", role="tool", name="test", tool_call_id="tool_call_1", args={}),
+            chat_completion2,
+            FunctionMessage(content="I'm good too!", role="tool", name="test", tool_call_id="tool_call_2", args={}),
+        ]
+        list(tool_segments(messages))
 
     def test_messages_with_multiple_tool_segments(self):
         messages = [
