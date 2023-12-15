@@ -37,7 +37,7 @@ from grAI.tools import (
     FuzzyMatchNodesAPI,
     SourceLookupAPI,
 )
-from grAI.summarization import ProgressiveSummarization, ToolSummarization
+from grAI.summarization import ProgressiveSummarization, ToolSummarization, GraiSummarization
 from grAI.utils import compute_total_tokens
 
 logging.basicConfig(level=logging.DEBUG)
@@ -154,12 +154,9 @@ class BaseConversation:
         self, messages: list[SupportedMessageTypes], max_tokens: int | None = None
     ) -> list[SupportedMessageTypes]:
         max_tokens = max_tokens if max_tokens is not None else self.max_tokens
-        summarization_strategy = ProgressiveSummarization(
-            model=self.model_type, client=self.client, max_tokens=max_tokens
-        )
-        summarizer = ToolSummarization(strategy=summarization_strategy)
-        result = await summarizer.call(messages)
-        return [self.prompt_message, SystemMessage(content=result)]
+        summarizer = GraiSummarization(model=self.model_type, client=self.client, max_tokens=max_tokens)
+        results = await summarizer.call(messages)
+        return [self.prompt_message, *results]
 
     async def request(self, user_input: str) -> str:
         original_messages: list[SupportedMessageTypes] = await self.cached_messages
@@ -175,7 +172,6 @@ class BaseConversation:
 
             response = await self.model(messages)
             response_choice = response.choices[0]
-            messages.append(response_choice.message)
 
             if response_choice.finish_reason == "stop":
                 final_response = response_choice.message.content
@@ -184,6 +180,7 @@ class BaseConversation:
             elif response_choice.finish_reason == "content_filter":
                 final_response = "Warning: This message was filtered by the content filter."
             elif response_choice.finish_reason == "tool_calls":
+                messages.append(response_choice.message)
                 for i, tool_call in enumerate(response_choice.message.tool_calls):
                     func_id = tool_call.function.name
                     func_kwargs = json.loads(tool_call.function.arguments)
@@ -209,21 +206,26 @@ async def get_chat_conversation(
 ):
     chat_prompt = """
     You are a helpful assistant with domain expertise about an organizations data and data infrastructure.
-    All of that context is available in a queryable graph where nodes represent individual data concepts like a database column or table.
-    Edges in the graph represent relationships between data such as where the data was sourced from.
-    Before you can help the user, you need to understand the context of their request and what they are trying to accomplish.
-    You should attempt to understand the context of the request and what the user is trying to accomplish.
-    If a user asks about specific data like nodes and you're unable to find an answer you should attempt to find a similar node and explain why you think it's similar.
-    You should verify any specific data references you provide to the user actually exist in their infrastructure.
-    Your responses must use Markdown syntax.
+    All of that context is embedded in a graph where nodes represent individual data concepts like a database column or
+    table. Edges in the graph represent relationships between data such as where the data was sourced from.
+
+    Rules you MUST follow:
+    - Understand the context of a users request and what they are trying to accomplish.
+    - If a user asks about specific data, like a column, you will need to exhaustively search for that data. If
+    you're unable to find results you should look for related data using other available tools.
+    - You will verify your responses are accurate and exists in their infrastructure.
+    - Your responses use GitHub flavored Markdown syntax.
 
     Data Structure Notes:
-    * Unique pieces of data like a column in a database is identified by a (name, namespace) tuple or a unique uuid.
-    * Nodes contain a metadata field with extra context about the node.
-    * Nodes and Edges are typed. You can identify the type under `metadata.grai.node_type` or `metadata.grai.edge_type`
-    * If a Node has a type like `Column` with a `TableToColumn` Edge connecting to a `Table` node, the Column node represents a column in the table.
-    * Node names for databases and datawarehouses are constructed following `{schema}.{table}.{column}` format e.g. a column named `id` in a table named `users` in a schema named `public` would be identified as `public.users.id`
-
+    - Unique pieces of data like a column in a database is identified by a (name, namespace) tuple or a unique uuid.
+    - Nodes contain a metadata field with extra context about the node.
+    - Nodes and Edges are typed. You can identify the type under `metadata.grai.node_type` or `metadata.grai.edge_type`
+    - If a Node has a type like `Column` with a `TableToColumn` Edge connecting to a `Table` node, the Column node
+    represents a column in the table.
+    - Node names for databases and datawarehouses are constructed following `{schema}.{table}.{column}` format e.g. a
+    column named `id` in a table named `users` in a schema named `public` would be identified as `public.users.id`.
+    - Naming conventions NEVER follow a `{namespace}.{name}` format. Namespace and name will ALWAYS be referred to as
+    two separate fields. Do not assume a namespace is a schema or a database.
     """
     client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY, organization=settings.OPENAI_ORG_ID)
 

@@ -126,7 +126,7 @@ class ConversationSummarizer(BasicSummarizer):
         prompt = self.prompt(content=content, **kwargs)
         return {"role": "system", "content": prompt}
 
-    async def call(self, input_obj: list[SupportedMessageTypes], **kwargs) -> str:
+    async def call(self, input_obj: list[SupportedMessageTypes] | str, **kwargs) -> str:
         query = self.query(input_obj, **kwargs)
         self.validate(query["content"])
         response = await self.completion(query)
@@ -190,13 +190,13 @@ class MapReduceSummarization(BaseChat):
         self.reduce = reduce
         super().__init__(*args, **kwargs)
 
-    async def call(self, items: list[SupportedMessageTypes]) -> str:
+    async def call(self, items: list[SupportedMessageTypes], **kwargs) -> str:
         reduction: str | None = None
         while reduction is None:
-            items = [SystemMessage(content=content) for content in await self.map.call(items)]
+            items = [SystemMessage(content=content) for content in await self.map.call(items, **kwargs)]
 
             try:
-                reduction = await self.reduce.call(items)
+                reduction = await self.reduce.call(items, **kwargs)
             except ContentLengthError:
                 pass
 
@@ -220,11 +220,11 @@ class ProgressiveSummarization(ConversationSummarizer):
         content = self.prompt(items, **kwargs)
         encoding = self.encoder.encode(content)
         while len(encoding) > self.max_tokens:
-            query = self.query(self.encoder.decode(encoding[: self.max_tokens]))
+            query = self.query(self.encoder.decode(encoding[: self.max_tokens]), **kwargs)
             response = await self.completion(query)
 
             content = "\n".join([response.choices[0].message.content, self.encoder.decode(encoding[self.max_tokens :])])
-            encoding = self.encoder.encode(self.prompt_string.format(content=content))
+            encoding = self.encoder.encode(self.prompt_string.format(content=content, **kwargs))
 
         return content
 
@@ -264,12 +264,13 @@ DEFAULT_GRAI_PROMPT = """The following is a conversation between a user and an o
 '{content}'
 The user is attempting to answer the following question:
 '{question}'
-Please distill the conversation to date including all information needed by a future agent to answer the user's question.
+Please distill the conversation to it's essence including all information needed by a future agent to
+answer the user's question.
 """
 
 
 class GraiSummarization(BaseChat):
-    def __init__(self, model, client, max_tokens, **kwargs):
+    def __init__(self, model: str, client: openai.AsyncOpenAI, max_tokens: int):
         self.progressive = ProgressiveSummarization(
             model=model, prompt_string=DEFAULT_GRAI_PROMPT, client=client, max_tokens=max_tokens
         )
@@ -282,12 +283,18 @@ class GraiSummarization(BaseChat):
             reduce=Reduce(model=model, client=client, max_tokens=max_tokens, prompt_string=DEFAULT_GRAI_PROMPT),
         )
 
+        question_request_prompt = """The following is a conversation between a user and an openai AI agent.
+        '{content}'
+        Please identify the problem the user needs help with. Your response MUST be written as if you were the user and
+        end in a question mark."
+        """
+
         self.conversation = ConversationSummarizer(
-            model=model, client=client, max_tokens=max_tokens, prompt_string=DEFAULT_GRAI_PROMPT
+            model=model, client=client, max_tokens=max_tokens, prompt_string=question_request_prompt
         )
         self.tool = ToolSummarization(strategy=self.progressive)
-
-        super().__init__(**kwargs)
+        self.max_tokens = max_tokens
+        super().__init__(model=model, client=client, max_tokens=max_tokens)
 
     @staticmethod
     def user_messages(items: list[SupportedMessageTypes]) -> int:
@@ -299,16 +306,25 @@ class GraiSummarization(BaseChat):
         idx = len(items) - i
         return idx
 
-    async def call(self, items: list[SupportedMessageTypes]) -> list[SupportedMessageTypes]:
-        prompt = SystemMessage(content="Please identify the problem the user needs help with.")
+    async def get_question(self, items: list[SupportedMessageTypes]) -> UserMessage:
         last_user_message_idx = self.user_messages(items)
+        encoding = self.conversation.encoder.encode(self.conversation.prompt(items[: last_user_message_idx + 1]))
 
-        prompt_items: list[SupportedMessageTypes] = [*items[:last_user_message_idx], prompt]
-        # Conversation up to the last user message should fit in context window
-        user_question = UserMessage(content=await self.conversation.call(prompt_items))
+        content = self.conversation.encoder.decode(encoding[-min(self.max_tokens, 1000) :])
+        response = await self.conversation.completion({"role": "system", "content": content})
 
+        return UserMessage(content=response.choices[0].message.content)
+
+    async def call(self, items: list[SupportedMessageTypes]) -> list[SystemMessage | UserMessage]:
+        user_question = await self.get_question(items)
+        print(user_question)
+        tool_max_tokens = self.tool.max_tokens
+        self.tool.max_tokens = tool_max_tokens - len(self.tool.strategy.encoder.encode(user_question.content)) - 10
         summary = await self.tool.call(items, question=user_question.content)
-        return [SystemMessage(content=summary), user_question]
+        self.tool.max_tokens = tool_max_tokens
+
+        responses = [SystemMessage(content=summary), user_question]
+        return responses
 
     prompt = """
     You've requested a tool to help you with your problem, however the response from the tool was too long
