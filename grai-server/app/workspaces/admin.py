@@ -39,6 +39,16 @@ def disable_search(modeladmin, request, queryset):  # pragma: no cover
     queryset.update(search_enabled=False)
 
 
+@admin.action(description="Enable ai")
+def enable_ai(modeladmin, request, queryset):  # pragma: no cover
+    queryset.update(ai_enabled=True)
+
+
+@admin.action(description="Disable ai")
+def disable_ai(modeladmin, request, queryset):  # pragma: no cover
+    queryset.update(ai_enabled=False)
+
+
 @admin.action(description="Build workspace cache")
 def build_workspace_cache(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
@@ -108,6 +118,8 @@ class WorkspaceAdmin(admin.ModelAdmin):
         empty_workspace,
         enable_search,
         disable_search,
+        enable_ai,
+        disable_ai,
         build_workspace_cache,
         clear_workspace_cache,
     ]

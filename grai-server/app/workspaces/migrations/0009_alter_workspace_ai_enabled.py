@@ -6,11 +6,7 @@ from workspaces.models import Workspace
 
 def disable_default_ai_enabled(apps, schema_editor):
     # Require users to explicitly enable AI components
-    workspaces = Workspace.objects.all()
-    for workspace in workspaces:
-        workspace.ai_enabled = False
-
-    Workspace.objects.bulk_update(workspaces, ["ai_enabled"])
+    Workspace.objects.update(ai_enabled=False)
 
 
 class Migration(migrations.Migration):
