@@ -1,9 +1,9 @@
 import React from "react"
 import { Avatar, Box } from "@mui/material"
+import Typography from '@mui/material/Typography';
 import theme from "theme"
 import { GraiIconSmall } from "components/icons"
 import Markdown from "components/utils/Markdown"
-import Typography from '@mui/material/Typography';
 
 export type GroupedChats = {
   sender: boolean
