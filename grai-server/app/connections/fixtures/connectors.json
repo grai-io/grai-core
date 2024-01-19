@@ -184,7 +184,7 @@
                     },
                     {
                         "name": "database",
-                        "required": true,
+                        "required": false,
                         "order": 1
                     },
                     {
