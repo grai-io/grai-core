@@ -43,6 +43,7 @@ jobs:
 
     permissions:
       contents: write
+      packages: write
 
     outputs:
       image-digest: ${{ steps.docker-build.outputs.digest }}
