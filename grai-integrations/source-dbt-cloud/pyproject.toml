@@ -20,6 +20,7 @@ grai-client = "^0.3.0"
 grai-schemas = "^0.2.6"
 grai-source-dbt = "^0.3.5"
 dbtc = "^0.4.2"
+multimethod = "^1.8, !=1.11"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
