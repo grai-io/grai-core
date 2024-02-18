@@ -3,9 +3,9 @@ title: MySQL GitHub Action
 description: Documentation for Grai's MySQL GitHub Action GitHub action.
 ---
 
-# MySQL 
+# MySQL
 
-The MySQL action depends on the python mysql library. 
+The MySQL action depends on the python mysql library.
 You can find complete documentation about the library [here](https://dev.mysql.com/doc/connector-python).
 
 
@@ -53,6 +53,3 @@ jobs:
           db-password: my_password
 
 ```
-
-
-

@@ -28,6 +28,7 @@ jobs:
 
       - uses: psf/black@stable
         with:
+          src: ${{ env.project_dir }}
           options: "--check --verbose"
           version: "~= 24.0"
 
