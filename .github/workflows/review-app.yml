@@ -13,6 +13,9 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write
+
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
@@ -29,7 +32,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -89,7 +92,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -181,12 +184,12 @@ jobs:
       - name: Delete untagged ghcr - frontend
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           package_name: grai-frontend
           owner_type: org
       - name: Delete untagged ghcr - server
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           package_name: grai-server
           owner_type: org

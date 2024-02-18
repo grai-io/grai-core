@@ -43,6 +43,7 @@ jobs:
 
     permissions:
       contents: write
+      packages: write
 
     outputs:
       image-digest: ${{ steps.docker-build.outputs.digest }}
@@ -59,7 +60,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -110,7 +111,7 @@ jobs:
         image: ghcr.io/grai-io/grai-core/grai-server-temp@${{ needs.build-server.outputs.image-digest }}
         credentials:
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai
