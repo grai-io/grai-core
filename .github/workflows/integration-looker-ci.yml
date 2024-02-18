@@ -26,11 +26,15 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: pip install black isort
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          version: "~=24"
 
-      - run: |
-          black . --check
-          isort . --profile black
+      - uses: isort/isort-action@master
+        with:
+          configuration: "--profile black"
+
 
   tests-integration-looker:
     needs: lint-integration-looker
