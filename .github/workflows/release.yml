@@ -137,6 +137,7 @@ jobs:
 
     permissions:
       contents: write
+      packages: write
 
     outputs:
       image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
