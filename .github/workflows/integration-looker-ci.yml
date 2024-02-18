@@ -29,11 +29,12 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
-          version: "~=24"
+          version: "~= 24.0"
 
       - uses: isort/isort-action@master
         with:
           configuration: "--profile black"
+          isortVersion: "5.13.2"
 
 
   tests-integration-looker:
