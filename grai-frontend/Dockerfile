@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Cache and Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy app files
 COPY . .
