@@ -28,11 +28,11 @@ jobs:
         working-directory: ${{ env.project_dir }}
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Python
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 
@@ -58,7 +58,7 @@ jobs:
           - 1433:1433
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up SQL db
         working-directory: ${{ env.project_dir }}/data
@@ -67,7 +67,7 @@ jobs:
         run: |
           bash init-db.sh
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 

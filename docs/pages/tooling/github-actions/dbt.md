@@ -10,7 +10,7 @@ Because of this, it's critical your manifest.json file is up to date on each pul
 One way to do this is to perform `dbt build` as part of your CI action but there are multiple ways to generate an up-to-date manifest file.
 
 * More information about manifest.json files can be found [here](https://docs.getdbt.com/reference/artifacts/manifest-json).
-* Make sure to include an `- uses: actions/checkout@v3` step in your workflow so that your repo code is available.
+* Make sure to include an `- uses: actions/checkout@v4` step in your workflow so that your repo code is available.
 
 
 
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Grai Action
         uses: grai-io/grai-actions/dbt@master
         with:
