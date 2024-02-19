@@ -245,6 +245,7 @@ jobs:
 
     permissions:
       contents: write
+      packages: write
 
     outputs:
       image-digest-server: ${{ steps.docker-build-cloud-server.outputs.digest }}
@@ -472,6 +473,7 @@ jobs:
 
     permissions:
       contents: write
+      packages: write
 
     defaults:
       run:
