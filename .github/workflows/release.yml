@@ -381,7 +381,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Use latest Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: Install dependencies
         run: npm ci
       - name: Run lint
@@ -413,7 +413,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Use latest Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: Install dependencies
         run: npm ci
       - name: Build
@@ -502,7 +502,7 @@ jobs:
         uses: docker/setup-buildx-action@master
 
       - name: Build
-        id: docker-build
+        id: docker-build-frontend
         uses: docker/build-push-action@v4
         with:
           context: grai-frontend
