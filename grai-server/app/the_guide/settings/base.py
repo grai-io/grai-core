@@ -429,7 +429,7 @@ SPECTACULAR_SETTINGS = {
     "VERSION": config("GRAI_SERVER_VERSION", "0.0.0"),
     "SERVE_INCLUDE_SCHEMA": False,
     "EXTERNAL_DOCS": {"url": "https://docs.grai.io"},
-    "SWAGGER_UI_FAVICON_HREF": f"{STATIC_URL}icons/favicon.svg"
+    "SWAGGER_UI_FAVICON_HREF": f"{STATIC_URL}icons/favicon.svg",
     # OTHER SETTINGS
 }
 

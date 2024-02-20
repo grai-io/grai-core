@@ -16,7 +16,7 @@ documentation = "https://docs.grai.io/"
 python = "^3.8"
 pydantic = "^1.9.1"
 PyYAML = "^6.0"
-multimethod = "^1.8"
+multimethod = "^1.8, !=1.11"
 snowflake-connector-python = "^3.0.0"
 grai-schemas = "^0.2.6"
 

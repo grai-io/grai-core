@@ -20088,9 +20088,9 @@ class Paths(BaseModel):
         ..., alias="/queries/{query_id}/run/{result_format}"
     )
     field_queries_run__result_format_: FieldQueriesRunResultFormat = Field(..., alias="/queries/run/{result_format}")
-    field_queries_models__model_name__views__view_name__run__result_format_: FieldQueriesModelsModelNameViewsViewNameRunResultFormat = Field(
-        ..., alias="/queries/models/{model_name}/views/{view_name}/run/{result_format}"
-    )
+    field_queries_models__model_name__views__view_name__run__result_format_: (
+        FieldQueriesModelsModelNameViewsViewNameRunResultFormat
+    ) = Field(..., alias="/queries/models/{model_name}/views/{view_name}/run/{result_format}")
     field_login: FieldLogin = Field(..., alias="/login")
     field_login__user_id_: FieldLoginUserId = Field(..., alias="/login/{user_id}")
     field_logout: FieldLogout = Field(..., alias="/logout")
@@ -20178,12 +20178,12 @@ class Paths(BaseModel):
         ..., alias="/dashboards/{dashboard_id}/dashboard_filters"
     )
     field_dashboard_filters: FieldDashboardFilters = Field(..., alias="/dashboard_filters")
-    field_dashboard_layout_components__dashboard_layout_component_id_: FieldDashboardLayoutComponentsDashboardLayoutComponentId = Field(
-        ..., alias="/dashboard_layout_components/{dashboard_layout_component_id}"
-    )
-    field_dashboard_layouts__dashboard_layout_id__dashboard_layout_components: FieldDashboardLayoutsDashboardLayoutIdDashboardLayoutComponents = Field(
-        ..., alias="/dashboard_layouts/{dashboard_layout_id}/dashboard_layout_components"
-    )
+    field_dashboard_layout_components__dashboard_layout_component_id_: (
+        FieldDashboardLayoutComponentsDashboardLayoutComponentId
+    ) = Field(..., alias="/dashboard_layout_components/{dashboard_layout_component_id}")
+    field_dashboard_layouts__dashboard_layout_id__dashboard_layout_components: (
+        FieldDashboardLayoutsDashboardLayoutIdDashboardLayoutComponents
+    ) = Field(..., alias="/dashboard_layouts/{dashboard_layout_id}/dashboard_layout_components")
     field_dashboard_layouts__dashboard_layout_id_: FieldDashboardLayoutsDashboardLayoutId = Field(
         ..., alias="/dashboard_layouts/{dashboard_layout_id}"
     )
@@ -20199,9 +20199,9 @@ class Paths(BaseModel):
     field_connections__connection_name_: FieldConnectionsConnectionName = Field(
         ..., alias="/connections/{connection_name}"
     )
-    field_connections__connection_name__connection_override__override_context_: FieldConnectionsConnectionNameConnectionOverrideOverrideContext = Field(
-        ..., alias="/connections/{connection_name}/connection_override/{override_context}"
-    )
+    field_connections__connection_name__connection_override__override_context_: (
+        FieldConnectionsConnectionNameConnectionOverrideOverrideContext
+    ) = Field(..., alias="/connections/{connection_name}/connection_override/{override_context}")
     field_connections__connection_name__test: FieldConnectionsConnectionNameTest = Field(
         ..., alias="/connections/{connection_name}/test"
     )
@@ -20288,9 +20288,9 @@ class Paths(BaseModel):
     field_integration_hubs__integration_hub_id_: FieldIntegrationHubsIntegrationHubId = Field(
         ..., alias="/integration_hubs/{integration_hub_id}"
     )
-    field_integration_hubs__integration_hub_id__accept_legal_agreement: FieldIntegrationHubsIntegrationHubIdAcceptLegalAgreement = Field(
-        ..., alias="/integration_hubs/{integration_hub_id}/accept_legal_agreement"
-    )
+    field_integration_hubs__integration_hub_id__accept_legal_agreement: (
+        FieldIntegrationHubsIntegrationHubIdAcceptLegalAgreement
+    ) = Field(..., alias="/integration_hubs/{integration_hub_id}/accept_legal_agreement")
     field_integrations: FieldIntegrations = Field(..., alias="/integrations")
     field_integrations__integration_id_: FieldIntegrationsIntegrationId = Field(
         ..., alias="/integrations/{integration_id}"
@@ -20330,16 +20330,16 @@ class Paths(BaseModel):
     field_lookml_models__lookml_model_name_: FieldLookmlModelsLookmlModelName = Field(
         ..., alias="/lookml_models/{lookml_model_name}"
     )
-    field_lookml_models__lookml_model_name__explores__explore_name_: FieldLookmlModelsLookmlModelNameExploresExploreName = Field(
-        ..., alias="/lookml_models/{lookml_model_name}/explores/{explore_name}"
-    )
+    field_lookml_models__lookml_model_name__explores__explore_name_: (
+        FieldLookmlModelsLookmlModelNameExploresExploreName
+    ) = Field(..., alias="/lookml_models/{lookml_model_name}/explores/{explore_name}")
     field_merge_queries__merge_query_id_: FieldMergeQueriesMergeQueryId = Field(
         ..., alias="/merge_queries/{merge_query_id}"
     )
     field_merge_queries: FieldMergeQueries = Field(..., alias="/merge_queries")
-    field_models__model_name__views__view_name__fields__field_name__suggestions: FieldModelsModelNameViewsViewNameFieldsFieldNameSuggestions = Field(
-        ..., alias="/models/{model_name}/views/{view_name}/fields/{field_name}/suggestions"
-    )
+    field_models__model_name__views__view_name__fields__field_name__suggestions: (
+        FieldModelsModelNameViewsViewNameFieldsFieldNameSuggestions
+    ) = Field(..., alias="/models/{model_name}/views/{view_name}/fields/{field_name}/suggestions")
     field_models__model_name_: FieldModelsModelName = Field(..., alias="/models/{model_name}")
     field_connections__connection_name__databases: FieldConnectionsConnectionNameDatabases = Field(
         ..., alias="/connections/{connection_name}/databases"
@@ -20384,9 +20384,9 @@ class Paths(BaseModel):
     )
     field_oidc_test_configs: FieldOidcTestConfigs = Field(..., alias="/oidc_test_configs")
     field_password_config: FieldPasswordConfig = Field(..., alias="/password_config")
-    field_password_config_force_password_reset_at_next_login_for_all_users: FieldPasswordConfigForcePasswordResetAtNextLoginForAllUsers = Field(
-        ..., alias="/password_config/force_password_reset_at_next_login_for_all_users"
-    )
+    field_password_config_force_password_reset_at_next_login_for_all_users: (
+        FieldPasswordConfigForcePasswordResetAtNextLoginForAllUsers
+    ) = Field(..., alias="/password_config/force_password_reset_at_next_login_for_all_users")
     field_permissions: FieldPermissions = Field(..., alias="/permissions")
     field_permission_sets_search: FieldPermissionSetsSearch = Field(..., alias="/permission_sets/search")
     field_permission_sets__permission_set_id_: FieldPermissionSetsPermissionSetId = Field(
@@ -20451,9 +20451,9 @@ class Paths(BaseModel):
     field_render_tasks__render_task_id__results: FieldRenderTasksRenderTaskIdResults = Field(
         ..., alias="/render_tasks/{render_task_id}/results"
     )
-    field_render_tasks_dashboard_elements__dashboard_element_id___result_format_: FieldRenderTasksDashboardElementsDashboardElementIdResultFormat = Field(
-        ..., alias="/render_tasks/dashboard_elements/{dashboard_element_id}/{result_format}"
-    )
+    field_render_tasks_dashboard_elements__dashboard_element_id___result_format_: (
+        FieldRenderTasksDashboardElementsDashboardElementIdResultFormat
+    ) = Field(..., alias="/render_tasks/dashboard_elements/{dashboard_element_id}/{result_format}")
     field_projects__root_project_id__credential__credential_id_: FieldProjectsRootProjectIdCredentialCredentialId = (
         Field(..., alias="/projects/{root_project_id}/credential/{credential_id}")
     )
@@ -20495,9 +20495,9 @@ class Paths(BaseModel):
     field_scheduled_plans_dashboard__dashboard_id_: FieldScheduledPlansDashboardDashboardId = Field(
         ..., alias="/scheduled_plans/dashboard/{dashboard_id}"
     )
-    field_scheduled_plans_lookml_dashboard__lookml_dashboard_id_: FieldScheduledPlansLookmlDashboardLookmlDashboardId = Field(
-        ..., alias="/scheduled_plans/lookml_dashboard/{lookml_dashboard_id}"
-    )
+    field_scheduled_plans_lookml_dashboard__lookml_dashboard_id_: (
+        FieldScheduledPlansLookmlDashboardLookmlDashboardId
+    ) = Field(..., alias="/scheduled_plans/lookml_dashboard/{lookml_dashboard_id}")
     field_scheduled_plans__scheduled_plan_id__run_once: FieldScheduledPlansScheduledPlanIdRunOnce = Field(
         ..., alias="/scheduled_plans/{scheduled_plan_id}/run_once"
     )
@@ -20594,9 +20594,9 @@ class Paths(BaseModel):
     field_users__user_id__credentials_api3: FieldUsersUserIdCredentialsApi3 = Field(
         ..., alias="/users/{user_id}/credentials_api3"
     )
-    field_users__user_id__credentials_embed__credentials_embed_id_: FieldUsersUserIdCredentialsEmbedCredentialsEmbedId = Field(
-        ..., alias="/users/{user_id}/credentials_embed/{credentials_embed_id}"
-    )
+    field_users__user_id__credentials_embed__credentials_embed_id_: (
+        FieldUsersUserIdCredentialsEmbedCredentialsEmbedId
+    ) = Field(..., alias="/users/{user_id}/credentials_embed/{credentials_embed_id}")
     field_users__user_id__credentials_embed: FieldUsersUserIdCredentialsEmbed = Field(
         ..., alias="/users/{user_id}/credentials_embed"
     )
