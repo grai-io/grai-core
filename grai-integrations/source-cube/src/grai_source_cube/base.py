@@ -1,13 +1,11 @@
-from functools import cached_property
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 from warnings import warn
 
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.integrations.base import GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceV1
-from requests import HTTPError
-
 from grai_source_cube.loader import CubeConnector
+from requests import HTTPError
 
 
 class CubeIntegration(GraiIntegrationImplementation):
@@ -27,7 +25,7 @@ class CubeIntegration(GraiIntegrationImplementation):
         """Initializes the dbt integration.
 
         Args:
-            source: The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
+            source: The Grai data source to associate with output from the integration.
             version: The Grai data version to associate with output from the integration
             namespace: The Grai namespace to associate with output from the integration
 
@@ -59,6 +57,6 @@ class CubeIntegration(GraiIntegrationImplementation):
             return True
         except HTTPError:
             return False
-        except Exception as e:
+        except Exception:
             warn("An unexpected error occurred while checking the readiness of the cube API.")
             return False

@@ -1,6 +1,6 @@
 from typing import Union
 
-from api import CubeSchema, DimensionSchema, MeasureSchema
+from grai_source_cube.api import CubeSchema, DimensionSchema, MeasureSchema
 from pydantic import BaseModel
 
 

@@ -1,5 +1,4 @@
-import dotenv
-from grai_source_fivetran.base import FivetranIntegration
+# from grai_source_fivetran.base import FivetranIntegration
 
 # def test_loader_with_json_namespaces(mock_source):
 #     dotenv.load_dotenv()

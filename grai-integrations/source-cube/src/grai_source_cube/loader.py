@@ -1,12 +1,10 @@
 from functools import cached_property
-from itertools import chain
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
-from pydantic import BaseModel
-
-from grai_source_cube.api import CubeAPI, CubeSchema, DimensionSchema, MeasureSchema
-from grai_source_cube.configs import CubeApiConfig
+from grai_source_cube.api import CubeAPI, CubeSchema
+from grai_source_cube.settings import CubeApiConfig
 from grai_source_cube.types import CubeNode, GraiID
+from pydantic import BaseModel
 
 
 class CubeSourceMap(BaseModel):

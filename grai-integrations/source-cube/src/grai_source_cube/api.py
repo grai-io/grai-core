@@ -1,10 +1,9 @@
 from typing import Dict, List, Optional
 
 import requests
+from grai_source_cube.settings import CubeApiConfig
 from pydantic import BaseModel
 from requests.auth import AuthBase
-
-from grai_source_cube.configs import CubeApiConfig
 
 
 class TokenAuth(AuthBase):
@@ -70,22 +69,22 @@ class CubeAPI:
 
     def __init__(
         self,
-        config: CubeApiConfig,
+        config: Optional[CubeApiConfig] = None,
     ):
-        self.config = config
+        self.config = config if config is not None else CubeApiConfig()
         self.session = requests.Session()
-        self.session.auth = TokenAuth(self.config.api_token.get_secret_value())
+        self.session.auth = TokenAuth(self.config.jwt_token)
         self.session.headers.update({"Accept": "application/json"})
 
     def call_meta(self) -> MetaResponseSchema:
         """ """
-        url = f"{self.config.endpoint}/v1/meta"
+        url = f"{self.config.api_url}/meta"
         response = self.session.get(url)
         response.raise_for_status()
         return MetaResponseSchema.parse_obj(response.json())
 
     def ready(self) -> requests.Response:
         """ """
-        url = f"{self.config.endpoint}/v1/readyz"
+        url = f"{self.config.base_url}/readyz"
         response = self.session.get(url)
         return response
