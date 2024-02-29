@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
 import requests
@@ -18,23 +19,35 @@ class TokenAuth(AuthBase):
         return r
 
 
+class DrillMembersGroupedSchema(BaseModel):
+    measures: List
+    dimensions: List
+
+
 class MeasureSchema(BaseModel):
     name: str
     title: str
     shortTitle: str
-    aliasName: str
+    cumulative: bool
+    cumulativeTotal: bool
     type: str
     aggType: str
     drillMembers: list[str]
+    drillMembersGrouped: DrillMembersGroupedSchema
+    isVisible: bool
+    public: bool
 
 
 class DimensionSchema(BaseModel):
     name: str
     title: str
+    type: str
     shortTitle: str
-    aliasName: str
     type: str
     suggestFilterValues: bool
+    isVisible: bool
+    public: bool
+    primaryKey: bool
 
 
 class GraiSchema(BaseModel):
@@ -43,28 +56,40 @@ class GraiSchema(BaseModel):
     column_name: Dict[str, str]
 
 
-class MetaSchema(BaseModel):
-    grai: Optional[GraiSchema]
-
-    class Config(BaseModel.Config):
-        extra = "allow"
-
-
 class CubeSchema(BaseModel):
     name: str
+    type: str
     title: str
-    meta: MetaSchema
+    isVisible: bool
+    public: bool
     measures: List[MeasureSchema]
     dimensions: List[DimensionSchema]
     segments: List
-    connectedComponent: int
+    connectedComponent: Optional[int]
+
+    # grai components
+    grai_meta: Optional[GraiSchema]
 
 
 class MetaResponseSchema(BaseModel):
     cubes: List[CubeSchema]
 
 
-class CubeAPI:
+class BaseCubeAPI(ABC):
+    """ """
+
+    @abstractmethod
+    def meta(self) -> MetaResponseSchema:
+        """ """
+        pass
+
+    @abstractmethod
+    def ready(self) -> requests.Response:
+        """ """
+        pass
+
+
+class CubeAPI(BaseCubeAPI):
     """ """
 
     def __init__(
@@ -76,12 +101,13 @@ class CubeAPI:
         self.session.auth = TokenAuth(self.config.jwt_token)
         self.session.headers.update({"Accept": "application/json"})
 
-    def call_meta(self) -> MetaResponseSchema:
+    def meta(self) -> MetaResponseSchema:
         """ """
-        url = f"{self.config.api_url}/meta"
+        url = f"{self.config.api_url}/meta?extended"
         response = self.session.get(url)
         response.raise_for_status()
-        return MetaResponseSchema.parse_obj(response.json())
+
+        return MetaResponseSchema(**response.json())
 
     def ready(self) -> requests.Response:
         """ """

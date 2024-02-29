@@ -32,6 +32,7 @@ class CubeApiConfig(BaseSettings):
 
         Raises:
 
+
         """
         url = value.rstrip("/")
         if not url.endswith("/v1"):
@@ -61,7 +62,7 @@ class CubeApiConfig(BaseSettings):
         return values
 
     @property
-    def base_url(self):
+    def base_url(self) -> str:
         parsed_url = urlparse(self.api_url)
         base_url = urlunparse((parsed_url.scheme, parsed_url.netloc, "", "", "", ""))
         return base_url

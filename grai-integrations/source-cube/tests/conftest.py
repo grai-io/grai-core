@@ -6,8 +6,14 @@ import pytest
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 from grai_source_cube.api import CubeAPI
+from grai_source_cube.mock_tools import (
+    CubeSourceMapFactory,
+    MockConnector,
+    MockCubeAPI,
+    MockCubeIntegration,
+)
+from grai_source_cube.settings import CubeApiConfig
 
-# from grai_source_fivetran.adapters import adapt_to_client
 # from grai_source_fivetran.base import FivetranIntegration
 
 
@@ -81,118 +87,86 @@ def api():
 
 
 @pytest.fixture
-def connector_kwargs() -> dict:
+def config_args() -> dict:
     """ """
+    secret_key = "test_secret"
+
     return {
         "api_token": "test_key",
-        "api_url": "https://www.cube.dev/",
+        "api_url": "https://www.cube.dev/v1",
+        "api_secret": "test_secret",
     }
 
 
-# @pytest.fixture(scope="session")
-# def app_nodes_and_edges():
-#     """ """
-#     types_to_mock = ["cc", "ct", "tc", "tt"]
-#     edges = [MockFivetranObjects.mock_edge(t) for t in types_to_mock]
-#     nodes = []
-#     for edge in edges:
-#         nodes.append(edge.source)
-#         nodes.append(edge.destination)
-#     return nodes, edges
+@pytest.fixture
+def config(config_args):
+    """ """
+    return CubeApiConfig(**config_args)
 
 
-# @pytest.fixture
-# def app_nodes(app_nodes_and_edges):
-#     """
-#
-#     Args:
-#         app_nodes_and_edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     return app_nodes_and_edges[0]
-#
-#
-# @pytest.fixture
-# def app_edges(app_nodes_and_edges):
-#     """
-#
-#     Args:
-#         app_nodes_and_edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     return app_nodes_and_edges[1]
-#
-#
-# @pytest.fixture(scope="session")
-# def namespace_map(run_live):
-#     if run_live:
-#         api = FivetranAPI()
-#         namespace_map = {
-#             conn.id: {"source": str(uuid.uuid4()), "destination": str(uuid.uuid4())} for conn in api.get_connectors()
-#         }
-#         return namespace_map
-#     else:
-#         return {}
-#
-#
-# @pytest.fixture(scope="session")
-# def nodes_and_edges(app_nodes_and_edges, client, mock_source, run_live, namespace_map):
-#     """
-#
-#     Args:
-#         app_nodes_and_edges:
-#         client:
-#         mock_source:
-#         run_live:
-#         namespace_map:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     if run_live:
-#         integration = FivetranIntegration(source=mock_source, namespaces=namespace_map)
-#         nodes, edges = integration.get_nodes_and_edges()
-#     else:
-#         nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
-#         edges = adapt_to_client(app_nodes_and_edges[1], mock_source, "v1")
-#     return nodes, edges
-#
-#
-# @pytest.fixture
-# def nodes(nodes_and_edges):
-#     """
-#
-#     Args:
-#         nodes_and_edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     return nodes_and_edges[0]
-#
-#
-# @pytest.fixture
-# def edges(nodes_and_edges):
-#     """
-#
-#     Args:
-#         nodes_and_edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     return nodes_and_edges[1]
+@pytest.fixture(scope="session")
+def namespace_map(run_live):
+    return CubeSourceMapFactory.build()
+    # if run_live:
+    #     api = FivetranAPI()
+    #     namespace_map = {
+    #         conn.id: {"source": str(uuid.uuid4()), "destination": str(uuid.uuid4())} for conn in api.get_connectors()
+    #     }
+    #     return namespace_map
+    # else:
+    #     return {}
+
+
+@pytest.fixture
+def mock_api():
+    return MockCubeAPI()
+
+
+@pytest.fixture(scope="session")
+def mock_connector():
+    return MockConnector()
+
+
+@pytest.fixture(scope="session")
+def mock_integration():
+    return MockCubeIntegration()
+
+
+@pytest.fixture(scope="session")
+def app_nodes_and_edges(mock_connector):
+    return mock_connector.nodes, mock_connector.edges
+
+
+@pytest.fixture(scope="session")
+def app_nodes(app_nodes_and_edges):
+    return app_nodes_and_edges[0]
+
+
+@pytest.fixture(scope="session")
+def app_edges(app_nodes_and_edges):
+    return app_nodes_and_edges[1]
+
+
+@pytest.fixture(scope="session")
+def nodes_and_edges(mock_integration):
+    return mock_integration.get_nodes_and_edges()
+
+
+@pytest.fixture(scope="session")
+def nodes(nodes_and_edges):
+    return nodes_and_edges[0]
+
+
+@pytest.fixture(scope="session")
+def edges(nodes_and_edges):
+    """
+
+    Args:
+        nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
+    return nodes_and_edges[1]
