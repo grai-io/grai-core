@@ -12,28 +12,39 @@ class GraiID(BaseModel):
 
 class SourceNode(BaseModel):
     node_id: GraiID
+    metadata: BaseModel = BaseModel()
 
     @staticmethod
     def edges() -> List["CubeEdge"]:
         return []
 
 
+class SourceTableNode(SourceNode):
+    pass
+
+
+class SourceColumnNode(SourceNode):
+    pass
+
+
 class CubeNode(BaseModel):
     node_id: GraiID
     metadata: CubeSchema
+    source_node: Optional[SourceNode]
 
     @classmethod
-    def from_schema(cls, cube: CubeSchema) -> "CubeNode":
+    def from_schema(cls, cube: CubeSchema, namespace: str, source: Optional[SourceNode]) -> "CubeNode":
         return cls(
-            node_id=GraiID(name=cube.name, namespace=cube.grai_meta.namespace),
+            node_id=GraiID(name=cube.name, namespace=namespace),
             metadata=cube,
+            source_node=source,
         )
 
     def edges(self) -> List["CubeEdge"]:
         # source -> cube
-        return [
-            # TODO: Add source -> dimension
-        ]
+        if self.source_node is None:
+            return []
+        return [CubeEdge(source=self.source_node, destination=self)]
 
 
 class DimensionNode(BaseModel):
@@ -54,7 +65,7 @@ class DimensionNode(BaseModel):
         # dimension -> source
         return [
             CubeEdge(source=self.cube_ref, destination=self)
-            # TODO: Add source -> dimension
+            # TODO: Add source column -> dimension
         ]
 
 

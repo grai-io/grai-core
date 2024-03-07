@@ -3,22 +3,22 @@ from warnings import warn
 
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.integrations.base import GraiIntegrationImplementation
-from grai_schemas.v1.source import SourceV1
+from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_source_cube.adapters import adapt_to_client
-from grai_source_cube.connector import CubeConnector, CubeSourceMap
+from grai_source_cube.connector import CubeConnector, NamespaceMap
 from grai_source_cube.settings import CubeApiConfig
 from requests import HTTPError
 
 
-def process_namespace_map(namespace_map: Optional[Union[CubeSourceMap, Dict]]) -> CubeSourceMap:
+def process_namespace_map(namespace_map: Optional[Union[NamespaceMap, Dict]]) -> NamespaceMap:
     if namespace_map is None:
-        result = CubeSourceMap()
+        result = NamespaceMap()
     elif isinstance(namespace_map, dict):
         try:
-            result = CubeSourceMap(map=namespace_map)
+            result = NamespaceMap(map=namespace_map)
         except Exception as e:
             raise ValueError(f"Could not parse the `namespace_map` from the provided dictionary: {e}")
-    elif not isinstance(namespace_map, CubeSourceMap):
+    elif not isinstance(namespace_map, NamespaceMap):
         raise ValueError("The `namespace_map` must be a `CubeSourceMap` or a dictionary")
 
     return result
@@ -34,10 +34,10 @@ class CubeIntegration(GraiIntegrationImplementation):
 
     def __init__(
         self,
-        source: SourceV1,
+        source: Union[SourceV1, SourceSpec],
         namespace: str,
         config: CubeApiConfig,
-        namespace_map: Optional[Union[CubeSourceMap, Dict]] = None,
+        namespace_map: Optional[Union[NamespaceMap, Dict]] = None,
         version: Optional[str] = None,
     ):
         """Initializes the dbt integration.
@@ -49,10 +49,10 @@ class CubeIntegration(GraiIntegrationImplementation):
 
         """
         namespace_map = process_namespace_map(namespace_map)
+        source: SourceV1 = source if isinstance(source, SourceV1) else SourceV1.from_spec(source)
         super().__init__(source, version)
 
-        self.namespace = namespace
-        self.connector = CubeConnector(namespace_map=namespace_map.map, config=config)
+        self.connector = CubeConnector(namespace=namespace, namespace_map=namespace_map.map, config=config)
 
     def nodes(self) -> List[SourcedNode]:
         """Returns a list of SourcedNode objects"""

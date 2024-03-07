@@ -7,6 +7,7 @@ from grai_schemas.v1.metadata.edges import (
     EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
+    TableToTableMetadata,
 )
 from grai_schemas.v1.metadata.nodes import (
     ColumnMetadata,
@@ -22,7 +23,9 @@ from grai_source_cube.types import (
     CubeNodeTypes,
     DimensionNode,
     MeasureNode,
+    SourceColumnNode,
     SourceNode,
+    SourceTableNode,
 )
 from multimethod import multimethod
 
@@ -48,12 +51,12 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_dimension(current: DimensionNode, version: Literal["v1"] = "v1") -> ColumnMetadata:
+def build_grai_metadata_from_dimension(current: DimensionNode, version: Literal["v1"]) -> ColumnMetadata:
     """
 
     Args:
         current:
-        version:  (Default value = "v1")
+        version:
 
     Returns:
 
@@ -74,12 +77,12 @@ def build_grai_metadata_from_dimension(current: DimensionNode, version: Literal[
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_measure(current: MeasureNode, version: Literal["v1"] = "v1") -> ColumnMetadata:
+def build_grai_metadata_from_measure(current: MeasureNode, version: Literal["v1"]) -> ColumnMetadata:
     """
 
     Args:
         current:
-        version:  (Default value = "v1")
+        version:
 
     Returns:
 
@@ -99,12 +102,12 @@ def build_grai_metadata_from_measure(current: MeasureNode, version: Literal["v1"
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(current: CubeNode, version: Literal["v1"] = "v1") -> TableMetadata:
+def build_grai_metadata_from_node(current: Union[CubeNode, SourceNode], version: Literal["v1"]) -> TableMetadata:
     """
 
     Args:
         current:
-        version:  (Default value = "v1")
+        version:
 
     Returns:
 
@@ -122,12 +125,12 @@ def build_grai_metadata_from_node(current: CubeNode, version: Literal["v1"] = "v
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: CubeEdge, version: Literal["v1"] = "v1") -> BaseEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: CubeEdge, version: Literal["v1"]) -> BaseEdgeMetadataV1:
     """
 
     Args:
         current:
-        version:  (Default value = "v1")
+        version:
 
 
     Returns:
@@ -141,10 +144,17 @@ def build_grai_metadata_from_edge(current: CubeEdge, version: Literal["v1"] = "v
         if isinstance(current.destination, (DimensionNode, MeasureNode)):
             data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
             return TableToColumnMetadata(**data)
-        # elif isinstance(current.destination, Table):
-        #     data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
-        #     return TableToTableMetadata(**data)
-    elif isinstance(current.source, (DimensionNode, MeasureNode)):
+        elif isinstance(current.destination, CubeNode):
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
+            return TableToTableMetadata(**data)
+    elif isinstance(current.source, SourceTableNode):
+        if isinstance(current.destination, (DimensionNode, MeasureNode)):
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
+            return TableToColumnMetadata(**data)
+        elif isinstance(current.destination, CubeNode):
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
+            return TableToTableMetadata(**data)
+    elif isinstance(current.source, SourceColumnNode):
         if isinstance(current.destination, (DimensionNode, MeasureNode)):
             data["edge_type"] = EdgeMetadataTypeLabels.column_to_column.value
             return ColumnToColumnMetadata(**data)
@@ -170,7 +180,7 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
 
 @build_app_metadata.register
-def build_metadata_from_column(current: CubeNodeTypes, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_node(current: CubeNodeTypes, version: Literal["v1"] = "v1") -> Dict:
     """
 
     Args:
@@ -244,35 +254,11 @@ def unsupported_arguments(current: Any, source: Any, version: Any) -> None:
 
 @adapt_to_client.register
 def insufficient_arguments_2(current: Any, source: Any) -> None:
-    """
-
-    Args:
-        current:
-        source:
-        version:  (Default value = "v1")
-
-    Returns:
-
-    Raises:
-
-    """
     raise NotImplementedError("Adapt to client requires three arguments: an object, a source, and a version")
 
 
 @adapt_to_client.register
 def insufficient_arguments_1(current: Any) -> None:
-    """
-
-    Args:
-        current:
-        source:
-        version:  (Default value = "v1")
-
-    Returns:
-
-    Raises:
-
-    """
     raise NotImplementedError("Adapt to client requires three arguments: an object, a source, and a version")
 
 
@@ -294,6 +280,7 @@ def adapt_source_to_client(current: SourceNode, source: SourceSpec, version: Lit
         "name": current.node_id.name,
         "namespace": current.node_id.namespace,
         "data_source": source,
+        "metadata": build_metadata(current, version),
     }
     return SourcedNodeV1.from_spec(spec_dict)
 

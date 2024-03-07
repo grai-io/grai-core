@@ -298,7 +298,7 @@ class TestConnector:
         """
         assert any(isinstance(edge.spec.metadata.grai, TableToColumnMetadata) for edge in edges)
 
-    def test_has_table_to_table_metadata(self, edges):
+    def test_has_table_to_table_metadata(self, edges, app_nodes):
         """
 
         Args:
@@ -342,7 +342,7 @@ class TestConnector:
             assert isinstance(edge.metadata.grai, ColumnToColumnMetadata)
 
 
-def test_metadata_has_core_metadata_ids(self, nodes, edges):
+def test_metadata_has_core_metadata_ids(nodes, edges):
     """
 
     Args:
@@ -361,7 +361,7 @@ def test_metadata_has_core_metadata_ids(self, nodes, edges):
         assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
 
-def test_metadata_has_fivetran_metadata_id(self, nodes, edges):
+def test_metadata_has_app_metadata_id(nodes, edges):
     """
 
     Args:
@@ -380,7 +380,7 @@ def test_metadata_has_fivetran_metadata_id(self, nodes, edges):
         assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
-def test_metadata_is_core_compliant(self, nodes, edges):
+def test_metadata_is_core_compliant(nodes, edges):
     """
 
     Args:

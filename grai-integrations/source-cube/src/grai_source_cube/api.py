@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import requests
 from grai_source_cube.settings import CubeApiConfig
@@ -51,9 +51,20 @@ class DimensionSchema(BaseModel):
 
 
 class GraiSchema(BaseModel):
-    table_name: str
-    namespace: str
-    column_name: Dict[str, str]
+    data_source_namespace: str
+    table_name: Optional[str]
+
+    # column_name: Dict[str, str] = {}
+
+    class Config:
+        extra = "allow"
+
+
+class CubeMeta(BaseModel):
+    grai: Optional[GraiSchema]
+
+    class Config:
+        extra = "allow"
 
 
 class CubeSchema(BaseModel):
@@ -66,9 +77,8 @@ class CubeSchema(BaseModel):
     dimensions: List[DimensionSchema]
     segments: List
     connectedComponent: Optional[int]
-
-    # grai components
-    grai_meta: Optional[GraiSchema]
+    sql: Optional[str]
+    meta: CubeMeta = CubeMeta()
 
 
 class MetaResponseSchema(BaseModel):
@@ -106,7 +116,6 @@ class CubeAPI(BaseCubeAPI):
         url = f"{self.config.api_url}/meta?extended"
         response = self.session.get(url)
         response.raise_for_status()
-
         return MetaResponseSchema(**response.json())
 
     def ready(self) -> requests.Response:

@@ -7,14 +7,14 @@ import requests
 from grai_schemas.v1.mock import MockSource
 from grai_source_cube.api import BaseCubeAPI, CubeSchema, GraiSchema, MetaResponseSchema
 from grai_source_cube.base import CubeIntegration
-from grai_source_cube.connector import CubeConnector, CubeSourceMap
+from grai_source_cube.connector import CubeConnector, NamespaceMap
 from grai_source_cube.settings import CubeApiConfig
 from polyfactory.decorators import post_generated
 from polyfactory.factories.pydantic_factory import ModelFactory
 from pydantic import SecretStr
 
 
-class CubeSourceMapFactory(ModelFactory[CubeSourceMap]):
+class NamespaceMapFactory(ModelFactory[NamespaceMap]):
     __set_as_default_factory_for_type__ = True
 
 
@@ -67,7 +67,7 @@ class MockCubeAPI(BaseCubeAPI):
 class MockConnector(CubeConnector):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("config", CubeApiConfigFactory.build())
-        kwargs.setdefault("namespace_map", CubeSourceMapFactory.build().map)
+        kwargs.setdefault("namespace_map", NamespaceMapFactory.build().map)
         super().__init__(*args, **kwargs)
 
         self.mocked_api = MockCubeAPI()
@@ -86,7 +86,7 @@ class MockCubeIntegration(CubeIntegration):
         kwargs.setdefault("config", CubeApiConfigFactory.build())
         kwargs.setdefault("source", MockSource().source())
         kwargs.setdefault("namespace", "mock_namespace")
-        kwargs.setdefault("namespace_map", CubeSourceMapFactory.build().map)
+        kwargs.setdefault("namespace_map", NamespaceMapFactory.build().map)
         super().__init__(*args, **kwargs)
 
         self.connector = MockConnector(namespace_map=kwargs["namespace_map"], config=kwargs["config"])

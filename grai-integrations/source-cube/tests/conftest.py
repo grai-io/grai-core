@@ -6,18 +6,14 @@ import pytest
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 from grai_source_cube.api import CubeAPI
+from grai_source_cube.base import CubeIntegration
 from grai_source_cube.mock_tools import (
-    CubeSourceMapFactory,
     MockConnector,
     MockCubeAPI,
     MockCubeIntegration,
+    NamespaceMapFactory,
 )
 from grai_source_cube.settings import CubeApiConfig
-
-# from grai_source_fivetran.base import FivetranIntegration
-
-
-# from grai_source_fivetran.mock_tools import MockFivetranObjects
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +23,7 @@ def default_workspace():
 
 @pytest.fixture(scope="session")
 def mock_source(default_workspace):
-    return SourceSpec(name="BigQueryTest", workspace=default_workspace)
+    return SourceSpec(name="CubeTest", workspace=default_workspace)
 
 
 class MockClient:
@@ -68,28 +64,44 @@ def run_live(client) -> bool:
 
 # You may need to create a .env file to run these tests
 @pytest.fixture(scope="session")
-def api():
+def env_config():
     """ """
     current_environ = set(os.environ)
     dotenv.load_dotenv()
     new_environ = set(os.environ)
+    config = CubeApiConfig()
 
-    api = CubeAPI()
-
-    # Reset environment
     for key in new_environ - current_environ:
         os.environ.pop(key)
 
     for key in current_environ:
         os.environ[key] = os.environ[key]
 
-    return api
+    return config
+
+
+@pytest.fixture(scope="session")
+def api(env_config):
+    """ """
+    return CubeAPI(config=env_config)
+
+
+@pytest.fixture(scope="session")
+def integration(request, env_config, mock_source):
+    """ """
+    request.config.cache.get("api-integration", None)  # can be used to cache api response results to avoid future calls
+    namespace_map = {}
+    return CubeIntegration(source=mock_source, config=env_config, namespace="test", namespace_map=namespace_map)
+
+
+@pytest.fixture(scope="session")
+def connector(integration):
+    return integration.connector
 
 
 @pytest.fixture
 def config_args() -> dict:
     """ """
-    secret_key = "test_secret"
 
     return {
         "api_token": "test_key",
@@ -106,15 +118,7 @@ def config(config_args):
 
 @pytest.fixture(scope="session")
 def namespace_map(run_live):
-    return CubeSourceMapFactory.build()
-    # if run_live:
-    #     api = FivetranAPI()
-    #     namespace_map = {
-    #         conn.id: {"source": str(uuid.uuid4()), "destination": str(uuid.uuid4())} for conn in api.get_connectors()
-    #     }
-    #     return namespace_map
-    # else:
-    #     return {}
+    return NamespaceMapFactory.build()
 
 
 @pytest.fixture
@@ -133,8 +137,8 @@ def mock_integration():
 
 
 @pytest.fixture(scope="session")
-def app_nodes_and_edges(mock_connector):
-    return mock_connector.nodes, mock_connector.edges
+def app_nodes_and_edges(connector):
+    return connector.nodes, connector.edges
 
 
 @pytest.fixture(scope="session")
@@ -148,8 +152,8 @@ def app_edges(app_nodes_and_edges):
 
 
 @pytest.fixture(scope="session")
-def nodes_and_edges(mock_integration):
-    return mock_integration.get_nodes_and_edges()
+def nodes_and_edges(integration):
+    return integration.get_nodes_and_edges()
 
 
 @pytest.fixture(scope="session")

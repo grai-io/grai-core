@@ -1,6 +1,6 @@
 import itertools
 from functools import cached_property
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from grai_source_cube.api import CubeAPI, CubeSchema
 from grai_source_cube.settings import CubeApiConfig
@@ -11,36 +11,40 @@ from grai_source_cube.types import (
     DimensionNode,
     GraiID,
     MeasureNode,
-    SourceNode,
+    SourceTableNode,
 )
 from pydantic import BaseModel
 
 
-class CubeSourceMap(BaseModel):
-    map: Dict[str, GraiID] = {}
+class NamespaceMap(BaseModel):
+    map: Dict[str, str] = {}
 
 
 class CubeConnector(CubeAPI):
     """ """
 
-    def __init__(self, namespace_map: Dict[str, GraiID], config: CubeApiConfig, *args, **kwargs):
-        self.source_map = CubeSourceMap(map=namespace_map).map
+    def __init__(self, namespace: str, config: CubeApiConfig, *args, **kwargs):
+        self.namespace = namespace
         super().__init__(config=config)
 
-    def get_cube_source(self, cube: CubeSchema) -> SourceNode:
-        if cube.name in self.source_map:
-            cube_source = self.source_map[cube.name]
-        elif cube.grai_meta is not None:
-            cube_id = GraiID(name=cube.grai_meta.table_name, namespace=cube.grai_meta.namespace)
-            cube_source = SourceNode(node_id=cube_id)
-        else:
-            raise Exception(f"Cube {cube.name} does not have a source map or associated grai metadata")
+    @staticmethod
+    def get_cube_source_table(cube: CubeSchema) -> Optional[SourceTableNode]:
+        if cube.meta.grai is None:
+            return None
 
+        if cube.meta.grai.table_name is None:
+            # TODO: We should extract this from the sql
+            return None
+        else:
+            table_name = cube.meta.grai.table_name
+        cube_id = GraiID(name=table_name, namespace=cube.meta.grai.data_source_namespace)
+        cube_source = SourceTableNode(node_id=cube_id)
         return cube_source
 
     @cached_property
     def cubes(self) -> List[CubeSchema]:
-        return self.meta().cubes
+        cubes = self.meta().cubes
+        return cubes
 
     @cached_property
     def nodes(self) -> List[CubeNodeTypes]:
@@ -48,12 +52,14 @@ class CubeConnector(CubeAPI):
         # Nodes will include, source table, source column, cube measures, and cube dimensions
         nodes = []
         for cube in self.cubes:
-            cube_node = CubeNode.from_schema(cube)
-            source_table = self.get_cube_source(cube)
+            source_table = self.get_cube_source_table(cube)
+            cube_node = CubeNode.from_schema(cube, self.namespace, source_table)
+
             # source_columns = ...
+            initial_nodes = [cube_node] if source_table is None else [cube_node, source_table]
             measures = (MeasureNode.from_schema(measure, cube_node) for measure in cube.measures)
             dimensions = (DimensionNode.from_schema(dimension, cube_node) for dimension in cube.dimensions)
-            nodes.extend(itertools.chain([cube_node, source_table], measures, dimensions))
+            nodes.extend(itertools.chain(initial_nodes, measures, dimensions))
         return nodes
 
     @cached_property
