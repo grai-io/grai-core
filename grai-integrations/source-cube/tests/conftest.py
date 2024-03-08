@@ -1,11 +1,11 @@
 import os
 import uuid
+from typing import Optional
 
 import dotenv
 import pytest
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
-from grai_source_cube.api import CubeAPI
 from grai_source_cube.base import CubeIntegration
 from grai_source_cube.mock_tools import (
     MockConnector,
@@ -56,71 +56,6 @@ def client(mock_source):
     return client
 
 
-@pytest.fixture(scope="session")
-def run_live(client) -> bool:
-    has_client = not isinstance(client, MockClient)
-    return has_client
-
-
-# You may need to create a .env file to run these tests
-@pytest.fixture(scope="session")
-def env_config():
-    """ """
-    current_environ = set(os.environ)
-    dotenv.load_dotenv()
-    new_environ = set(os.environ)
-    config = CubeApiConfig()
-
-    for key in new_environ - current_environ:
-        os.environ.pop(key)
-
-    for key in current_environ:
-        os.environ[key] = os.environ[key]
-
-    return config
-
-
-@pytest.fixture(scope="session")
-def api(env_config):
-    """ """
-    return CubeAPI(config=env_config)
-
-
-@pytest.fixture(scope="session")
-def integration(request, env_config, mock_source):
-    """ """
-    request.config.cache.get("api-integration", None)  # can be used to cache api response results to avoid future calls
-    namespace_map = {}
-    return CubeIntegration(source=mock_source, config=env_config, namespace="test", namespace_map=namespace_map)
-
-
-@pytest.fixture(scope="session")
-def connector(integration):
-    return integration.connector
-
-
-@pytest.fixture
-def config_args() -> dict:
-    """ """
-
-    return {
-        "api_token": "test_key",
-        "api_url": "https://www.cube.dev/v1",
-        "api_secret": "test_secret",
-    }
-
-
-@pytest.fixture
-def config(config_args):
-    """ """
-    return CubeApiConfig(**config_args)
-
-
-@pytest.fixture(scope="session")
-def namespace_map(run_live):
-    return NamespaceMapFactory.build()
-
-
 @pytest.fixture
 def mock_api():
     return MockCubeAPI()
@@ -136,9 +71,62 @@ def mock_integration():
     return MockCubeIntegration()
 
 
+# You may need to create a .env file to run these tests
 @pytest.fixture(scope="session")
-def app_nodes_and_edges(connector):
-    return connector.nodes, connector.edges
+def cloud_config() -> Optional[CubeApiConfig]:
+    """ """
+    current_environ = set(os.environ)
+    dotenv.load_dotenv()
+    new_environ = set(os.environ)
+    try:
+        config = CubeApiConfig()
+    except Exception:
+        config = None
+
+    for key in new_environ - current_environ:
+        os.environ.pop(key)
+
+    for key in current_environ:
+        os.environ[key] = os.environ[key]
+
+    return config
+
+
+@pytest.fixture(scope="session")
+def cloud_integration(cloud_config, mock_source) -> Optional[CubeIntegration]:
+    namespace_map = {}
+    if cloud_config is None:
+        return None
+
+    return CubeIntegration(source=mock_source, config=cloud_config, namespace="test", namespace_map=namespace_map)
+
+
+@pytest.fixture(scope="session")
+def local_config() -> CubeApiConfig:
+    return CubeApiConfig(api_url="http://localhost:4000/cubejs-api/v1", api_secret="secret")
+
+
+@pytest.fixture(scope="session")
+def local_integration(request, local_config, mock_source):
+    """ """
+    request.config.cache.get("api-integration", None)  # can be used to cache api response results to avoid future calls
+    namespace_map = {}
+    return CubeIntegration(source=mock_source, config=local_config, namespace="test", namespace_map=namespace_map)
+
+
+@pytest.fixture(scope="session")
+def config(local_integration):
+    return local_integration.connector.config
+
+
+@pytest.fixture(scope="session")
+def namespace_map():
+    return NamespaceMapFactory.build()
+
+
+@pytest.fixture(scope="session")
+def app_nodes_and_edges(local_integration):
+    return local_integration.connector.nodes, local_integration.connector.edges
 
 
 @pytest.fixture(scope="session")
@@ -152,8 +140,8 @@ def app_edges(app_nodes_and_edges):
 
 
 @pytest.fixture(scope="session")
-def nodes_and_edges(integration):
-    return integration.get_nodes_and_edges()
+def nodes_and_edges(local_integration):
+    return local_integration.get_nodes_and_edges()
 
 
 @pytest.fixture(scope="session")
@@ -163,14 +151,4 @@ def nodes(nodes_and_edges):
 
 @pytest.fixture(scope="session")
 def edges(nodes_and_edges):
-    """
-
-    Args:
-        nodes_and_edges:
-
-    Returns:
-
-    Raises:
-
-    """
     return nodes_and_edges[1]

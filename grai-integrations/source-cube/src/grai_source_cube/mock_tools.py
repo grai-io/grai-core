@@ -9,9 +9,51 @@ from grai_source_cube.api import BaseCubeAPI, CubeSchema, GraiSchema, MetaRespon
 from grai_source_cube.base import CubeIntegration
 from grai_source_cube.connector import CubeConnector, NamespaceMap
 from grai_source_cube.settings import CubeApiConfig
+from grai_source_cube.types import (
+    CubeEdge,
+    CubeNode,
+    DimensionNode,
+    GraiID,
+    MeasureNode,
+    SourceColumnNode,
+    SourceNode,
+    SourceTableNode,
+)
 from polyfactory.decorators import post_generated
 from polyfactory.factories.pydantic_factory import ModelFactory
 from pydantic import SecretStr
+
+
+class SourceNodeFactory(ModelFactory[SourceNode]):
+    pass
+
+
+class SourceTableNodeFactory(ModelFactory[SourceTableNode]):
+    pass
+
+
+class GraiIDFactory(ModelFactory[GraiID]):
+    pass
+
+
+class SourceColumnNodeFactory(ModelFactory[SourceColumnNode]):
+    pass
+
+
+class CubeNodeFactory(ModelFactory[CubeNode]):
+    pass
+
+
+class DimensionNodeFactory(ModelFactory[DimensionNode]):
+    pass
+
+
+class MeasureNodeFactory(ModelFactory[MeasureNode]):
+    pass
+
+
+class CubeEdgeFactory(ModelFactory[CubeEdge]):
+    pass
 
 
 class NamespaceMapFactory(ModelFactory[NamespaceMap]):
@@ -67,7 +109,7 @@ class MockCubeAPI(BaseCubeAPI):
 class MockConnector(CubeConnector):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("config", CubeApiConfigFactory.build())
-        kwargs.setdefault("namespace_map", NamespaceMapFactory.build().map)
+        kwargs.setdefault("namespace", "mock_namespace")
         super().__init__(*args, **kwargs)
 
         self.mocked_api = MockCubeAPI()
@@ -86,7 +128,6 @@ class MockCubeIntegration(CubeIntegration):
         kwargs.setdefault("config", CubeApiConfigFactory.build())
         kwargs.setdefault("source", MockSource().source())
         kwargs.setdefault("namespace", "mock_namespace")
-        kwargs.setdefault("namespace_map", NamespaceMapFactory.build().map)
         super().__init__(*args, **kwargs)
 
-        self.connector = MockConnector(namespace_map=kwargs["namespace_map"], config=kwargs["config"])
+        self.connector = MockConnector(namespace=kwargs["namespace"], config=kwargs["config"])

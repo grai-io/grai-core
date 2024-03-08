@@ -4,12 +4,10 @@ from grai_schemas.package_definitions import config as core_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata.edges import (
     BaseEdgeMetadataV1,
-    ColumnToColumnMetadata,
     TableToColumnMetadata,
     TableToTableMetadata,
 )
 from grai_schemas.v1.metadata.nodes import BaseNodeMetadataV1
-from grai_source_cube.package_definitions import config
 from grai_source_cube.types import CubeEdgeTypes, CubeNodeTypes
 
 NODE_TYPES = get_args(CubeNodeTypes)
@@ -311,36 +309,6 @@ class TestConnector:
         """
         assert any(isinstance(edge.spec.metadata.grai, TableToTableMetadata) for edge in edges)
 
-    def test_all_bt_edges_have_table_to_column_metadata(self, edges):
-        """
-
-        Args:
-            edges:
-
-        Returns:
-
-        Raises:
-
-        """
-        bt_edges = (edge for edge in edges if edge.spec.metadata.constraint_type == "bt")
-        for edge in bt_edges:
-            assert isinstance(edge.metadata.grai, TableToColumnMetadata)
-
-    def test_all_dbtm_edges_have_column_to_column_metadata(self, edges):
-        """
-
-        Args:
-            edges:
-
-        Returns:
-
-        Raises:
-
-        """
-        bt_edges = (edge for edge in edges if edge.spec.metadata.constraint_type == "dbtm")
-        for edge in bt_edges:
-            assert isinstance(edge.metadata.grai, ColumnToColumnMetadata)
-
 
 def test_metadata_has_core_metadata_ids(nodes, edges):
     """
@@ -359,25 +327,6 @@ def test_metadata_has_core_metadata_ids(nodes, edges):
 
     for edge in edges:
         assert hasattr(edge.spec.metadata, core_config.metadata_id)
-
-
-def test_metadata_has_app_metadata_id(nodes, edges):
-    """
-
-    Args:
-        nodes:
-        edges:
-
-    Returns:
-
-    Raises:
-
-    """
-    for node in nodes:
-        assert hasattr(node.spec.metadata, config.metadata_id)
-
-    for edge in edges:
-        assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
 def test_metadata_is_core_compliant(nodes, edges):

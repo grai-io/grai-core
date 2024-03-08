@@ -50,8 +50,14 @@ class DimensionSchema(BaseModel):
     primaryKey: bool
 
 
+class JoinSchema(BaseModel):
+    relationship: str
+    sql: str
+    name: str
+
+
 class GraiSchema(BaseModel):
-    data_source_namespace: str
+    source_namespace: str
     table_name: Optional[str]
 
     # column_name: Dict[str, str] = {}
@@ -79,6 +85,12 @@ class CubeSchema(BaseModel):
     connectedComponent: Optional[int]
     sql: Optional[str]
     meta: CubeMeta = CubeMeta()
+    fileName: Optional[str]
+    preAggregations: List
+    joins: List[JoinSchema]
+
+    class Config:
+        extra = "allow"
 
 
 class MetaResponseSchema(BaseModel):

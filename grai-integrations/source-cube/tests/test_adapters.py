@@ -1,209 +1,197 @@
-# import pytest
-# from grai_schemas import config as core_config
-# from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
-# from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
-# from grai_source_fivetran.adapters import adapt_to_client
-# from grai_source_fivetran.models import Column, Edge, Table
-# from grai_source_fivetran.package_definitions import config
-#
-#
-# def mock_edge_values():
-#     """ """
-#     extra_args = {
-#         "is_primary_key": True,
-#         "is_foreign_key": False,
-#         "fivetran_id": "abc",
-#         "fivetran_table_id": "123",
-#     }
-#     source = Column(table_schema="schema", table_name="table", name="id", namespace="test", **extra_args)
-#     destination = Column(table_schema="schema", table_name="table", name="id2", namespace="test", **extra_args)
-#     test_edge = [
-#         Edge(
-#             source=source,
-#             destination=destination,
-#             definition="thing",
-#             constraint_type="c",
-#         )
-#     ]
-#     return test_edge
-#
-#
-# class AdapterTestValues:
-#     """ """
-#
-#     columns = [
-#         Column(
-#             name="test",
-#             namespace="tests",
-#             table_name="test",
-#             table_schema="test",
-#             is_primary_key=True,
-#             is_foreign_key=False,
-#             fivetran_id="easyas",
-#             fivetran_table_id="abc123",
-#         )
-#     ]
-#
-#     tables = [
-#         Table(
-#             name="test",
-#             namespace="tests",
-#             schema_name="test",
-#             fivetran_id="test",
-#         )
-#     ]
-#
-#     edges = mock_edge_values()
-#
-#
-# @pytest.mark.parametrize(
-#     "item,version,target",
-#     [(item, "v1", SourcedNodeV1) for item in AdapterTestValues.columns],
-# )
-# def test_column_adapter(item, version, target, mock_source):
-#     """
-#
-#     Args:
-#         item:
-#         version:
-#         target:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     result = adapt_to_client(item, mock_source, version)
-#     assert isinstance(result, target)
-#
-#
-# @pytest.mark.parametrize(
-#     "item,version,target",
-#     [(item, "v1", SourcedNodeV1) for item in AdapterTestValues.tables],
-# )
-# def test_table_adapter(item, version, target, mock_source):
-#     """
-#
-#     Args:
-#         item:
-#         version:
-#         target:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     result = adapt_to_client(item, mock_source, version)
-#     assert isinstance(result, target)
-#
-#
-# @pytest.mark.parametrize(
-#     "item,version,target",
-#     [(item, "v1", SourcedEdgeV1) for item in AdapterTestValues.edges],
-# )
-# def test_edge_adapter(item, version, target, mock_source):
-#     """
-#
-#     Args:
-#         item:
-#         version:
-#         target:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     result = adapt_to_client(item, mock_source, version)
-#     assert isinstance(result, target)
+import random
+from functools import cached_property
+from pprint import pprint
+
+from grai_schemas import config as core_config
+from grai_schemas.v1 import SourcedNodeV1
+from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
+from grai_source_cube.adapters import adapt_to_client
+from grai_source_cube.mock_tools import (
+    CubeEdgeFactory,
+    CubeNodeFactory,
+    DimensionNodeFactory,
+    MeasureNodeFactory,
+    SourceColumnNodeFactory,
+    SourceTableNodeFactory,
+)
 
 
-# def test_node_metadata_has_core_metadata_ids(nodes):
-#     """
-#
-#     Args:
-#         nodes:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for node in nodes:
-#         assert hasattr(node.spec.metadata, core_config.metadata_id)
-#
-#
-# def test_edge_metadata_has_core_metadata_ids(edges):
-#     """
-#
-#     Args:
-#         edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for edge in edges:
-#         assert hasattr(edge.spec.metadata, core_config.metadata_id)
-#
-#
-# def test_node_metadata_has_app_metadata_id(nodes):
-#     """
-#
-#     Args:
-#         nodes:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for node in nodes:
-#         assert hasattr(node.spec.metadata, config.metadata_id)
-#
-#
-# def test_edge_metadata_has_app_metadata_id(edges):
-#     """
-#
-#     Args:
-#         edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for edge in edges:
-#         assert hasattr(edge.spec.metadata, config.metadata_id)
-#
-#
-# def test_node_metadata_is_core_compliant(nodes):
-#     """
-#
-#     Args:
-#         nodes:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for node in nodes:
-#         assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1)
-#
-#
-# def test_edge_metadata_is_core_compliant(edges):
-#     """
-#
-#     Args:
-#         edges:
-#
-#     Returns:
-#
-#     Raises:
-#
-#     """
-#     for edge in edges:
-#         assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)
+class AdapterTestGenerators:
+    """ """
+
+    column_generators = [
+        SourceColumnNodeFactory.build,
+        DimensionNodeFactory.build,
+        MeasureNodeFactory.build,
+    ]
+
+    table_generators = [
+        CubeNodeFactory.build,
+        SourceTableNodeFactory.build,
+    ]
+
+    edge_generators = [
+        CubeEdgeFactory.build,
+    ]
+
+    @cached_property
+    def columns(self) -> list:
+        """ """
+        return [random.choice(self.column_generators)() for _ in range(1000)]
+
+    @cached_property
+    def tables(self) -> list:
+        """ """
+        return [random.choice(self.table_generators)() for _ in range(1000)]
+
+    @cached_property
+    def edges(self) -> list:
+        """ """
+        return [random.choice(self.edge_generators)() for _ in range(1000)]
+
+
+AdapterTestValues = AdapterTestGenerators()
+
+
+def test_adapted_columns_are_sourced(mock_source):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
+    result = adapt_to_client(AdapterTestValues.columns, mock_source, "v1")
+    for item in result:
+        assert isinstance(item, SourcedNodeV1), f"Adapted column:\n`{pprint(item)}` is not sourced"
+
+
+def test_adapted_table_are_sourced(mock_source):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
+    result = adapt_to_client(AdapterTestValues.tables, mock_source, "v1")
+    for item in result:
+        assert isinstance(item, SourcedNodeV1), f"Adapted table:\n`{pprint(item)}` is not sourced"
+
+
+def test_adapted_edges_are_sourced(mock_source):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
+    result = adapt_to_client(AdapterTestValues.edges, mock_source, "v1")
+    for item in result:
+        assert isinstance(item, SourcedNodeV1), f"Adapted edge:\n`{pprint(item)}` is not sourced"
+
+
+def test_node_metadata_has_core_metadata_ids(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
+    for node in nodes:
+        assert hasattr(node.spec.metadata, core_config.metadata_id)
+
+
+def test_edge_metadata_has_core_metadata_ids(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
+    for edge in edges:
+        assert hasattr(edge.spec.metadata, core_config.metadata_id)
+
+
+def test_node_metadata_has_app_metadata_id(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
+    for node in nodes:
+        assert hasattr(node.spec.metadata, config.metadata_id)
+
+
+def test_edge_metadata_has_app_metadata_id(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
+    for edge in edges:
+        assert hasattr(edge.spec.metadata, config.metadata_id)
+
+
+def test_node_metadata_is_core_compliant(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
+    for node in nodes:
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1)
+
+
+def test_edge_metadata_is_core_compliant(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
+    for edge in edges:
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)

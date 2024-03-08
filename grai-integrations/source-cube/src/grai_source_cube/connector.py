@@ -23,12 +23,12 @@ class NamespaceMap(BaseModel):
 class CubeConnector(CubeAPI):
     """ """
 
-    def __init__(self, namespace: str, config: CubeApiConfig, *args, **kwargs):
+    def __init__(self, namespace: str, config: CubeApiConfig, namespace_map: Dict[str, str] = {}, *args, **kwargs):
         self.namespace = namespace
+        self.namespace_map = NamespaceMap(map=namespace_map).map
         super().__init__(config=config)
 
-    @staticmethod
-    def get_cube_source_table(cube: CubeSchema) -> Optional[SourceTableNode]:
+    def get_cube_source_table(self, cube: CubeSchema) -> Optional[SourceTableNode]:
         if cube.meta.grai is None:
             return None
 
@@ -37,7 +37,15 @@ class CubeConnector(CubeAPI):
             return None
         else:
             table_name = cube.meta.grai.table_name
-        cube_id = GraiID(name=table_name, namespace=cube.meta.grai.data_source_namespace)
+
+        if cube.meta.grai.source_namespace is not None:
+            namespace = cube.meta.grai.source_namespace
+        elif table_name in self.namespace_map:
+            namespace = self.namespace_map[table_name]
+        else:
+            return None
+
+        cube_id = GraiID(name=table_name, namespace=namespace)
         cube_source = SourceTableNode(node_id=cube_id)
         return cube_source
 
@@ -55,11 +63,11 @@ class CubeConnector(CubeAPI):
             source_table = self.get_cube_source_table(cube)
             cube_node = CubeNode.from_schema(cube, self.namespace, source_table)
 
-            # source_columns = ...
             initial_nodes = [cube_node] if source_table is None else [cube_node, source_table]
+            source_columns = []  # TODO: Extract source columns from sql
             measures = (MeasureNode.from_schema(measure, cube_node) for measure in cube.measures)
             dimensions = (DimensionNode.from_schema(dimension, cube_node) for dimension in cube.dimensions)
-            nodes.extend(itertools.chain(initial_nodes, measures, dimensions))
+            nodes.extend(itertools.chain(initial_nodes, source_columns, measures, dimensions))
         return nodes
 
     @cached_property

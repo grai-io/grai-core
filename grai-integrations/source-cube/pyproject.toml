@@ -29,6 +29,7 @@ types-requests = "^2.28.11.7"
 faker = "^17.0.0"
 grai-client = "^0.3.2"
 ruff = "^0.2.2"
+pytest-cases = "^3.8.2"
 
 [tool.black]
 line-length = 120

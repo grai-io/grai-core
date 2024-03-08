@@ -1,11 +1,9 @@
 from typing import Any, Dict, List, Literal, Sequence, Tuple, TypeVar, Union
 
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
+from grai_schemas.v1.generics import SQL, Code
 from grai_schemas.v1.metadata.edges import (
-    BaseEdgeMetadataV1,
-    ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
-    GenericEdgeMetadataV1,
     TableToColumnMetadata,
     TableToTableMetadata,
 )
@@ -17,15 +15,17 @@ from grai_schemas.v1.metadata.nodes import (
 from grai_schemas.v1.source import SourceSpec
 from grai_source_cube.package_definitions import config
 from grai_source_cube.types import (
-    CubeEdge,
+    BaseCubeEdge,
+    BaseNode,
+    CubeEdgeColumnToColumn,
+    CubeEdgeTableToColumn,
+    CubeEdgeTableToTable,
     CubeEdgeTypes,
     CubeNode,
     CubeNodeTypes,
     DimensionNode,
     MeasureNode,
-    SourceColumnNode,
     SourceNode,
-    SourceTableNode,
 )
 from multimethod import multimethod
 
@@ -125,42 +125,35 @@ def build_grai_metadata_from_node(current: Union[CubeNode, SourceNode], version:
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: CubeEdge, version: Literal["v1"]) -> BaseEdgeMetadataV1:
-    """
+def built_grai_metadata_from_table_to_column_edge(current: CubeEdgeTableToColumn, version: Literal["v1"]):
+    data = {
+        "version": version,
+        "tags": [config.metadata_id],
+        "edge_type": EdgeMetadataTypeLabels.table_to_column.value,
+    }
+    return TableToColumnMetadata(**data)
 
-    Args:
-        current:
-        version:
+
+@build_grai_metadata.register
+def built_grai_metadata_from_column_to_column_edge(current: CubeEdgeColumnToColumn, version: Literal["v1"]):
+    data = {
+        "version": version,
+        "tags": [config.metadata_id],
+        "edge_type": EdgeMetadataTypeLabels.column_to_column.value,
+    }
+    return TableToColumnMetadata(**data)
 
 
-    Returns:
-
-    Raises:
-
-    """
-    data = {"version": version, "tags": [config.metadata_id]}
-
-    if isinstance(current.source, CubeNode):
-        if isinstance(current.destination, (DimensionNode, MeasureNode)):
-            data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
-            return TableToColumnMetadata(**data)
-        elif isinstance(current.destination, CubeNode):
-            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
-            return TableToTableMetadata(**data)
-    elif isinstance(current.source, SourceTableNode):
-        if isinstance(current.destination, (DimensionNode, MeasureNode)):
-            data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
-            return TableToColumnMetadata(**data)
-        elif isinstance(current.destination, CubeNode):
-            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
-            return TableToTableMetadata(**data)
-    elif isinstance(current.source, SourceColumnNode):
-        if isinstance(current.destination, (DimensionNode, MeasureNode)):
-            data["edge_type"] = EdgeMetadataTypeLabels.column_to_column.value
-            return ColumnToColumnMetadata(**data)
-    else:
-        data["edge_type"] = EdgeMetadataTypeLabels.generic.value
-        return GenericEdgeMetadataV1(**data)
+@build_grai_metadata.register
+def built_grai_metadata_from_table_to_table_edge(current: CubeEdgeTableToTable, version: Literal["v1"]):
+    data = {
+        "version": version,
+        "tags": [config.metadata_id],
+        "edge_type": EdgeMetadataTypeLabels.table_to_table.value,
+    }
+    if isinstance(current.destination, CubeNode):
+        data["code"] = Code(code=current.destination.metadata.sql, language=SQL())
+    return TableToTableMetadata(**data)
 
 
 @multimethod
@@ -312,7 +305,7 @@ def adapt_column_to_client(
     return SourcedNodeV1.from_spec(spec_dict)
 
 
-def make_name(node1: CubeNodeTypes, node2: CubeNodeTypes) -> str:
+def make_name(node1: BaseNode, node2: BaseNode) -> str:
     """
 
     Args:
@@ -330,7 +323,7 @@ def make_name(node1: CubeNodeTypes, node2: CubeNodeTypes) -> str:
 
 
 @adapt_to_client.register
-def adapt_edge_to_client(current: CubeEdge, source: SourceSpec, version: Literal["v1"]) -> SourcedEdgeV1:
+def adapt_edge_to_client(current: BaseCubeEdge, source: SourceSpec, version: Literal["v1"]) -> SourcedEdgeV1:
     """
 
     Args:

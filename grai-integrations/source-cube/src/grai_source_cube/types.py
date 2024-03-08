@@ -10,7 +10,12 @@ class GraiID(BaseModel):
     display_name: Optional[str]
 
 
-class SourceNode(BaseModel):
+class BaseNode(BaseModel):
+    node_id: GraiID
+    metadata: BaseModel
+
+
+class SourceNode(BaseNode):
     node_id: GraiID
     metadata: BaseModel = BaseModel()
 
@@ -27,10 +32,10 @@ class SourceColumnNode(SourceNode):
     pass
 
 
-class CubeNode(BaseModel):
+class CubeNode(BaseNode):
     node_id: GraiID
     metadata: CubeSchema
-    source_node: Optional[SourceNode]
+    source_node: Optional[SourceTableNode]
 
     @classmethod
     def from_schema(cls, cube: CubeSchema, namespace: str, source: Optional[SourceNode]) -> "CubeNode":
@@ -40,14 +45,15 @@ class CubeNode(BaseModel):
             source_node=source,
         )
 
-    def edges(self) -> List["CubeEdge"]:
+    def edges(self) -> List["CubeEdgeTableToTable"]:
         # source -> cube
         if self.source_node is None:
             return []
-        return [CubeEdge(source=self.source_node, destination=self)]
+
+        return [CubeEdgeTableToTable(source=self.source_node, destination=self)]
 
 
-class DimensionNode(BaseModel):
+class DimensionNode(BaseNode):
     node_id: GraiID
     cube_ref: CubeNode
     metadata: DimensionSchema
@@ -60,16 +66,16 @@ class DimensionNode(BaseModel):
             metadata=dimension,
         )
 
-    def edges(self) -> List["CubeEdge"]:
+    def edges(self) -> List["CubeEdgeTableToColumn"]:
         # source -> dimension
         # dimension -> source
         return [
-            CubeEdge(source=self.cube_ref, destination=self)
+            CubeEdgeTableToColumn(source=self.cube_ref, destination=self)
             # TODO: Add source column -> dimension
         ]
 
 
-class MeasureNode(BaseModel):
+class MeasureNode(BaseNode):
     node_id: GraiID
     cube_ref: CubeNode
     metadata: MeasureSchema
@@ -82,24 +88,34 @@ class MeasureNode(BaseModel):
             metadata=measure,
         )
 
-    def edges(self) -> List["CubeEdge"]:
+    def edges(self) -> List["CubeEdgeTableToColumn"]:
         # source -> measure
         # measure -> source
         return [
-            CubeEdge(source=self.cube_ref, destination=self)
+            CubeEdgeTableToColumn(source=self.cube_ref, destination=self)
             # TODO: Add source -> measure
         ]
 
 
-class CubeEdge(BaseModel):
-    source: Union[MeasureNode, DimensionNode, CubeNode, SourceNode]
-    destination: Union[MeasureNode, DimensionNode, CubeNode, SourceNode]
+class BaseCubeEdge(BaseModel):
+    source: BaseNode
+    destination: BaseNode
 
 
-class CubeEdgeUnionFiller(CubeEdge):
-    # this is just to stick the Edge Types in a Union
-    pass
+class CubeEdgeTableToColumn(BaseCubeEdge):
+    source: Union[CubeNode, SourceTableNode]
+    destination: Union[MeasureNode, DimensionNode, SourceColumnNode]
 
 
-CubeNodeTypes = Union[CubeNode, DimensionNode, MeasureNode, SourceNode]
-CubeEdgeTypes = Union[CubeEdge, CubeEdgeUnionFiller]
+class CubeEdgeTableToTable(BaseCubeEdge):
+    source: Union[CubeNode, SourceTableNode]
+    destination: Union[CubeNode, SourceTableNode]
+
+
+class CubeEdgeColumnToColumn(BaseCubeEdge):
+    source: Union[SourceColumnNode, MeasureNode, DimensionNode]
+    destination: Union[SourceColumnNode, MeasureNode, DimensionNode]
+
+
+CubeNodeTypes = Union[CubeNode, DimensionNode, MeasureNode, SourceTableNode, SourceColumnNode]
+CubeEdgeTypes = Union[CubeEdgeTableToColumn, CubeEdgeTableToTable, CubeEdgeColumnToColumn]
