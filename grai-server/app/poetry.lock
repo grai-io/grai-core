@@ -1933,13 +1933,13 @@ setuptools = ">=67.1.0,<68.0.0"
 
 [[package]]
 name = "grai-source-cube"
-version = "0.0.1a2"
+version = "0.0.1"
 description = ""
 optional = false
 python-versions = ">=3.9.13,<4.0.0"
 files = [
-    {file = "grai_source_cube-0.0.1a2-py3-none-any.whl", hash = "sha256:154fbca8e9a70e8e012de51ded69e6c5715560ae4aa7dabc03d26eef853151d0"},
-    {file = "grai_source_cube-0.0.1a2.tar.gz", hash = "sha256:9c39ce8a17ab6886287a56057f9aec789d2182aa03bd6f2743b7e4d7b9f7a636"},
+    {file = "grai_source_cube-0.0.1-py3-none-any.whl", hash = "sha256:c2cd0cc3edbc7ee09297b4c09455e28a73a6064e39f9f178f8a9022de87e14b7"},
+    {file = "grai_source_cube-0.0.1.tar.gz", hash = "sha256:bbbd4d8421f846aad8c29187338c77416562302c4887b9bb3040ff91b99e4dd3"},
 ]
 
 [package.dependencies]
@@ -5243,4 +5243,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8b7edd0b1ed68b8e5a8e2eb891c95554b00a13139e80a95cc2221fee337fae3b"
+content-hash = "c6b79ee1bdd2305af1de8ac584e8a86b2f7e121c29fb26a52f61b58e15ddcde5"
