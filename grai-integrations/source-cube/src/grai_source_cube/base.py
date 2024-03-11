@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Optional, Tuple, Union
 from warnings import warn
 
@@ -10,7 +11,7 @@ from grai_source_cube.settings import CubeApiConfig
 from requests import HTTPError
 
 
-def process_namespace_map(namespace_map: Optional[Union[NamespaceMap, Dict]]) -> NamespaceMap:
+def process_namespace_map(namespace_map: Optional[Union[NamespaceMap, Dict, str]]) -> NamespaceMap:
     if namespace_map is None:
         result = NamespaceMap()
     elif isinstance(namespace_map, dict):
@@ -18,35 +19,38 @@ def process_namespace_map(namespace_map: Optional[Union[NamespaceMap, Dict]]) ->
             result = NamespaceMap(map=namespace_map)
         except Exception as e:
             raise ValueError(f"Could not parse the `namespace_map` from the provided dictionary: {e}")
+    elif isinstance(namespace_map, str):
+        try:
+            result = NamespaceMap(map=json.loads(namespace_map))
+        except Exception as e:
+            raise ValueError(f"Could not parse the `namespace_map` from the provided string: {e}")
     elif not isinstance(namespace_map, NamespaceMap):
-        raise ValueError("The `namespace_map` must be a `CubeSourceMap` or a dictionary")
-
+        raise ValueError("The `namespace_map` must be a `CubeSourceMap`, dictionary, or json string.")
+    else:
+        raise ValueError("The `namespace_map` must be a `CubeSourceMap`, dictionary, or json string.")
     return result
 
 
 class CubeIntegration(GraiIntegrationImplementation):
-    """A class for extracting Grai compliant metadata from the Cube.dev REST API
-
-    Attributes:
-        namespace: The Grai namespace to associate with output from the integration
-
-    """
+    """A class for extracting Grai compliant metadata from the Cube.dev REST API"""
 
     def __init__(
         self,
         source: Union[SourceV1, SourceSpec],
         namespace: str,
-        config: CubeApiConfig,
-        namespace_map: Optional[Union[NamespaceMap, Dict]] = None,
-        version: Optional[str] = None,
+        config: Optional[CubeApiConfig] = None,
+        namespace_map: Optional[Union[NamespaceMap, Dict, str]] = None,
+        version: str = "v1",
     ):
-        """Initializes the dbt integration.
+        """Initializes the Cube.js integration.
 
         Args:
             source: The Grai data source to associate with output from the integration.
-            version: The Grai data version to associate with output from the integration
             namespace: The Grai namespace to associate with output from the integration
-
+            config: The connection configuration for your cube API. If not provided, an effort will be made to load
+                these from the environment.
+            namespace_map: An optional mapping between cube data sources and Grai namespaces
+            version: The version of the Grai API to use for the integration
         """
         namespace_map = process_namespace_map(namespace_map)
         source: SourceV1 = source if isinstance(source, SourceV1) else SourceV1.from_spec(source)
@@ -70,7 +74,7 @@ class CubeIntegration(GraiIntegrationImplementation):
 
     def ready(self) -> bool:
         """Returns True if the integration is ready to run"""
-        response = self.ready()
+        response = self.connector.ready()
         try:
             response.raise_for_status()
             return True

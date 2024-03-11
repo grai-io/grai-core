@@ -1,31 +1,15 @@
-# from grai_source_fivetran.base import FivetranIntegration
-
-# def test_loader_with_json_namespaces(mock_source):
-#     dotenv.load_dotenv()
-#     namespaces = '{"happy": "monkey"}'
-#     conn = FivetranIntegration(namespaces=namespaces, source=mock_source)
-#     assert "happy" in conn.connector.namespace_map
-#     assert conn.connector.namespace_map["happy"].source == "monkey"
-#     assert conn.connector.namespace_map["happy"].destination == "monkey"
+from grai_source_cube.base import CubeIntegration
 
 
-# def test_loader_with_dict_namespaces(mock_source, namespace_map):
-#     dotenv.load_dotenv()
-#     namespaces = {"happy": "monkey"}
-#     conn = FivetranIntegration(namespaces=namespaces, source=mock_source)
-#     assert "happy" in conn.connector.namespace_map
-#     assert conn.connector.namespace_map["happy"].source == "monkey"
-#     assert conn.connector.namespace_map["happy"].destination == "monkey"
+def test_loader_with_json_namespaces(mock_source, local_config):
+    namespaces = '{"happy": "monkey"}'
+    conn = CubeIntegration(namespace_map=namespaces, source=mock_source, namespace="test", config=local_config)
+    assert "happy" in conn.connector.namespace_map
+    assert conn.connector.namespace_map["happy"] == "monkey"
 
 
-# def test_load_from_remote(mock_source):
-#     dotenv.load_dotenv()
-#     conn = FivetranIntegration(source=mock_source)
-#     nodes, edges = conn.get_nodes_and_edges()
-
-
-# def test_load_from_remote_and_update(client, mock_source, namespace_map, run_live):
-#     dotenv.load_dotenv()
-#     conn = FivetranIntegration.from_client(client, source=mock_source.name, namespaces=namespace_map)
-#     if run_live:
-#         conn.update()
+def test_loader_with_dict_namespaces(mock_source, local_config):
+    namespaces = {"happy": "monkey"}
+    conn = CubeIntegration(namespace_map=namespaces, source=mock_source, namespace="test", config=local_config)
+    assert "happy" in conn.connector.namespace_map
+    assert conn.connector.namespace_map["happy"] == "monkey"

@@ -21,8 +21,13 @@ class IntegrationCases:
 
 
 @parametrize_with_cases("test_integration", cases=IntegrationCases, filter=lambda x: x is not None)
-def test_api_ready_endpoint(test_integration):
+def test_connector_ready_endpoint(test_integration):
     assert test_integration.connector.ready().status_code == 200
+
+
+@parametrize_with_cases("test_integration", cases=IntegrationCases, filter=lambda x: x is not None)
+def test_integration_ready_endpoint(test_integration):
+    assert test_integration.ready() is True
 
 
 @parametrize_with_cases("test_integration", cases=IntegrationCases, filter=lambda x: x is not None)

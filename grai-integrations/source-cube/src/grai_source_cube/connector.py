@@ -23,7 +23,23 @@ class NamespaceMap(BaseModel):
 class CubeConnector(CubeAPI):
     """ """
 
-    def __init__(self, namespace: str, config: CubeApiConfig, namespace_map: Dict[str, str] = {}, *args, **kwargs):
+    def __init__(
+        self,
+        namespace: str,
+        config: Optional[CubeApiConfig] = None,
+        namespace_map: Dict[str, str] = {},
+        *args,
+        **kwargs
+    ):
+        """
+
+        Args:
+            namespace:
+            config:
+            namespace_map: An optional mapping between cube data sources and Grai namespaces
+            *args:
+            **kwargs:
+        """
         self.namespace = namespace
         self.namespace_map = NamespaceMap(map=namespace_map).map
         super().__init__(config=config)

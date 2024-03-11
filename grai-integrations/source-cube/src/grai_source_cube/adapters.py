@@ -139,7 +139,7 @@ def built_grai_metadata_from_column_to_column_edge(current: CubeEdgeColumnToColu
     data = {
         "version": version,
         "tags": [config.metadata_id],
-        "edge_type": EdgeMetadataTypeLabels.column_to_column.value,
+        "edge_type": EdgeMetadataTypeLabels.table_to_column.value,
     }
     return TableToColumnMetadata(**data)
 

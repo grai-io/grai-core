@@ -13,8 +13,8 @@ services:
 
   retake-api:
     image: retake/retakesearch:latest
-    depends_on:
-      - retake-core
+#    depends_on:
+#      - retake-core
     environment:
       API_KEY: retake-test-key
       OPENSEARCH_HOST: retake-core
@@ -35,10 +35,10 @@ services:
       org.label-schema.name: "pgsync"
       org.label-schema.description: "Postgres to OpenSearch sync"
       com.label-schema.service-type: "daemon"
-    depends_on:
-      - retake-core
-      - retake-api
-      - redis
+#    depends_on:
+#      - retake-core
+#      - retake-api
+#      - redis
     environment:
       LOG_LEVEL: WARNING
       ELASTICSEARCH_HOST: retake-core

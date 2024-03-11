@@ -20,7 +20,7 @@ class SourceNode(BaseNode):
     metadata: BaseModel = BaseModel()
 
     @staticmethod
-    def edges() -> List["CubeEdge"]:
+    def edges() -> List:
         return []
 
 

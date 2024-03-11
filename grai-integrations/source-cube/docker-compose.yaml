@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: cube
       POSTGRES_DB: cube
     ports:
-      - 5432:5432
+      - 5434:5432
 
   cube_api:
     restart: always

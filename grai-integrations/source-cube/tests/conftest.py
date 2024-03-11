@@ -1,5 +1,4 @@
 import os
-import uuid
 from typing import Optional
 
 import dotenv
@@ -24,36 +23,6 @@ def default_workspace():
 @pytest.fixture(scope="session")
 def mock_source(default_workspace):
     return SourceSpec(name="CubeTest", workspace=default_workspace)
-
-
-class MockClient:
-    def __init__(self):
-        self.id = "v1"
-
-    def get(self, type, **kwargs):
-        return [SourceSpec(id=uuid.uuid4(), **kwargs)]
-
-
-@pytest.fixture(scope="session")
-def client(mock_source):
-    """ """
-    try:
-        from grai_client.endpoints.v1.client import ClientV1
-
-        client = ClientV1(
-            "localhost",
-            "8000",
-            insecure=True,
-            username="null@grai.io",
-            password="super_secret",
-            workspace="default/default",
-        )
-        if not client.get("Source", name=mock_source.name):
-            client.post(mock_source)
-    except Exception:
-        client = MockClient()
-
-    return client
 
 
 @pytest.fixture

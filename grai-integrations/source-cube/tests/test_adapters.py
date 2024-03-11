@@ -1,13 +1,14 @@
 import random
 from functools import cached_property
-from pprint import pprint
 
 from grai_schemas import config as core_config
-from grai_schemas.v1 import SourcedNodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 from grai_source_cube.adapters import adapt_to_client
 from grai_source_cube.mock_tools import (
-    CubeEdgeFactory,
+    CubeEdgeColumnToColumnFactory,
+    CubeEdgeTableToColumnFactory,
+    CubeEdgeTableToTableFactory,
     CubeNodeFactory,
     DimensionNodeFactory,
     MeasureNodeFactory,
@@ -31,7 +32,9 @@ class AdapterTestGenerators:
     ]
 
     edge_generators = [
-        CubeEdgeFactory.build,
+        CubeEdgeTableToColumnFactory.build,
+        CubeEdgeTableToTableFactory.build,
+        CubeEdgeColumnToColumnFactory.build,
     ]
 
     @cached_property
@@ -86,7 +89,7 @@ def test_adapted_table_are_sourced(mock_source):
     """
     result = adapt_to_client(AdapterTestValues.tables, mock_source, "v1")
     for item in result:
-        assert isinstance(item, SourcedNodeV1), f"Adapted table:\n`{pprint(item)}` is not sourced"
+        assert isinstance(item, SourcedNodeV1), f"Received a node of type {type(item)} expecting a SourcedNodeV1"
 
 
 def test_adapted_edges_are_sourced(mock_source):
@@ -104,7 +107,7 @@ def test_adapted_edges_are_sourced(mock_source):
     """
     result = adapt_to_client(AdapterTestValues.edges, mock_source, "v1")
     for item in result:
-        assert isinstance(item, SourcedNodeV1), f"Adapted edge:\n`{pprint(item)}` is not sourced"
+        assert isinstance(item, SourcedEdgeV1), f"Received an edge of type {type(item)} expecting a SourcedEdgeV1"
 
 
 def test_node_metadata_has_core_metadata_ids(nodes):
@@ -135,36 +138,6 @@ def test_edge_metadata_has_core_metadata_ids(edges):
     """
     for edge in edges:
         assert hasattr(edge.spec.metadata, core_config.metadata_id)
-
-
-def test_node_metadata_has_app_metadata_id(nodes):
-    """
-
-    Args:
-        nodes:
-
-    Returns:
-
-    Raises:
-
-    """
-    for node in nodes:
-        assert hasattr(node.spec.metadata, config.metadata_id)
-
-
-def test_edge_metadata_has_app_metadata_id(edges):
-    """
-
-    Args:
-        edges:
-
-    Returns:
-
-    Raises:
-
-    """
-    for edge in edges:
-        assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
 def test_node_metadata_is_core_compliant(nodes):

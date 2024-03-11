@@ -118,6 +118,15 @@ class CubeAPI(BaseCubeAPI):
         self,
         config: Optional[CubeApiConfig] = None,
     ):
+        if config is None:
+            try:
+                config = CubeApiConfig()
+            except Exception as e:
+                message = (
+                    "Could not instantiate a default connection configuration from available environment variables."
+                    "Please provide a valid `config` argument or set the required environment variables."
+                )
+                raise ValueError(message) from e
         self.config = config if config is not None else CubeApiConfig()
         self.session = requests.Session()
         self.session.auth = TokenAuth(self.config.jwt_token)

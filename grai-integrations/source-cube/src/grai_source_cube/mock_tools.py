@@ -10,7 +10,9 @@ from grai_source_cube.base import CubeIntegration
 from grai_source_cube.connector import CubeConnector, NamespaceMap
 from grai_source_cube.settings import CubeApiConfig
 from grai_source_cube.types import (
-    CubeEdge,
+    CubeEdgeColumnToColumn,
+    CubeEdgeTableToColumn,
+    CubeEdgeTableToTable,
     CubeNode,
     DimensionNode,
     GraiID,
@@ -52,7 +54,15 @@ class MeasureNodeFactory(ModelFactory[MeasureNode]):
     pass
 
 
-class CubeEdgeFactory(ModelFactory[CubeEdge]):
+class CubeEdgeTableToColumnFactory(ModelFactory[CubeEdgeTableToColumn]):
+    pass
+
+
+class CubeEdgeTableToTableFactory(ModelFactory[CubeEdgeTableToTable]):
+    pass
+
+
+class CubeEdgeColumnToColumnFactory(ModelFactory[CubeEdgeColumnToColumn]):
     pass
 
 
