@@ -110,5 +110,5 @@ jobs:
 
       - name: Run Cube Tests
         env:
-            TESTING_CUBE_API_URL: "http://cubeapi:4000"
+            TESTING_CUBE_API_URL: "http://cubeapi:4000/cubejs-api/v1"
         run: poetry run pytest
