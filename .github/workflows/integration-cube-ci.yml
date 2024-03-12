@@ -68,6 +68,8 @@ jobs:
             options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
         cubeapi:
             image: cubejs/cube:latest
+            volumes:
+                - ${{ github.workspace }}/grai-integrations/source-cube/data/cube:/cube/conf
             ports:
                 - 4000:4000
             env:
@@ -84,6 +86,7 @@ jobs:
                 CUBEJS_DS_GRAI_DB_NAME: grai
                 CUBEJS_DS_GRAI_DB_USER: grai
                 CUBEJS_DS_GRAI_DB_PASS: grai
+                CUBEJS_DEV_MODE: true
     steps:
       - uses: actions/checkout@v4
 
@@ -94,6 +97,12 @@ jobs:
       - uses: abatilo/actions-poetry@v2
         with:
           poetry-version: "${{ env.poetry_ver }}"
+
+    # This is needed so that the cubeapi loads configs from the mounted volume
+      - name: Restart Cube API
+        uses: docker://docker
+        with:
+            args: docker restart cubeapi
 
       - name: Set up Postgres db
         working-directory: ${{ env.project_dir }}/data/dev-database
@@ -110,5 +119,5 @@ jobs:
 
       - name: Run Cube Tests
         env:
-            TESTING_CUBE_API_URL: "http://cubeapi:4000/cubejs-api/v1"
+            TESTING_CUBE_API_URL: "http://localhost:4000/cubejs-api/v1"
         run: poetry run pytest
