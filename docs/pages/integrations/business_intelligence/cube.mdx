@@ -26,15 +26,29 @@ In this way you can quickly identify which data is being used in your Cube insta
 
 | Field           | Value                                                              | Example  |
 | --------------- | ------------------------------------------------------------------ | -------- |
-| source          | The name of the source, see [sources](/concepts/sources)           | my-source |
-| Name            | Name for connection                                                | Looker   |
+| source          | The name of the source, see [sources](/concepts/sources)           | my-source|
+| Name            | Name for connection                                                | Cube     |
 | Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
-| api_url         | The API url for your cube instance. This should end with '/v1'.    |          |
-| api_token       | The JWT web token you wish to use for authentication with Cube.    |          |
-| namespace_map   | An Optional JSON string (see below)                                |          |
+| api_url         | The API url for your cube instance. This should end with '/v1'.    | https://red-apple.aws-us-west-2.cubecloudapp.dev/cubejs-api/v1 |
+| api_token       | The JWT web token you wish to use for authentication with Cube.    | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTAyNjcwMzR9.CGi3Bo-FBKMFTD4l4q06dIixjcw5zpzVBgnZcOWrC-A          |
+| namespace_map   | An Optional JSON string (see below)                                | see below |
 
 You can find more information about finding your api_url and associated api_token [here](https://cube.dev/docs/product/apis-integrations/rest-api).
+However, if you know the api_secret associated with your Cube instance you can use the following python script to generate a JWT token using the pyjwt library.
+This default token will be used to authenticate with the Cube API and includes no expiration date.
+You can uncomment the "exp" field to add an expiration date to the token with any duration you wish, however, you will need to rotate this token in Grai when it expires.
 
+```python copy
+import jwt
+import datetime
+
+payload = {
+    "iat": datetime.datetime.now(datetime.timezone.utc)
+    #"exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=365),
+}
+token = jwt.encode(payload, CUBE_API_SECRET, algorithm="HS256")
+print(token)
+```
 
 #### Namespace Map
 
