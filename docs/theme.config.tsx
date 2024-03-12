@@ -104,7 +104,7 @@ const config: DocsThemeConfig = {
     return <>Last updated on {dateString}</>;
   },
   search: {
-    component: undefined,
+    // component: undefined,
     placeholder: "Search Grai's Docs",
   },
 };
