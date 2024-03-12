@@ -63,7 +63,7 @@ jobs:
                 POSTGRES_PASSWORD: cube
                 POSTGRES_DB: cube
             ports:
-                - 5433:5432
+                - 5434:5432
             # needed because the postgres container does not provide a healthcheck
             options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
         cube_api:
