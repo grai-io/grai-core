@@ -88,7 +88,18 @@ jobs:
                 CUBEJS_DS_GRAI_DB_PASS: grai
                 CUBEJS_DEV_MODE: true
     steps:
+      - name: Restart Cube API
+        uses: docker://docker
+        with:
+            args: docker stop cubeapi
+
       - uses: actions/checkout@v4
+
+      # This is needed so that the cubeapi loads configs from the mounted volume
+      - name: Restart Cube API
+        uses: docker://docker
+        with:
+            args: docker start cubeapi
 
       - uses: actions/setup-python@v5
         with:
@@ -98,11 +109,7 @@ jobs:
         with:
           poetry-version: "${{ env.poetry_ver }}"
 
-    # This is needed so that the cubeapi loads configs from the mounted volume
-      - name: Restart Cube API
-        uses: docker://docker
-        with:
-            args: docker restart cubeapi
+
 
       - name: Set up Postgres db
         working-directory: ${{ env.project_dir }}/data/dev-database
