@@ -45,61 +45,55 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
-    services:
-        grai-db:
-            image: postgres:16
-            env:
-                POSTGRES_USER: grai
-                POSTGRES_PASSWORD: grai
-                POSTGRES_DB: grai
-            ports:
-                - 5433:5432
-            # needed because the postgres container does not provide a healthcheck
-            options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
-        db:
-            image: postgres:16
-            env:
-                POSTGRES_USER: cube
-                POSTGRES_PASSWORD: cube
-                POSTGRES_DB: cube
-            ports:
-                - 5434:5432
-            # needed because the postgres container does not provide a healthcheck
-            options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
-        cubeapi:
-            image: cubejs/cube:latest
-            volumes:
-                - ${{ github.workspace }}/grai-integrations/source-cube/data/cube:/cube/conf
-            ports:
-                - 4000:4000
-            env:
-                CUBEJS_DB_TYPE: postgres
-                CUBEJS_DB_HOST: db
-                CUBEJS_DB_NAME: cube
-                CUBEJS_DB_USER: cube
-                CUBEJS_DB_PASS: cube
-                CUBEJS_API_SECRET: secret
-                CUBEJS_DATASOURCES: default,grai
-                CUBEJS_DS_GRAI_DB_TYPE: postgres
-                CUBEJS_DS_GRAI_DB_HOST: grai-db
-                CUBEJS_DS_GRAI_DB_PORT: "5432"
-                CUBEJS_DS_GRAI_DB_NAME: grai
-                CUBEJS_DS_GRAI_DB_USER: grai
-                CUBEJS_DS_GRAI_DB_PASS: grai
-                CUBEJS_DEV_MODE: true
+    # services:
+    #     grai-db:
+    #         image: postgres:16
+    #         env:
+    #             POSTGRES_USER: grai
+    #             POSTGRES_PASSWORD: grai
+    #             POSTGRES_DB: grai
+    #         ports:
+    #             - 5433:5432
+    #         # needed because the postgres container does not provide a healthcheck
+    #         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+    #     db:
+    #         image: postgres:16
+    #         env:
+    #             POSTGRES_USER: cube
+    #             POSTGRES_PASSWORD: cube
+    #             POSTGRES_DB: cube
+    #         ports:
+    #             - 5434:5432
+    #         # needed because the postgres container does not provide a healthcheck
+    #         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+    #     cubeapi:
+    #         image: cubejs/cube:latest
+    #         volumes:
+    #             - ${{ github.workspace }}/grai-integrations/source-cube/data/cube:/cube/conf
+    #         ports:
+    #             - 4000:4000
+    #         env:
+    #             CUBEJS_DB_TYPE: postgres
+    #             CUBEJS_DB_HOST: db
+    #             CUBEJS_DB_NAME: cube
+    #             CUBEJS_DB_USER: cube
+    #             CUBEJS_DB_PASS: cube
+    #             CUBEJS_API_SECRET: secret
+    #             CUBEJS_DATASOURCES: default,grai
+    #             CUBEJS_DS_GRAI_DB_TYPE: postgres
+    #             CUBEJS_DS_GRAI_DB_HOST: grai-db
+    #             CUBEJS_DS_GRAI_DB_PORT: "5432"
+    #             CUBEJS_DS_GRAI_DB_NAME: grai
+    #             CUBEJS_DS_GRAI_DB_USER: grai
+    #             CUBEJS_DS_GRAI_DB_PASS: grai
+    #             CUBEJS_DEV_MODE: true
     steps:
-      - name: Restart Cube API
-        uses: docker://docker
-        with:
-            args: docker stop cubeapi
 
       - uses: actions/checkout@v4
 
-      # This is needed so that the cubeapi loads configs from the mounted volume
-      - name: Restart Cube API
-        uses: docker://docker
-        with:
-            args: docker start cubeapi
+      - name: Start Cube Stack
+        run: |
+            docker-compose -f ${{ env.project_dir }}/docker-compose.yml up -d
 
       - uses: actions/setup-python@v5
         with:
@@ -109,18 +103,21 @@ jobs:
         with:
           poetry-version: "${{ env.poetry_ver }}"
 
-
-
-      - name: Set up Postgres db
-        working-directory: ${{ env.project_dir }}/data/dev-database
-        env:
-            POSTGRES_USER: grai
-            POSTGRES_PASSWORD: grai
-            POSTGRES_DB: grai
-            PORT: 5433
-            HOST: grai-db
+      - name: Wait for Cube to start
         run: |
-            bash init-db.sh
+            docker run --network container:cube_api appropriate/curl -s --retry 1 --retry-connrefused http://localhost:4000/cubejs-api/v1/readyz
+
+
+    #   - name: Set up Postgres db
+    #     working-directory: ${{ env.project_dir }}/data/dev-database
+    #     env:
+    #         POSTGRES_USER: grai
+    #         POSTGRES_PASSWORD: grai
+    #         POSTGRES_DB: grai
+    #         PORT: 5433
+    #         HOST: grai-db
+    #     run: |
+    #         bash init-db.sh
 
       - run: poetry install
 
