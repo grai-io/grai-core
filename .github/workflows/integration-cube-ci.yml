@@ -105,7 +105,7 @@ jobs:
 
       - name: Wait for Cube to start
         run: |
-            docker run --network container:cube_api appropriate/curl -s --retry 1 --retry-connrefused http://localhost:4000/cubejs-api/v1/readyz
+            docker run --network container:cubeapi curlimages/curl -s --retry 10 --retry-connrefused http://localhost:4000/readyz
 
 
     #   - name: Set up Postgres db
