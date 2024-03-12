@@ -72,7 +72,8 @@ def cloud_integration(cloud_config, mock_source) -> Optional[CubeIntegration]:
 
 @pytest.fixture(scope="session")
 def local_config() -> CubeApiConfig:
-    return CubeApiConfig(api_url="http://localhost:4000/cubejs-api/v1", api_secret="secret")
+    api_url = os.environ.get("TESTING_CUBE_API_URL", "http://localhost:4000/cubejs-api/v1")
+    return CubeApiConfig(api_url=api_url, api_secret="secret")
 
 
 @pytest.fixture(scope="session")

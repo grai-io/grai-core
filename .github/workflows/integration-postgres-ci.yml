@@ -59,6 +59,7 @@ jobs:
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Postgres db
         working-directory: ${{ env.project_dir }}/dev-database
         env:
