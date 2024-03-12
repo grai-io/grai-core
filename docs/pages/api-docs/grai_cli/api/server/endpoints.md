@@ -71,6 +71,7 @@ NOTE: Not all request parameters are supported by the REST api. See the document
 - `namespace` - The namespace of the node to retrieve. By default it will not search and specific namespace.
 - `print` - Print the search response to the console. Defaults to True.
 - `to_file` - Path to write the search response to. Does not write by default.
+- `**kwargs` - Additional kwargs to pass to the search.
 
 
 **Returns**:

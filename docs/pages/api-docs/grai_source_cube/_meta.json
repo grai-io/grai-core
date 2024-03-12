@@ -1,0 +1,3 @@
+{
+    "adapters": "adapters",    "api": "api",    "base": "base",    "connector": "connector",    "mock_tools": "mock_tools",    "package_definitions": "package_definitions",    "settings": "settings"
+}

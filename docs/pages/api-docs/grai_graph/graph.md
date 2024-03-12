@@ -213,3 +213,56 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph
 
 
 **Returns**:
+
+
+
+## BaseSourceSegment Objects
+
+```python
+class BaseSourceSegment()
+```
+
+### \_\_init\_\_
+
+```python
+def __init__(node_source_map: Dict[UUID, Iterable[str]],
+             edge_map: Dict[UUID, Sequence[UUID]])
+```
+
+**Attributes**:
+
+- `node_source_map` - A dictionary mapping between node id&#x27;s and the set of source labels for the node
+- `node_map` - A dictionary mapping source node id&#x27;s to destination node id&#x27;s
+
+### covering\_set
+
+```python
+@cached_property
+def covering_set() -> tuple[CoveringSourceSet]
+```
+
+**Returns**:
+
+  A tuple of all covering sources
+
+### node\_cover\_map
+
+```python
+@cached_property
+def node_cover_map() -> Dict[UUID, str]
+```
+
+**Returns**:
+
+  A mapping between node id&#x27;s and their covering source label
+
+### cover\_edge\_map
+
+```python
+@cached_property
+def cover_edge_map() -> Dict[str, List[str]]
+```
+
+**Returns**:
+
+  A mapping between covering source labels and covering destination labels

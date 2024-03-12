@@ -1,0 +1,128 @@
+---
+title: Cube
+description: Grai integration for the Semantic Data Layer Cube.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { CubeIcon } from "../../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../../components/InlineLogo";
+
+<InlineLogo logo={<CubeIcon width="200"/>} title="(alpha)"  />
+
+The Cube integration synchronizes your Cubes, dimensions, and measures with Grai.
+In this way you can quickly identify which data is being used in your Cube instance.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/cube.png"
+  height={600}
+  width={1200}
+  alt="Cube Integration Homescreen"
+/>
+
+### Fields
+
+| Field           | Value                                                              | Example  |
+| --------------- | ------------------------------------------------------------------ | -------- |
+| source          | The name of the source, see [sources](/concepts/sources)           | my-source |
+| Name            | Name for connection                                                | Looker   |
+| Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
+| api_url         | The API url for your cube instance. This should end with '/v1'.    |          |
+| api_token       | The JWT web token you wish to use for authentication with Cube.    |          |
+| namespace_map   | An Optional JSON string (see below)                                |          |
+
+You can find more information about finding your api_url and associated api_token [here](https://cube.dev/docs/product/apis-integrations/rest-api).
+
+
+#### Namespace Map
+
+<Callout type="info" emoji="ℹ️">
+  Grai will automatically extract source data from the "meta" field of your Cube definition files as well.
+  You can find more information about how to use the meta field below.
+</Callout>
+
+
+In order to automatically tie your data lineage together, Grai needs to know which Grai namespace corresponds to each cube in your project.
+The namespaces field should be a JSON string with the Grai namespace for each Cube name e.g.
+
+```json
+{
+    "<cube_name>": "<namespace>"
+}
+```
+
+### Connecting Cube to other Data sources
+
+In order to tie your Cube metadata into the rest of your data stack we need to know which data sources are associated with each Cube.
+Unfortunately, the Cube REST api's don't provide that information at the moment.
+Grai provides two options to incorporate this additional metadata
+
+You can include this context when setting up a Cube connection in the namespace map field described above or alternatively in the meta field of your cube definition.
+
+#### The Cube Meta Field
+
+Grai will automatically read the meta field from your Cube schema definitions.
+Grai metadata should be placed under the "grai" subheading in the meta.
+Currently there are two fields we read.
+
+| Field           | Value                                                              | Example  |
+| --------------- | ------------------------------------------------------------------ | -------- |
+| source_namespace | The Grai namespace associated with the Cube data source of the cube. |  |
+| table_name | Optional. The name of the table the cube is querying from.              |  |
+
+An example cube definition file can be found below.
+
+```yaml copy
+cubes:
+  - name: customers
+    sql_table: customers
+    data_source: grai
+    meta:
+      grai:
+        source_namespace: default
+
+    measures:
+      - name: count
+        sql: id
+        type: count
+```
+
+## Python Library
+
+### Installation
+
+Install the Metabase Grai integration with pip
+
+```shell copy
+pip install grai_source_cube
+```
+
+More information about the API is available [here](/api-docs/grai_source_cube/base).
+
+### Example
+
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
+
+```python copy
+from grai_source_cube.base import CubeIntegration
+from grai_schemas.v1.source import SourceSpec
+
+config = {
+    "api_url": "http://localhost:4000/cubejs-api/v1",
+    "api_token": "<your_jwt_token>"
+}
+
+cube_source = SourceSpec(name="CubeSource", workspace={'name': 'your_workspace', 'organization': 'your_organization'})
+
+integration = LookerIntegration(
+    source=cube_source,
+    config=config,
+    namespace=<your_namespace>,
+)
+
+nodes, edges = integration.get_nodes_and_edges()
+client.post([nodes, edges])
+```

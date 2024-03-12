@@ -19,9 +19,12 @@ A class for extracting Grai compliant metadata from flat files like csv and parq
 ### \_\_init\_\_
 
 ```python
-def __init__(file_name: str,
+def __init__(file_ref: str,
              namespace: str,
              source: SourceV1,
+             file_ext: Optional[str] = None,
+             table_name: Optional[str] = None,
+             file_location: Optional[str] = None,
              version: Optional[str] = None)
 ```
 
@@ -29,7 +32,7 @@ Initializes the Flat File integration.
 
 **Arguments**:
 
-- `file_name` - A path to the file
+- `file_ref` - A loadable file reference
 - `namespace` - The Grai namespace to associate with output from the integration
 - `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
 - `version` - The Grai data version to associate with output from the integration

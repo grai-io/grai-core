@@ -3,30 +3,16 @@ sidebar_label: loader
 title: grai_source_flat_file.loader
 ---
 
-## get\_file\_name
-
-```python
-def get_file_name(file_name: str) -> str
-```
-
-**Arguments**:
-
-  file_name (str):
-
-
-**Returns**:
-
-
-
 ## load\_file
 
 ```python
-def load_file(file_name: str) -> pd.DataFrame
+def load_file(file_name: str, file_ext: str) -> pd.DataFrame
 ```
 
 **Arguments**:
 
-  file_name (str):
+- `file_name` - The path to the file
+- `file_ext` - The type of file
 
 
 **Returns**:
@@ -104,13 +90,16 @@ def table_builder(namespace: str, table_name: str,
 
 ```python
 def build_nodes_and_edges(
-        file_name: str,
+        file_ref: str, file_type: str, table_name: str, file_location: str,
         namespace: str) -> Tuple[List[Union[Table, Column]], List[Edge]]
 ```
 
 **Arguments**:
 
-  file_name (str):
+  file_ref:
+  file_type:
+  table_name:
+  file_location:
   namespace (str):
 
 
