@@ -19,8 +19,8 @@ A class for extracting Grai compliant metadata from Metabase
 
 ```python
 def __init__(source: SourceV1,
+             metabase_namespace: str,
              version: Optional[str] = None,
-             metabase_namespace: Optional[str] = None,
              namespace_map: Optional[Union[str, Dict[int, str]]] = None,
              endpoint: Optional[str] = None,
              username: Optional[str] = None,

@@ -27,13 +27,13 @@ Build grai metadata for a given object.
 
 - `NotImplementedError` - If no adapter is available between the `current` and `desired` types.
 
-## build\_grai\_metadata\_from\_table
+## build\_grai\_metadata\_from\_column
 
 ```python
 @build_grai_metadata.register
-def build_grai_metadata_from_table(current: Column,
-                                   version: Literal["v1"] = "v1"
-                                   ) -> ColumnMetadata
+def build_grai_metadata_from_column(current: Column,
+                                    version: Literal["v1"] = "v1"
+                                    ) -> ColumnMetadata
 ```
 
 Build grai metadata for a Table object.
@@ -72,7 +72,7 @@ Build grai metadata for a Table object.
 
 **Returns**:
 
-- `TableMetadata` - grai metadata object for the Table.
+  grai metadata object for the Table.
 
 
 **Raises**:
@@ -98,7 +98,7 @@ Build grai metadata for a Question object.
 
 **Returns**:
 
-- `GenericNodeMetadataV1` - grai metadata object for the Question.
+  grai metadata object for the Question.
 
 
 **Raises**:
@@ -124,15 +124,16 @@ Build grai metadata for a Collection object.
 
 **Returns**:
 
-- `GenericNodeMetadataV1` - grai metadata object for the Collection.
+  grai metadata object for the Collection.
 
 ## build\_grai\_metadata\_from\_edge
 
 ```python
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: Edge,
-                                  version: Literal["v1"] = "v1"
-                                  ) -> GenericEdgeMetadataV1
+def build_grai_metadata_from_edge(
+    current: Edge,
+    version: Literal["v1"] = "v1"
+) -> Union[ColumnToColumnMetadata, GenericEdgeMetadataV1]
 ```
 
 Build grai metadata for an Edge object.
@@ -145,7 +146,7 @@ Build grai metadata for an Edge object.
 
 **Returns**:
 
-- `GenericEdgeMetadataV1` - grai metadata object for the Edge.
+  Grai metadata object for the Edge.
 
 
 **Raises**:

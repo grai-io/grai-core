@@ -1,0 +1,124 @@
+name: Cube Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-cube/**"
+      - "grai-client/**"
+      - "grai-server/**"
+
+
+concurrency:
+  group: ${{ github.ref }}-integration-cube-ci
+  cancel-in-progress: true
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.3.1"
+  project_dir: "grai-integrations/source-cube"
+
+jobs:
+  lint-integration-cube:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black --check
+
+  tests-integration-cube:
+    needs: lint-integration-cube
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    # services:
+    #     grai-db:
+    #         image: postgres:16
+    #         env:
+    #             POSTGRES_USER: grai
+    #             POSTGRES_PASSWORD: grai
+    #             POSTGRES_DB: grai
+    #         ports:
+    #             - 5433:5432
+    #         # needed because the postgres container does not provide a healthcheck
+    #         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+    #     db:
+    #         image: postgres:16
+    #         env:
+    #             POSTGRES_USER: cube
+    #             POSTGRES_PASSWORD: cube
+    #             POSTGRES_DB: cube
+    #         ports:
+    #             - 5434:5432
+    #         # needed because the postgres container does not provide a healthcheck
+    #         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+    #     cubeapi:
+    #         image: cubejs/cube:latest
+    #         volumes:
+    #             - ${{ github.workspace }}/grai-integrations/source-cube/data/cube:/cube/conf
+    #         ports:
+    #             - 4000:4000
+    #         env:
+    #             CUBEJS_DB_TYPE: postgres
+    #             CUBEJS_DB_HOST: db
+    #             CUBEJS_DB_NAME: cube
+    #             CUBEJS_DB_USER: cube
+    #             CUBEJS_DB_PASS: cube
+    #             CUBEJS_API_SECRET: secret
+    #             CUBEJS_DATASOURCES: default,grai
+    #             CUBEJS_DS_GRAI_DB_TYPE: postgres
+    #             CUBEJS_DS_GRAI_DB_HOST: grai-db
+    #             CUBEJS_DS_GRAI_DB_PORT: "5432"
+    #             CUBEJS_DS_GRAI_DB_NAME: grai
+    #             CUBEJS_DS_GRAI_DB_USER: grai
+    #             CUBEJS_DS_GRAI_DB_PASS: grai
+    #             CUBEJS_DEV_MODE: true
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Start Cube Stack
+        run: |
+            docker compose up -d
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+    #   - name: Set up Postgres db
+    #     working-directory: ${{ env.project_dir }}/data/dev-database
+    #     env:
+    #         POSTGRES_USER: grai
+    #         POSTGRES_PASSWORD: grai
+    #         POSTGRES_DB: grai
+    #         PORT: 5433
+    #         HOST: grai-db
+    #     run: |
+    #         bash init-db.sh
+
+      - run: poetry install
+
+      - name: Wait for Cube to start
+        run: |
+            docker run --network container:cubeapi curlimages/curl -s --retry 10 --retry-connrefused http://localhost:4000/readyz
+
+      - name: Run Cube Tests
+        run: poetry run pytest

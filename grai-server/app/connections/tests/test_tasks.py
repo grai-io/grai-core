@@ -135,6 +135,13 @@ def test_yaml_file_connector():
 
 
 @pytest.fixture
+def test_cube_connector():
+    connector, created = Connector.objects.get_or_create(name=ConnectorSlugs.CUBE, slug=ConnectorSlugs.CUBE)
+
+    return connector
+
+
+@pytest.fixture
 def test_connector():
     connector, created = Connector.objects.get_or_create(name="Connector", slug="Connector")
 
@@ -482,6 +489,21 @@ class TestUpdateServer:
             source=test_source,
             metadata={"project": "a", "dataset": "dataset"},
             secrets={"credentials": {}},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        get_adapter(run.connection.connector.slug)
+
+    def test_get_cube_connector(self, test_workspace, test_cube_connector, test_source):
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_cube_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={"api_url": "http://localhost:4000/cubejs-api/v1", "namespace_map": {}},
+            secrets={
+                "api_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTAyMjM1ODR9.ZFUDJxagcQkbOX800dokpKWkoK19w-YQcE5YO4RjdWw"
+            },
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 

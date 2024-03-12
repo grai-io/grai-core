@@ -713,5 +713,37 @@
           "category": "data tools",
           "status": "alpha"
       }
+  },
+    {
+      "model": "connections.connector",
+      "fields": {
+          "name": "Cube",
+          "slug": "cube",
+          "metadata": {
+              "docs_url": "https://docs.grai.io/integrations/business_intelligence/cube",
+              "fields": [
+                {
+                    "name": "api_url",
+                    "required": true,
+                    "order": 0
+                },
+                {
+                    "name": "api_token",
+                    "secret": true,
+                    "required": true,
+                    "order": 1
+                },
+                {
+                    "name": "namespace_map",
+                    "required": false,
+                    "order": 2
+                }
+              ]
+          },
+          "is_active": true,
+          "icon": "/icons/data-sources/cube.png",
+          "category": "business intelligence",
+          "status": "alpha"
+      }
   }
 ]

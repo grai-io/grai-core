@@ -25,6 +25,7 @@ from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
 from connections.adapters.flat_file import FlatFileAdapter
+from connections.adapters.cube import CubeAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 
@@ -80,6 +81,8 @@ def get_adapter(slug: str) -> Type[BaseAdapter]:
         return OpenLineageAdapter
     elif slug == ConnectorSlugs.FLAT_FILE:
         return FlatFileAdapter
+    elif slug == ConnectorSlugs.CUBE:
+        return CubeAdapter
 
     raise NoConnectorError(f"No connector found for: {slug}")
 
