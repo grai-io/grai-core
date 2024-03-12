@@ -73,14 +73,14 @@ class CubeApiConfig(BaseSettings):
             return self.api_token.get_secret_value()
         elif self._api_jwt_token is None:
             self.set_jwt_token()
-        elif self._jwt_token_expiry and self._jwt_token_expiry < datetime.datetime.now(datetime.UTC):
+        elif self._jwt_token_expiry and self._jwt_token_expiry < datetime.datetime.now(datetime.timezone.utc):
             self.set_jwt_token()
 
         token: str = self._api_jwt_token.get_secret_value()  # type: ignore
         return token
 
     def set_jwt_token(self) -> None:
-        expiration_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=5)
+        expiration_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=5)
         payload = {"exp": expiration_time}
         cube_token = jwt.encode(payload, self.api_secret.get_secret_value(), algorithm="HS256")
         self._api_jwt_token = SecretStr(cube_token)

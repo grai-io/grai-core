@@ -9,7 +9,7 @@ CUBE_API_SECRET = os.environ.get("GRAI_CUBE_API_SECRET", "secret")
 
 
 def generate_cubejs_token():
-    payload = {"iat": datetime.datetime.now(datetime.UTC)}
+    payload = {"iat": datetime.datetime.now(datetime.timezone.utc)}
     token = jwt.encode(payload, CUBE_API_SECRET, algorithm="HS256")
     return token
 

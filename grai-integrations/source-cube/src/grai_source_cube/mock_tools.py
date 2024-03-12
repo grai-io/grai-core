@@ -79,13 +79,13 @@ class CubeApiConfigFactory(ModelFactory[CubeApiConfig]):
     def api_token(cls, api_secret: Optional[SecretStr]) -> Optional[SecretStr]:
         """ """
         if api_secret is None:
-            payload = {"exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)}
+            payload = {"exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1)}
             encoded_jwt = jwt.encode(payload, "mock_secret", algorithm="HS256")
             response = SecretStr(encoded_jwt)
         elif random.Random().choice([True, False]):
             response = None
         else:
-            payload = {"exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)}
+            payload = {"exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1)}
             encoded_jwt = jwt.encode(payload, api_secret, algorithm="HS256")
             response = SecretStr(encoded_jwt)
 
