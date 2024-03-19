@@ -5,7 +5,7 @@ description: Documentation for Grai's BigQuery GitHub Action GitHub action.
 
 # BigQuery
 
-The BigQuery action depends on Google's python BigQuery library. 
+The BigQuery action depends on Google's python BigQuery library.
 More information can be found about specific connection credentials in Google's documentation [here](https://cloud.google.com/python/docs/reference/bigquery/latest).
 
 
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Grai Action
         uses: grai-io/grai-actions/bigquery@master
         with:
@@ -55,6 +55,3 @@ jobs:
             }'
 
 ```
-
-
-

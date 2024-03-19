@@ -1,4 +1,4 @@
-FROM node:18-slim AS builder
+FROM node:21-slim AS builder
 
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
@@ -12,8 +12,7 @@ WORKDIR /app
 
 # Cache and Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-RUN npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy app files
 COPY . .
@@ -22,7 +21,7 @@ COPY . .
 RUN npm run build
 
 # Bundle static assets with nginx
-FROM nginx:1.23.2-alpine as production
+FROM nginx:1.25.4-alpine as production
 
 ENV NODE_ENV production
 

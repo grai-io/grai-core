@@ -1,7 +1,5 @@
 import os
 
-import pkg_resources
-
 from grai_source_dbt.processor import ManifestProcessor
 
 file_id_map = {"jaffle_shop": "manifest.json"}

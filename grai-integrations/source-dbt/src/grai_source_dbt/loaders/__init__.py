@@ -2,7 +2,21 @@ from typing import Type, Union, get_args
 
 from dbt_artifacts_parser.parsers.version_map import ArtifactTypes
 
-from grai_source_dbt.loaders import base, utils, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10
+from grai_source_dbt.loaders import (
+    base,
+    utils,
+    v1,
+    v2,
+    v3,
+    v4,
+    v5,
+    v6,
+    v7,
+    v8,
+    v9,
+    v10,
+    v11,
+)
 from grai_source_dbt.loaders.v1 import ManifestLoaderV1
 from grai_source_dbt.loaders.v7 import ManifestLoaderV7
 from grai_source_dbt.utils import full_name, set_extra_fields
@@ -17,6 +31,7 @@ ManifestTypes = Union[
     v8.ManifestV8,
     v9.ManifestV9,
     v10.ManifestV10,
+    v11.ManifestV11,
 ]
 NodeTypes = Union[
     v1.NodeTypes,
@@ -29,6 +44,7 @@ NodeTypes = Union[
     v8.NodeTypes,
     v9.NodeTypes,
     v10.NodeTypes,
+    v11.NodeTypes,
 ]
 
 SourceTypes = Union[
@@ -42,6 +58,7 @@ SourceTypes = Union[
     v8.SourceTypes,
     v9.SourceTypes,
     v10.SourceTypes,
+    v11.SourceTypes,
 ]
 AllDbtNodeTypes = Union[NodeTypes, SourceTypes]
 AllDbtNodeInstances = get_args(AllDbtNodeTypes)
@@ -88,7 +105,8 @@ MANIFEST_MAP = {
     ArtifactTypes.MANIFEST_V7.value.dbt_schema_version: ManifestLoaderV7,
     ArtifactTypes.MANIFEST_V8.value.dbt_schema_version: ManifestLoaderV7,
     ArtifactTypes.MANIFEST_V9.value.dbt_schema_version: ManifestLoaderV7,
-    # ArtifactTypes.MANIFEST_V10.value.dbt_schema_version: ManifestLoaderV7,
+    ArtifactTypes.MANIFEST_V10.value.dbt_schema_version: ManifestLoaderV7,
+    ArtifactTypes.MANIFEST_V11.value.dbt_schema_version: ManifestLoaderV7,
 }
 
 

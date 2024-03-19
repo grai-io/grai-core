@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "grai_source_dbt_cloud"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
-authors = ["Edward Louth <edward@grai.io>"]
+authors = ["Grai <dev@grai.io>"]
 license = "Elastic-2.0"
 packages = [
     { include = "grai_source_dbt_cloud", from = "src" },
@@ -18,8 +18,9 @@ python = "^3.8"
 pydantic = "^1.9.1"
 grai-client = "^0.3.0"
 grai-schemas = "^0.2.6"
-grai-source-dbt = "^0.3.0"
+grai-source-dbt = "^0.3.5"
 dbtc = "^0.4.2"
+multimethod = "^1.8, !=1.11"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

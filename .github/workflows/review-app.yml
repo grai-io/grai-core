@@ -13,6 +13,9 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write
+
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
@@ -22,18 +25,18 @@ jobs:
         working-directory: grai-frontend
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-frontend
           tags: |
@@ -45,7 +48,7 @@ jobs:
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@master
+        uses: docker/setup-buildx-action@v3
 
       # - name: Docker cache layers
       #   uses: actions/cache@v2
@@ -81,19 +84,22 @@ jobs:
       run:
         working-directory: grai-server/app
 
+    permissions:
+      packages: write
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
           tags: |
@@ -140,7 +146,7 @@ jobs:
       TAG: ${{ github.sha }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Update deployment file
         run: sed -ibak -e 's/<PR-NUM>/'${PR_NAME}'/g' -e 's/<TAG>/'${TAG}'/g' $GITHUB_WORKSPACE/.github/values/helm.yml
@@ -181,12 +187,12 @@ jobs:
       - name: Delete untagged ghcr - frontend
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           package_name: grai-frontend
           owner_type: org
       - name: Delete untagged ghcr - server
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           package_name: grai-server
           owner_type: org

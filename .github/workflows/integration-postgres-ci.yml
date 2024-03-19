@@ -26,11 +26,11 @@ jobs:
         working-directory: ${{ env.project_dir }}
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Python
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 
@@ -58,7 +58,8 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Set up Postgres db
         working-directory: ${{ env.project_dir }}/dev-database
         env:
@@ -70,7 +71,7 @@ jobs:
         run: |
           bash init-db.sh
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 

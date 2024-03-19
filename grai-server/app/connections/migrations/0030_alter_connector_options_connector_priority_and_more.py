@@ -6,13 +6,13 @@ from connections.models import DEFAULT_STATUS_PRIORITY
 
 
 def populate_priority(apps, schema_editor):
-    connector = apps.get_model('connections', 'Connector')
+    connector = apps.get_model("connections", "Connector")
 
     instances = connector.objects.all()
     for instance in instances:
         instance.priority = DEFAULT_STATUS_PRIORITY.get(instance.status, 100)
 
-    connector.objects.bulk_update(instances, ['priority'])
+    connector.objects.bulk_update(instances, ["priority"])
 
 
 class Migration(migrations.Migration):
@@ -30,7 +30,6 @@ class Migration(migrations.Migration):
             name="priority",
             field=models.IntegerField(blank=True, null=True),
         ),
-
         migrations.AlterField(
             model_name="connector",
             name="slug",

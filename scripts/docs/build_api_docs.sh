@@ -4,7 +4,6 @@ directory="../.."
 current_directory=$(pwd)
 docs_page_directory="$directory/docs/pages/api-docs"
 
-
 rm -r $docs_page_directory/*
 
 find "$directory" -type f \( -name "pydoc-markdown.yml" -o -name "pydoc-markdown.yaml" \) -print0 | while IFS= read -r -d $'\0' file; do

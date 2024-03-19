@@ -17,7 +17,7 @@ python = "^3.8"
 pydantic = "^1.9.1"
 grai-schemas = "^0.2.10"
 PyYAML = "^6.0"
-multimethod = "^1.8"
+multimethod = "^1.8, !=1.11"
 psycopg2 = "^2.9.5"
 
 [tool.poetry.group.dev.dependencies]

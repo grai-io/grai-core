@@ -1,0 +1,102 @@
+cubes:
+  - name: customers
+    sql_table: customers
+    data_source: grai
+    meta:
+      grai:
+        source_namespace: default
+
+    measures:
+      - name: count
+        sql: id
+        type: count
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: first_name
+        sql: first_name
+        type: string
+
+      - name: last_name
+        sql: last_name
+        type: string
+
+      - name: created_at
+        sql: created_at
+        type: time
+
+    joins:
+      - name: customers
+        relationship: one_to_many
+        sql: "{customers}.id = {orders}.user_id"
+
+  - name: orders
+    sql_table: orders
+    data_source: grai
+    meta:
+      grai:
+        source_namespace: default
+        table_name: "grai.orders"
+
+    measures:
+      - name: count
+        sql: id
+        type: count
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: user_id
+        sql: user_id
+        type: number
+
+      - name: status
+        sql: status
+        type: string
+
+      - name: order_date
+        sql: order_date
+        type: time
+
+    joins:
+      - name: orders
+        relationship: many_to_one
+        sql: "{orders}.user_id = {customers}.id"
+
+  - name: payments
+    sql_table: payments
+    data_source: grai
+    meta:
+      grai:
+        source_namespace: default
+        table_name: "grai.payments"
+
+    measures:
+      - name: count
+        sql: id
+        type: count
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: order_id
+        sql: order_id
+        type: number
+
+      - name: amount
+        sql: amount
+        type: number
+
+      - name: payment_method
+        sql: payment_method
+        type: string

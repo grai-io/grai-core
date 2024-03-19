@@ -5,7 +5,7 @@ description: Documentation for Grai's Redshift GitHub Action GitHub action.
 
 # Redshift
 
-The Redshift action depends on Amazon's python connector library. 
+The Redshift action depends on Amazon's python connector library.
 You can find complete documentation about the library in the AWS docs [here](https://github.com/aws/amazon-redshift-python-driver).
 
 
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Grai Action
         uses: grai-io/grai-actions/redshift@master
         with:
@@ -53,6 +53,3 @@ jobs:
           db-password: password
 
 ```
-
-
-
