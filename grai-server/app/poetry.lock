@@ -2,13 +2,13 @@
 
 [[package]]
 name = "algoliasearch"
-version = "2.6.3"
+version = "3.0.0"
 description = "Algolia Search API Client for Python."
 optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
+python-versions = ">=3.4"
 files = [
-    {file = "algoliasearch-2.6.3-py2.py3-none-any.whl", hash = "sha256:0647732a91549132514ba5263cb12c7cc443baeb54bd52d324f84f6acd845ac1"},
-    {file = "algoliasearch-2.6.3.tar.gz", hash = "sha256:9706d1238ad912e87a9fb43791399de47fe559afd32964e91dfc69a7ca3fe0ce"},
+    {file = "algoliasearch-3.0.0-py2.py3-none-any.whl", hash = "sha256:e150a577435f5256a52e5f50c865138df2e434db640b9e71556e84c169a1da52"},
+    {file = "algoliasearch-3.0.0.tar.gz", hash = "sha256:abd9316f81fec1e322db4faf183081383b334188ac8184baab36405533038cdd"},
 ]
 
 [package.dependencies]
@@ -16,17 +16,17 @@ requests = ">=2.21,<3.0"
 
 [[package]]
 name = "algoliasearch-django"
-version = "2.0.0"
+version = "3.0.0"
 description = "Algolia Search integration for Django"
 optional = false
 python-versions = "*"
 files = [
-    {file = "algoliasearch-django-2.0.0.tar.gz", hash = "sha256:0a8b7d07d52e4042709755a5839e0e1ba5bdfb965ea6b21286460db52061e0f9"},
-    {file = "algoliasearch_django-2.0.0-py2.py3-none-any.whl", hash = "sha256:b36e9d69bd5b97ad439cf941d87f8131932be844f5d383928f453de9eece4dbe"},
+    {file = "algoliasearch-django-3.0.0.tar.gz", hash = "sha256:b6ce1ae8c899503e8a4745fb8fd5b0b9babc79cc706f3bfa6ca8eeefc8d7f568"},
+    {file = "algoliasearch_django-3.0.0-py2.py3-none-any.whl", hash = "sha256:500775887261b93e1fe3813983678d04b499d5d043c0f538009ca4a9a84585ef"},
 ]
 
 [package.dependencies]
-algoliasearch = ">=2.0,<3.0"
+algoliasearch = ">=3.0,<4.0"
 django = ">=1.7"
 
 [[package]]
@@ -1930,6 +1930,25 @@ grai-schemas = ">=0.2.6,<0.3.0"
 multimethod = ">=1.8,<2.0"
 pydantic = ">=1.9.1,<2.0.0"
 setuptools = ">=67.1.0,<68.0.0"
+
+[[package]]
+name = "grai-source-cube"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "grai_source_cube-0.0.1-py3-none-any.whl", hash = "sha256:c2cd0cc3edbc7ee09297b4c09455e28a73a6064e39f9f178f8a9022de87e14b7"},
+    {file = "grai_source_cube-0.0.1.tar.gz", hash = "sha256:bbbd4d8421f846aad8c29187338c77416562302c4887b9bb3040ff91b99e4dd3"},
+]
+
+[package.dependencies]
+grai-schemas = ">=0.2.6,<0.3.0"
+multimethod = ">=1.8,<1.11 || >1.11,<2.0"
+polyfactory = ">=2.14.1,<3.0.0"
+pydantic = ">=1.9.1,<2.0.0"
+pyjwt = ">=2.8.0,<3.0.0"
+python-dotenv = ">=0.21.1,<0.22.0"
 
 [[package]]
 name = "grai-source-dbt"
@@ -5225,4 +5244,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9b3be4dc071a9425a1a67720e8725f31931764fb305ed7d1a738bad1e4f014b9"
+content-hash = "c6b79ee1bdd2305af1de8ac584e8a86b2f7e121c29fb26a52f61b58e15ddcde5"

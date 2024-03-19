@@ -22,6 +22,7 @@ class ConnectorSlugs(models.TextChoices):
     LOOKER = "looker", "Looker"
     OPEN_LINEAGE = "openlineage", "OpenLineage"
     FLAT_FILE = "flatfile", "Flat File"
+    CUBE = "cube", "Cube"
 
 
 class ConnectorStatus(models.TextChoices):

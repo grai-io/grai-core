@@ -1,0 +1,82 @@
+version: "2.2"
+
+services:
+  grai-db:
+    restart: always
+    image: postgres:16
+    volumes:
+     - ./data/dev-database/schemas:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: grai
+      POSTGRES_PASSWORD: grai
+      POSTGRES_DB: grai
+    ports:
+      - 5433:5432
+
+  db:
+    restart: always
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cube
+      POSTGRES_PASSWORD: cube
+      POSTGRES_DB: cube
+    ports:
+      - 5434:5432
+
+  cube_api:
+    container_name: cubeapi
+    restart: always
+    image: cubejs/cube:latest
+    ports:
+      - 4000:4000
+    environment:
+      - CUBEJS_DB_TYPE=postgres
+      - CUBEJS_DB_HOST=db
+      - CUBEJS_DB_NAME=cube
+      - CUBEJS_DB_USER=cube
+      - CUBEJS_DB_PASS=cube
+      - CUBEJS_API_SECRET=secret
+      - CUBEJS_DEV_MODE=true
+#       - CUBEJS_CUBESTORE_HOST=cubestore_router
+    volumes:
+      - ./data/cube:/cube/conf
+    env_file:
+      - ./data/cube/env
+#     depends_on:
+#       - cubestore_router
+#       - cubestore_worker_1
+#       - cubestore_worker_2
+
+#   cubestore_router:
+#     restart: always
+#     image: cubejs/cubestore:arm64v8
+#     environment:
+#       - CUBESTORE_WORKERS=cubestore_worker_1:10001,cubestore_worker_2:9001
+#       - CUBESTORE_REMOTE_DIR=/cube/data
+#       - CUBESTORE_META_PORT=9999
+#       - CUBESTORE_SERVER_NAME=cubestore_router:9999
+#     env_file:
+#       - ./data/cube/env
+#     ports:
+#       - "3030:3030" # Expose port 3030 for HTTP connections
+#     volumes:
+#       - cubestore:/cube/data
+#
+#   cubestore_worker_1:
+#     restart: always
+#     image: cubejs/cubestore:latest
+#     environment:
+#       - CUBESTORE_SERVER_NAME=cubestore_worker_1:10001
+#       - CUBESTORE_WORKERS=cubestore_worker_1:10001,cubestore_worker_2:9001
+#       - CUBESTORE_WORKER_PORT=10001
+#       - CUBESTORE_REMOTE_DIR=/cube/data
+#       - CUBESTORE_META_ADDR=cubestore_router:9999
+#     env_file:
+#       - ./data/cube/env
+#     volumes:
+#       - cubestore:/cube/data
+#     depends_on:
+#       - cubestore_router
+
+volumes:
+  cubestore:

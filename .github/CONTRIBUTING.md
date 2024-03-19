@@ -4,22 +4,22 @@ Below you'll find a set of guidelines for how to contribute to Grai.
 
 # Opening issues
 
-Before you submit an issue, please check all existing open and closed issues to see if your issue has previously been resolved or is already known. 
-If there is already an issue logged, feel free to upvote it by adding a 👍 reaction. 
+Before you submit an issue, please check all existing open and closed issues to see if your issue has previously been resolved or is already known.
+If there is already an issue logged, feel free to upvote it by adding a 👍 reaction.
 If you would like to submit a new issue, please fill out our Issue Template to the best of your ability so we can accurately understand your report.
 
 # Security issues & vulnerabilities
 
-If you come across an issue related to security, or a potential attack vector within Grai or one of its dependencies, please DO NOT create a publicly viewable issue. 
-Instead, please contact us directly at hello@grai.io. 
+If you come across an issue related to security, or a potential attack vector within Grai or one of its dependencies, please DO NOT create a publicly viewable issue.
+Instead, please contact us directly at hello@grai.io.
 We will do everything we can to respond to the issue as soon as possible.
 
-If you find a vulnerability within the core Grai repository, and we determine that it is remediable and of significant nature, we will be happy to pay you a reward for your findings and diligence. 
+If you find a vulnerability within the core Grai repository, and we determine that it is remediable and of significant nature, we will be happy to pay you a reward for your findings and diligence.
 Contact us to find out more.
 
 # Documentation edits
 
-Grai'sdocumentation can be found directly within its codebase and you can feel free to make changes / improvements to any of it through opening a PR. 
+Grai'sdocumentation can be found directly within its codebase and you can feel free to make changes / improvements to any of it through opening a PR.
 We utilize these files directly in our website and will periodically deploy documentation updates as necessary.
 
 # Building additional features
@@ -29,7 +29,7 @@ If you're an incredibly awesome person and want to help us make Grai even better
 
 ## Before Starting
 
-To help us work on new features, you can create a new feature request post in GitHub Discussion or discuss it in our Slack. 
+To help us work on new features, you can create a new feature request post in GitHub Discussion or discuss it in our Slack.
 New functionality often has large implications across the entire Grai repo, so it is best to discuss the architecture and approach before starting work on a pull request.
 
 ## Code
@@ -72,4 +72,3 @@ Contributors to Grai are deemed to have acceppted
 * [GitHub's Acceptable Use Policy](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)
 * [GitHub's Community Guidelines](https://docs.github.com/en/site-policy/github-terms/github-community-guidelines)
 * [The Developer Certificate of Origin](https://developercertificate.org/)
- 

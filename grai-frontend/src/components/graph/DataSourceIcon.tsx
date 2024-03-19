@@ -32,6 +32,7 @@ const icons: Icons = {
   "grai-source-great-expectations":
     "/icons/data-sources/great-expectations.png",
   "grai-source-keboola": "/icons/data-sources/keboola.png",
+  "grai-source-cube": "/icons/data-sources/cube.png",
 }
 
 const heights = {

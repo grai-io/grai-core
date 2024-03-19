@@ -18,19 +18,25 @@ jobs:
         working-directory: ${{ env.project_dir }}
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Python
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: pip install black isort
+      - uses: psf/black@stable
+        with:
+          src: ${{ env.project_dir }}
+          options: "--check --verbose"
+          version: "~= 24.0"
 
-      - run: |
-          black . --check
-          isort . --profile black
+      - uses: isort/isort-action@master
+        with:
+          configuration: "--profile black"
+          isortVersion: "5.13.2"
+
 
   tests-integration-looker:
     needs: lint-integration-looker
@@ -39,9 +45,9 @@ jobs:
       run:
         working-directory: ${{ env.project_dir }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 

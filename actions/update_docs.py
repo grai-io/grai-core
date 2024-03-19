@@ -5,6 +5,7 @@ WARNING:
     * This script will overwrite any changes made to the documentation
     * mdx is not fully compatible with md so if a page fails to render this is likely the cause.
 """
+
 import json
 import os
 import re

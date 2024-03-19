@@ -32,11 +32,11 @@ jobs:
         working-directory: ${{ env.project_dir }}
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Python
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 
@@ -53,9 +53,9 @@ jobs:
       run:
         working-directory: ${{ env.project_dir }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "${{ env.py_ver }}"
 

@@ -43,7 +43,7 @@ jobs:
       - name: Run npm tests
         run: npm run test:coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: grai-frontend
           token: ${{ secrets.CODECOV_TOKEN }}
