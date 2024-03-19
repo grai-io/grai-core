@@ -34,6 +34,7 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
+      - REDIS_HOST=redis
     depends_on:
       - db
     healthcheck:
