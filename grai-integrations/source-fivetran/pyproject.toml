@@ -23,7 +23,7 @@ requests = "^2.28.1"
 python-dotenv = "^0.21.1"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.6.0"
+black = ">=22.6,<25.0"
 mypy = "^0.971"
 isort = "^5.12.0"
 pytest = "^7.2.0"
