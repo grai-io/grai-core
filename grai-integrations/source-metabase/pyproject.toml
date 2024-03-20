@@ -21,7 +21,7 @@ httpx = {version="^0.24.1", extras=["http2"]}
 [tool.poetry.group.dev.dependencies]
 python-dotenv = "^1.0.0"
 faker = "^18.11.2"
-black = "^23.3.0"
+black = ">=23.3,<25.0"
 pytest = "^7.4.0"
 grai-client = "^0.3.2"
 mypy = "^1.5.1"
