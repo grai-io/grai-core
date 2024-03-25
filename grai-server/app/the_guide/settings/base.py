@@ -384,6 +384,12 @@ if OPENAI_API_KEY is not None and OPENAI_ORG_ID is not None:
     except openai.AuthenticationError as e:
         warnings.warn("Could not authenticate with OpenAI API key and organization id.")
         HAS_OPENAI = False
+    except openai.APIConnectionError as e:
+        warnings.warn("Could not connect to OpenAI API and are disabling AI functionality.")
+        HAS_OPENAI = False
+    except Exception as e:
+        warnings.warn(f"We encountered an unknown error while trying to connect to OpenAI {e}")
+        HAS_OPENAI = False
     else:
         if len(models) == 0:
             message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
