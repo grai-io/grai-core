@@ -13,7 +13,7 @@ python = "^3.8"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
-black = "^22.10.0"
+black = "^24.3.0"
 flake8 = "^5.0.4"
 pre-commit = "^2.20.0"
 

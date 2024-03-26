@@ -29,6 +29,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     ports:
       - 8000:8000
     environment:
@@ -69,6 +71,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -92,6 +96,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -115,3 +121,6 @@ services:
       - 5557:5555
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
+
+volumes:
+  media_volume:
