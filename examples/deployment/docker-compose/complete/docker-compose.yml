@@ -31,6 +31,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     ports:
       - 8000:8000
     environment:
@@ -71,6 +73,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -93,6 +97,8 @@ services:
     # extra_hosts are not required but provided so users can easily connect to services running on the host machine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - media_volume:/usr/src/app/media
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -178,3 +184,6 @@ services:
       REDIS_PORT: 6379
       ELASTICSEARCH: false
       OPENSEARCH: true
+
+volumes:
+  media_volume:
