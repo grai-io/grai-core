@@ -34,8 +34,10 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source
 from workspaces.models import Workspace
-
+from django.db import transaction
 from .adapters.schemas import model_to_schema, schema_to_model
+from itertools import islice
+from pympler import asizeof
 
 
 class NameNamespace(Protocol):
@@ -279,6 +281,21 @@ def process_updates(
     return new, old, updated
 
 
+def create_batches(data: list, threshold_size=500 * 1024 * 1024) -> list:
+    batch = []
+    current_batch_size = 0
+    for item in data:
+        item_size = asizeof.asizeof(item)
+        if current_batch_size + item_size > threshold_size and batch:
+            yield batch
+            batch = []
+            current_batch_size = 0
+        batch.append(item)
+        current_batch_size += item_size
+    if batch:
+        yield batch
+
+
 def update(
     workspace: Workspace,
     source: Source,
@@ -290,16 +307,21 @@ def update(
 
     source, _ = Source.objects.get_or_create(id=source.id, name=source.name, workspace=workspace)
 
-    item_types = items[0].type
-    Model = NodeModel if item_types in ["Node", "SourceNode"] else EdgeModel
-    relationship = source.nodes if item_types in ["Node", "SourceNode"] else source.edges
+    is_node = items[0].type in ["Node", "SourceNode"]
+    Model = NodeModel if is_node else EdgeModel
+    relationship = source.nodes if is_node else source.edges
 
     new_items, deactivated_items, updated_items = process_updates(workspace, source, items, active_items)
 
-    Model.objects.bulk_create(new_items)
-    Model.objects.bulk_update(updated_items, ["metadata"])
+    # relationship creationcan be improved with a switch to a bulk_create on the through entity
+    # https://stackoverflow.com/questions/68422898/efficiently-bulk-updating-many-manytomany-fields
+    for batch in create_batches(new_items):
+        Model.objects.bulk_create(batch)
+    for batch in create_batches(new_items):
+        Model.objects.bulk_update(batch, ["metadata"])
 
-    relationship.add(*new_items, *updated_items)
+    with transaction.atomic():
+        relationship.add(*new_items, *updated_items)
 
     if len(deactivated_items) > 0:
         relationship.remove(*deactivated_items)
