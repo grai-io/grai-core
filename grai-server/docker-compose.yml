@@ -5,8 +5,8 @@ services:
     build:
       context: ./app
       target: grai-server
-    volumes:
-      - ./app/:/usr/src/app/
+#    volumes:
+#      - ./app/:/usr/src/app/
     ports:
       - 8000:8000
     environment:
@@ -33,8 +33,8 @@ services:
     build:
       context: ./app
       target: grai-worker
-    volumes:
-      - ./app/:/usr/src/app/
+#    volumes:
+#      - ./app/:/usr/src/app/
     environment:
       - DB_HOST=db
       - REDIS_HOST=redis
@@ -51,8 +51,8 @@ services:
     build:
       context: ./app
       target: grai-beat-worker
-    volumes:
-      - ./app/:/usr/src/app/
+#    volumes:
+#      - ./app/:/usr/src/app/
     environment:
       - DB_HOST=db
       - REDIS_HOST=redis
@@ -114,7 +114,6 @@ services:
       - 5557:5555
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
-
     depends_on:
       - redis
       - db
