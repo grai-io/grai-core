@@ -67,7 +67,7 @@ qrcode = "^7.4.2"
 channels = "^4.0.0"
 channels-redis = "^4.1.0"
 uvicorn = {version = "^0.28.1", extras = ["standard"]}
-gunicorn = "^21.2.0"
+gunicorn = ">=21.2,<23.0"
 strawberry-graphql = {extras = ["channels", "asgi"], version = "^0.220.0"}
 asgi-cors-strawberry = "^0.2.0"
 overrides = "^7.4.0"
