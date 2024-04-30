@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.60"
+version = "0.1.69"
 description = ""
 authors = ["Grai <dev@grai.io>"]
 license = "Elastic-2.0"
@@ -78,6 +78,7 @@ pyjwt = "^2.8.0"
 django-csp = "^3.7"
 multimethod = "^1.4.0, !=1.11.0"
 grai-source-cube = "^0.0.2"
+pympler = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
