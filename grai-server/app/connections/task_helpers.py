@@ -62,10 +62,17 @@ LineageModel = Union[NodeModel, EdgeModel]
 
 
 def to_dict(instance):
+    """
+    Shallow conversion of a model instance to a dictionary.
+    This is useful for merging model instances but should not be relied on for serialization
+    """
     opts = instance._meta
-    data = {}
-    for f in chain(opts.concrete_fields, opts.private_fields):
-        data[f.name] = f.value_from_object(instance)
+    data = {
+        f.name: getattr(instance, f.name) if hasattr(instance, f.name) else f.value_from_object(instance)
+        for f in chain(opts.concrete_fields, opts.private_fields)
+    }
+    # for f in chain(opts.concrete_fields, opts.private_fields):
+    #     data[f.name] = f.value_from_object(instance)
     for f in opts.many_to_many:
         data[f.name] = [i.id for i in f.value_from_object(instance)]
     return data
@@ -89,7 +96,7 @@ def merge_node_dict(a: models.Model, b: Dict) -> models.Model:
 @merge.register
 def merge_node_node(a: models.Model, b: models.Model) -> models.Model:
     assert isinstance(a, type(b))
-    return type(a)(merge(to_dict(a), to_dict(b)))
+    return type(a)(**merge(to_dict(a), to_dict(b)))
 
 
 def get_node(workspace: Workspace, grai_type: NameNamespaceDict) -> NodeModel:
@@ -310,19 +317,40 @@ def update(
     is_node = items[0].type in ["Node", "SourceNode"]
     Model = NodeModel if is_node else EdgeModel
     relationship = source.nodes if is_node else source.edges
+    threshold_bytes = 200 * 1024 * 1024
+
+    unique_fields = ["name", "namespace", "workspace"]
+    if not is_node:
+        unique_fields.extend(["source", "destination"])
 
     new_items, deactivated_items, updated_items = process_updates(workspace, source, items, active_items)
 
     # relationship creationcan be improved with a switch to a bulk_create on the through entity
     # https://stackoverflow.com/questions/68422898/efficiently-bulk-updating-many-manytomany-fields
-    for batch in create_batches(new_items):
-        Model.objects.bulk_create(batch)
-    for batch in create_batches(new_items):
-        Model.objects.bulk_update(batch, ["metadata"])
+    # for batch in create_batches(new_items):
+    #     Model.objects.bulk_create(batch)
+    # for batch in create_batches(new_items):
+    #     Model.objects.bulk_update(batch, ["metadata"])
+    # with transaction.atomic():
+    #     relationship.add(*new_items, *updated_items)
 
-    with transaction.atomic():
-        relationship.add(*new_items, *updated_items)
+    items = (schema_to_model(item, workspace) for item in items)
+    current_filter = Q()
+    for n, batch in enumerate(create_batches(items, threshold_bytes)):
+        print(f"Batch {n}, Batch size: ", len(batch))
 
+        new_items = Model.objects.bulk_create(batch, ignore_conflicts=True)
+        merged = list(merge(new, item) for new, item in zip(new_items, batch))
+        Model.objects.bulk_update(merged, ["metadata"])
+
+        with transaction.atomic():
+            relationship.add(*merged)
+
+        current_filter |= Q(id__in=[item.id for item in new_items])
+
+    del new_items, merged
+
+    deactivated_items = relationship.filter(~current_filter)
     if len(deactivated_items) > 0:
         relationship.remove(*deactivated_items)
         empty_source_query = Q(workspace=workspace, data_sources=None)
