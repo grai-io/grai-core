@@ -5,6 +5,7 @@ from django_multitenant.models import TenantModel
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 from django.utils import timezone
+from enum import Enum
 
 
 class ConnectorSlugs(models.TextChoices):
@@ -172,6 +173,13 @@ class Connection(TenantModel):
             task.delete()
 
 
+class RunStatus(models.TextChoices):
+    PENDING = "pending", "Pending"
+    RUNNING = "running", "Running"
+    SUCCESS = "success", "Success"
+    ERROR = "error", "Error"
+
+
 class Run(TenantModel):
     TESTS = "tests"
     UPDATE = "update"
@@ -202,7 +210,7 @@ class Run(TenantModel):
         blank=True,
         null=True,
     )
-    status = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, choices=RunStatus.choices, default=RunStatus.PENDING)
     metadata = models.JSONField(default=dict)
     workspace = models.ForeignKey(
         "workspaces.Workspace",

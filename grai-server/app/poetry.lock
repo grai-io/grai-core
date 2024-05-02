@@ -263,17 +263,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.34.94"
+version = "1.34.95"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "boto3-1.34.94-py3-none-any.whl", hash = "sha256:bbb87d641c73462e53b1777083b55c8f13921618ad08757478a8122985c56c13"},
-    {file = "boto3-1.34.94.tar.gz", hash = "sha256:22f65b3c9b7a419f8f39c2dddc421e14fab8cbb3bd8a9d467e874237d39f59b1"},
+    {file = "boto3-1.34.95-py3-none-any.whl", hash = "sha256:e836b71d79671270fccac0a4d4c8ec239a6b82ea47c399b64675aa597d0ee63b"},
+    {file = "boto3-1.34.95.tar.gz", hash = "sha256:decf52f8d5d8a1b10c9ff2a0e96ee207ed79e33d2e53fdf0880a5cbef70785e0"},
 ]
 
 [package.dependencies]
-botocore = ">=1.34.94,<1.35.0"
+botocore = ">=1.34.95,<1.35.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.10.0,<0.11.0"
 
@@ -282,13 +282,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.34.94"
+version = "1.34.95"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "botocore-1.34.94-py3-none-any.whl", hash = "sha256:f00a79002e0cb9d6895ecd0919c506402850177d7b6c4d2634fa2da362d95bcb"},
-    {file = "botocore-1.34.94.tar.gz", hash = "sha256:99b11be9a28f9051af4c96fa121e9c3f22a86d499abd773c9e868b2a38961bae"},
+    {file = "botocore-1.34.95-py3-none-any.whl", hash = "sha256:ead5823e0dd6751ece5498cb979fd9abf190e691c8833bcac6876fd6ca261fa7"},
+    {file = "botocore-1.34.95.tar.gz", hash = "sha256:6bd76a2eadb42b91fa3528392e981ad5b4dfdee3968fa5b904278acf6cbf15ff"},
 ]
 
 [package.dependencies]
@@ -1005,17 +1005,17 @@ files = [
 
 [[package]]
 name = "django"
-version = "4.2.11"
+version = "5.0.4"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 files = [
-    {file = "Django-4.2.11-py3-none-any.whl", hash = "sha256:ddc24a0a8280a0430baa37aff11f28574720af05888c62b7cfe71d219f4599d3"},
-    {file = "Django-4.2.11.tar.gz", hash = "sha256:6e6ff3db2d8dd0c986b4eec8554c8e4f919b5c1ff62a5b4390c17aff2ed6e5c4"},
+    {file = "Django-5.0.4-py3-none-any.whl", hash = "sha256:916423499d75d62da7aa038d19aef23d23498d8df229775eb0a6309ee1013775"},
+    {file = "Django-5.0.4.tar.gz", hash = "sha256:4bd01a8c830bb77a8a3b0e7d8b25b887e536ad17a81ba2dce5476135c73312bd"},
 ]
 
 [package.dependencies]
-asgiref = ">=3.6.0,<4"
+asgiref = ">=3.7.0,<4"
 sqlparse = ">=0.3.1"
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
@@ -1213,24 +1213,24 @@ phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
 name = "django-postgres-extra"
-version = "2.0.8"
+version = "2.0.9rc10"
 description = "Bringing all of PostgreSQL's awesomeness to Django."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "django-postgres-extra-2.0.8.tar.gz", hash = "sha256:9efa08c6f18ed34460af41c6f679bb375b93d12544b1105aa348b787a30b46eb"},
-    {file = "django_postgres_extra-2.0.8-py3-none-any.whl", hash = "sha256:447d5a971759943ee63a9d4cef9c6c1fa290e518611ea521a38b6732681d2f3a"},
+    {file = "django-postgres-extra-2.0.9rc10.tar.gz", hash = "sha256:a97ae77154fe0cc5a13b3858327d8c4565508508b09d84198db84fbf23674257"},
+    {file = "django_postgres_extra-2.0.9rc10-py3-none-any.whl", hash = "sha256:2370c90cde6551d32b5c8cfc8d635bb64929c72a568ffd4a945a97c8443122b5"},
 ]
 
 [package.dependencies]
-Django = ">=2.0,<5.0"
+Django = ">=2.0,<6.0"
 python-dateutil = ">=2.8.0,<=3.0.0"
 
 [package.extras]
-analysis = ["autoflake (==1.4)", "autopep8 (==1.6.0)", "black (==22.3.0)", "docformatter (==1.4)", "flake8 (==4.0.1)", "isort (==5.10.0)"]
+analysis = ["autoflake (==1.4)", "autopep8 (==1.6.0)", "black (==22.3.0)", "django-stubs (==1.16.0)", "django-stubs (==1.9.0)", "docformatter (==1.4)", "flake8 (==4.0.1)", "isort (==5.10.0)", "mypy (==0.971)", "mypy (==1.2.0)", "types-dj-database-url (==1.3.0.0)", "types-psycopg2 (==2.9.21.9)", "types-python-dateutil (==2.8.19.12)", "typing-extensions (==4.1.0)", "typing-extensions (==4.5.0)"]
 docs = ["Sphinx (==2.2.0)", "docutils (<0.18)", "sphinx-rtd-theme (==0.4.3)"]
 publish = ["build (==0.7.0)", "twine (==3.7.1)"]
-test = ["coveralls (==3.3.0)", "dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "psycopg2 (>=2.8.4,<3.0.0)", "pytest (==6.2.5)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-django (==4.4.0)", "snapshottest (==0.6.0)", "tox (==3.24.4)"]
+test = ["coveralls (==3.3.0)", "dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "psycopg2 (>=2.8.4,<3.0.0)", "pytest (==6.2.5)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-django (==4.4.0)", "pytest-freezegun (==0.4.2)", "pytest-lazy-fixture (==0.6.3)", "snapshottest (==0.6.0)", "tox (==3.24.4)"]
 
 [[package]]
 name = "django-query-chunk"
@@ -1512,13 +1512,13 @@ python-dateutil = ">=2.4"
 
 [[package]]
 name = "fastcore"
-version = "1.5.32"
+version = "1.5.33"
 description = "Python supercharged for fastai development"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "fastcore-1.5.32-py3-none-any.whl", hash = "sha256:734e1b3fb98d9037a4555eec40b0394995954c12a1fe6ea2a484517e88ac25d7"},
-    {file = "fastcore-1.5.32.tar.gz", hash = "sha256:149164d9341372bad662e20e028c93343e94ff6c5b4a5a7d2a15921a9867d740"},
+    {file = "fastcore-1.5.33-py3-none-any.whl", hash = "sha256:566c29f7531c9eef6c9b291dcfeacf2f2de29d4bcfdbc54f2f81dbb36d21cede"},
+    {file = "fastcore-1.5.33.tar.gz", hash = "sha256:2fca2ca0fe6a0d6530cb31dd42a126c0a58ccca67b75cbd2efacea42a772459d"},
 ]
 
 [package.dependencies]
@@ -1590,13 +1590,13 @@ dev = ["jsonref", "matplotlib"]
 
 [[package]]
 name = "google-api-core"
-version = "2.18.0"
+version = "2.19.0"
 description = "Google API client core library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "google-api-core-2.18.0.tar.gz", hash = "sha256:62d97417bfc674d6cef251e5c4d639a9655e00c45528c4364fbfebb478ce72a9"},
-    {file = "google_api_core-2.18.0-py3-none-any.whl", hash = "sha256:5a63aa102e0049abe85b5b88cb9409234c1f70afcda21ce1e40b285b9629c1d6"},
+    {file = "google-api-core-2.19.0.tar.gz", hash = "sha256:cf1b7c2694047886d2af1128a03ae99e391108a08804f87cfd35970e49c9cd10"},
+    {file = "google_api_core-2.19.0-py3-none-any.whl", hash = "sha256:8661eec4078c35428fd3f69a2c7ee29e342896b70f01d1a1cbcb334372dd6251"},
 ]
 
 [package.dependencies]
@@ -2534,13 +2534,13 @@ files = [
 
 [[package]]
 name = "jsonschema"
-version = "4.21.1"
+version = "4.22.0"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.21.1-py3-none-any.whl", hash = "sha256:7996507afae316306f9e2290407761157c6f78002dcf7419acb99822143d1c6f"},
-    {file = "jsonschema-4.21.1.tar.gz", hash = "sha256:85727c00279f5fa6bedbe6238d2aa6403bedd8b4864ab11207d07df3cc1b2ee5"},
+    {file = "jsonschema-4.22.0-py3-none-any.whl", hash = "sha256:ff4cfd6b1367a40e7bc6411caec72effadd3db0bbe5017de188f2d6108335802"},
+    {file = "jsonschema-4.22.0.tar.gz", hash = "sha256:5b22d434a45935119af990552c862e5d6d564e8f6601206b305a61fdf661a2b7"},
 ]
 
 [package.dependencies]
@@ -3063,13 +3063,13 @@ signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
 name = "openai"
-version = "1.24.0"
+version = "1.25.0"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.7.1"
 files = [
-    {file = "openai-1.24.0-py3-none-any.whl", hash = "sha256:81eed0d850a35a170797d15d94144eb993459411ba56325891ab488708f1b612"},
-    {file = "openai-1.24.0.tar.gz", hash = "sha256:9cc6ac92bac9d57c8d4bc101e9e4c7201304c88efb89320d0f0348625fa8647d"},
+    {file = "openai-1.25.0-py3-none-any.whl", hash = "sha256:d0cfdf6afb31a5dabf3b95966cb31f3c757a0edaf3228715409cb404b9933de0"},
+    {file = "openai-1.25.0.tar.gz", hash = "sha256:22c35b26b8281cd2759b1a4c05ac99e2f2b26a9df71f90a0b4ddb75aa27adc81"},
 ]
 
 [package.dependencies]
@@ -5342,4 +5342,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9dc205ba393fc5f2d4c2b51af971b380bc462a7def1b704615a3405a7becd8cb"
+content-hash = "452c224975d114527b5e8f4fda8463feaef4d34a319a9d354504bd0bfb9b9f22"
