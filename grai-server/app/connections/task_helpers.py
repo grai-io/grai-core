@@ -17,7 +17,7 @@ from typing import (
     Union,
 )
 from uuid import UUID
-
+from time import sleep
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db import models
 from django.db.models import Q, Value
@@ -39,6 +39,8 @@ from django.db import transaction
 from .adapters.schemas import model_to_schema, schema_to_model
 from itertools import islice
 from pympler import asizeof
+from functools import reduce
+from django.db.models import Subquery
 
 
 class NameNamespace(Protocol):
@@ -349,45 +351,57 @@ def update(
     is_node = items[0].type in ["Node", "SourceNode"]
     Model = NodeModel if is_node else EdgeModel
     relationship = source.nodes if is_node else source.edges
+    through_label = "node_id" if is_node else "edge_id"
     threshold_bytes = 200 * 1024 * 1024
 
     items = (schema_to_model(item, workspace) for item in items)
-    current_filter = Q()
+    found_items = []
     for batch in create_dict_batches(valid_items(items, workspace), threshold_bytes):
+        # Update existing items
         updated_item_keys = set()
-        existing_item_filter = Q()
-        for name, namespace in batch.keys():
-            existing_item_filter |= Q(name=name, namespace=namespace, workspace=workspace)
-
+        existing_item_filter = reduce(
+            lambda q, key: q | Q(name=key[0], namespace=key[1], workspace=workspace), batch.keys(), Q()
+        )
         updated_items = [
-            merge(item, batch[(item.name, item.namespace)]) for item in Model.objects.filter(existing_item_filter)
+            merge(item, batch[(item.name, item.namespace)])
+            for item in Model.objects.filter(existing_item_filter).iterator()
         ]
-        Model.objects.bulk_update(updated_items, ["metadata"])
+        del existing_item_filter
+
+        Model.objects.bulk_update(updated_items, ["metadata", "display_name"])
         for item in updated_items:
             batch[(item.name, item.namespace)] = item
             updated_item_keys.add((item.name, item.namespace))
-        del updated_items
 
+        # Create new items
         new_items = (item for item in batch.values() if (item.name, item.namespace) not in updated_item_keys)
         for item in Model.objects.bulk_create(new_items):
             batch[(item.name, item.namespace)] = item
 
-        current_filter |= Q(id__in=[item.id for item in batch.values()])
+        # Create foreign keys to source
+        through_items = (
+            relationship.through(source_id=source.id, **{through_label: item.id}) for item in batch.values()
+        )
+        relationship.through.objects.bulk_create(through_items, ignore_conflicts=True)
 
-        with transaction.atomic():
-            relationship.add(*new_items)
-
+        found_items.extend([item.id for item in batch.values()])
         del batch
 
-    deactivated_items = relationship.filter(~current_filter)
-    if len(deactivated_items) > 0:
-        relationship.remove(*deactivated_items)
+    # Remove old source relations.
+    num_deleted, _ = (
+        relationship.through.objects.filter(source_id=source.id)
+        .exclude(**{f"{through_label}__in": found_items})
+        .delete()
+    )
+
+    if num_deleted > 0:
         empty_source_query = Q(workspace=workspace, data_sources=None)
-
         deletable_nodes = NodeModel.objects.filter(empty_source_query)
-        deleted_edge_query = Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes) | empty_source_query
+        deletable_nodes_subquery = Subquery(deletable_nodes.values("id"))
+        EdgeModel.objects.filter(
+            Q(source__in=deletable_nodes_subquery) | Q(destination__in=deletable_nodes_subquery) | empty_source_query
+        ).delete()
 
-        EdgeModel.objects.filter(deleted_edge_query).delete()
         deletable_nodes.delete()
 
 
