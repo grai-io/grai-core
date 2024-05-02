@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import date
-
+from time import sleep
 import pytest
 from decouple import config
 from django.conf import settings
@@ -218,10 +218,10 @@ class TestUpdateServer:
             },
             secrets={"password": "grai"},
         )
+
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
-
         run.refresh_from_db()
 
         assert run.status == "success"

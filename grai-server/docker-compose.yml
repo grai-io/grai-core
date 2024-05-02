@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
   the_guide:
     build:
@@ -19,6 +17,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
       - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
+      # - CREATE_SAMPLE_DATA=false
     depends_on:
       - redis
       - db
@@ -42,6 +41,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
       - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
+      # - CREATE_SAMPLE_DATA=false
     depends_on:
       - redis
       - db
@@ -60,6 +60,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}
       - OPENAI_PREFERRED_MODEL=${OPENAI_PREFERRED_MODEL}
+      # - CREATE_SAMPLE_DATA=false
     depends_on:
       - redis
       - db

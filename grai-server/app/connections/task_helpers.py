@@ -6,6 +6,7 @@ from itertools import chain, tee
 from typing import (
     Any,
     Dict,
+    Iterable,
     List,
     Optional,
     Protocol,
@@ -303,6 +304,37 @@ def create_batches(data: list, threshold_size=500 * 1024 * 1024) -> list:
         yield batch
 
 
+def create_dict_batches(data: list, threshold_size=500 * 1024 * 1024) -> Dict:
+    batch = {}
+    current_batch_size = 0
+    for item in data:
+        item_size = asizeof.asizeof(item)
+        if current_batch_size + item_size > threshold_size and batch:
+            yield batch
+            batch = {}
+            current_batch_size = 0
+        batch[(item.name, item.namespace)] = item
+        current_batch_size += item_size
+    if batch:
+        yield batch
+
+
+def valid_items(items: List[NodeModel | EdgeModel], workspace: Workspace) -> Iterable[NodeModel | EdgeModel]:
+    seen_keys = set()
+    for item in items:
+        if item.workspace != workspace:
+            raise ValueError(
+                f"Items in the batch must all belong to the same workspace.",
+                f"Expected workspace id {workspace.id}, got {item.workspace.id}",
+            )
+        key = (item.name, item.namespace)
+        if key in seen_keys:
+            warnings.warn(f"Multiple {type(item)} items with unique (name, namespace): {key} detected in batch.")
+        else:
+            seen_keys.add(key)
+            yield item
+
+
 def update(
     workspace: Workspace,
     source: Source,
@@ -319,36 +351,33 @@ def update(
     relationship = source.nodes if is_node else source.edges
     threshold_bytes = 200 * 1024 * 1024
 
-    unique_fields = ["name", "namespace", "workspace"]
-    if not is_node:
-        unique_fields.extend(["source", "destination"])
-
-    new_items, deactivated_items, updated_items = process_updates(workspace, source, items, active_items)
-
-    # relationship creationcan be improved with a switch to a bulk_create on the through entity
-    # https://stackoverflow.com/questions/68422898/efficiently-bulk-updating-many-manytomany-fields
-    # for batch in create_batches(new_items):
-    #     Model.objects.bulk_create(batch)
-    # for batch in create_batches(new_items):
-    #     Model.objects.bulk_update(batch, ["metadata"])
-    # with transaction.atomic():
-    #     relationship.add(*new_items, *updated_items)
-
     items = (schema_to_model(item, workspace) for item in items)
     current_filter = Q()
-    for n, batch in enumerate(create_batches(items, threshold_bytes)):
-        print(f"Batch {n}, Batch size: ", len(batch))
+    for batch in create_dict_batches(valid_items(items, workspace), threshold_bytes):
+        updated_item_keys = set()
+        existing_item_filter = Q()
+        for name, namespace in batch.keys():
+            existing_item_filter |= Q(name=name, namespace=namespace, workspace=workspace)
 
-        new_items = Model.objects.bulk_create(batch, ignore_conflicts=True)
-        merged = list(merge(new, item) for new, item in zip(new_items, batch))
-        Model.objects.bulk_update(merged, ["metadata"])
+        updated_items = [
+            merge(item, batch[(item.name, item.namespace)]) for item in Model.objects.filter(existing_item_filter)
+        ]
+        Model.objects.bulk_update(updated_items, ["metadata"])
+        for item in updated_items:
+            batch[(item.name, item.namespace)] = item
+            updated_item_keys.add((item.name, item.namespace))
+        del updated_items
+
+        new_items = (item for item in batch.values() if (item.name, item.namespace) not in updated_item_keys)
+        for item in Model.objects.bulk_create(new_items):
+            batch[(item.name, item.namespace)] = item
+
+        current_filter |= Q(id__in=[item.id for item in batch.values()])
 
         with transaction.atomic():
-            relationship.add(*merged)
+            relationship.add(*new_items)
 
-        current_filter |= Q(id__in=[item.id for item in new_items])
-
-    del new_items, merged
+        del batch
 
     deactivated_items = relationship.filter(~current_filter)
     if len(deactivated_items) > 0:

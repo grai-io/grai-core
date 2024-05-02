@@ -148,6 +148,7 @@ def execute_run(run: Run):
             )
 
         run.status = "success"
+
         run.finished_at = timezone.now()
         run.save()
 

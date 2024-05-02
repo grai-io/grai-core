@@ -133,6 +133,7 @@ class IntegrationAdapter(BaseAdapter):
     def run_update(self):
         nodes, edges = self.integration.get_nodes_and_edges()
         capture_quarantined_errors(self.integration, self.run)
+
         update(self.run.workspace, self.run.source, nodes)
         update(self.run.workspace, self.run.source, edges)
 
