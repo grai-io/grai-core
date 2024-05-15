@@ -2,7 +2,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 
-from .models import Audit
+from .models import Audit, AuditEvents
 
 
 def request_to_metadata(request: HttpRequest) -> dict:
@@ -16,7 +16,7 @@ def request_to_metadata(request: HttpRequest) -> dict:
 def post_login(sender, user, request, **kwargs):
     Audit.objects.create(
         user=user,
-        event=Audit.LOGIN,
+        event=AuditEvents.LOGIN,
         metadata=request_to_metadata(request),
     )
 
@@ -25,6 +25,6 @@ def post_login(sender, user, request, **kwargs):
 def post_logout(sender, user, request, **kwargs):
     Audit.objects.create(
         user=user,
-        event=Audit.LOGOUT,
+        event=AuditEvents.LOGOUT,
         metadata=request_to_metadata(request),
     )

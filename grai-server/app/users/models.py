@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 
 from django.contrib.auth.base_user import BaseUserManager
@@ -5,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+
+from typing import Optional
 
 
 class UserManager(BaseUserManager):
@@ -40,7 +43,22 @@ class UserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
 
-class User(AbstractUser):
+class UserAuditMixin:
+    def _last_audit_event(self, event: str) -> "Audit" | None:
+        event_filter = models.Q(user=super().pk, event=event)
+        return Audit.objects.filter(event_filter).last()
+
+    def last_login(self) -> Optional["Audit"]:
+        return self._last_audit_event(AuditEvents.LOGIN.name)
+
+    def last_pw_reset(self) -> Optional["Audit"]:
+        return self._last_audit_event(AuditEvents.PASSWORD_RESET.name)
+
+    def last_logout(self) -> Optional["Audit"]:
+        return self._last_audit_event(AuditEvents.LOGOUT.name)
+
+
+class User(UserAuditMixin, AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.EmailField(_("email address"), unique=True, null=True, blank=True)
     email = None
@@ -62,21 +80,22 @@ class User(AbstractUser):
         return self.username
 
 
+class AuditEvents(models.TextChoices):
+    LOGIN = "login", "login"
+    LOGOUT = "logout", "logout"
+    PASSWORD_RESET = "password_reset", "Password Reset"
+
+
 class Audit(models.Model):
-    LOGIN = "login"
-    LOGOUT = "logout"
-
-    AUDIT_EVENTS = [
-        (LOGIN, "login"),
-        (LOGOUT, "logout"),
-    ]
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         "users.User",
         related_name="audits",
         on_delete=models.CASCADE,
     )
-    event = models.CharField(max_length=255, choices=AUDIT_EVENTS)
+    event = models.CharField(max_length=255, choices=AuditEvents.choices)
     metadata = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
