@@ -1,4 +1,3 @@
-from __future__ import annotations
 import uuid
 
 from django.contrib.auth.base_user import BaseUserManager
@@ -6,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
-
 from typing import Optional
 
 
@@ -44,12 +42,9 @@ class UserManager(BaseUserManager):
 
 
 class UserAuditMixin:
-    def _last_audit_event(self, event: str) -> "Audit" | None:
+    def _last_audit_event(self, event: str) -> Optional["Audit"]:
         event_filter = models.Q(user=super().pk, event=event)
         return Audit.objects.filter(event_filter).last()
-
-    def last_login(self) -> Optional["Audit"]:
-        return self._last_audit_event(AuditEvents.LOGIN.name)
 
     def last_pw_reset(self) -> Optional["Audit"]:
         return self._last_audit_event(AuditEvents.PASSWORD_RESET.name)
@@ -69,6 +64,7 @@ class User(UserAuditMixin, AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     verified_at = models.DateTimeField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     objects = UserManager()
 

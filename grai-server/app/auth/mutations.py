@@ -20,10 +20,11 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, get_user
 from api.pagination import DataWrapper
 from api.types import BasicResult
-from users.models import User
+from users.models import User, Audit, AuditEvents
 from users.types import Device, Profile
 
 from .validation import send_validation_email, verification_generator
+from .password_reset import password_reset_generator
 
 
 def validate_password(password: str, user: User):
@@ -150,7 +151,6 @@ class Mutation:
 
         user.set_password(password)
         await sync_to_async(user.save)()
-        # await self.logout(info)
         return user
 
     @strawberry.mutation
@@ -159,6 +159,8 @@ class Mutation:
 
         try:
             user = await UserModel.objects.filter(username=email).aget()
+            audit = Audit(user_id=user.id, event=AuditEvents.PASSWORD_RESET.name)
+            await sync_to_async(audit.save)()
 
             subject = "Grai Password Reset"
             email_template_name = "auth/password_reset_email.txt"
@@ -168,7 +170,7 @@ class Mutation:
                 "base_url": settings.FRONTEND_URL,
                 "uid": user.pk,
                 "user": user,
-                "token": default_token_generator.make_token(user),
+                "token": await sync_to_async(password_reset_generator.make_token)(user),
             }
             email_message = render_to_string(email_template_name, c)
             html_message = render_to_string(html_template_name, c)
@@ -194,14 +196,14 @@ class Mutation:
         try:
             user = await UserModel.objects.aget(pk=uid)
 
-            if not default_token_generator.check_token(user, token):
+            if not await sync_to_async(password_reset_generator.check_token)(user, token):
                 raise Exception("Token invalid")
 
             validate_password(password, user)
 
             user.set_password(password)
             await sync_to_async(user.save)()
-            # await self.logout()
+            await self.logout()
             return user
 
         except UserModel.DoesNotExist:
@@ -225,7 +227,7 @@ class Mutation:
             user.set_password(password)
             await sync_to_async(user.save)()
 
-            send_validation_email(user)
+            await sync_to_async(send_validation_email)(user)
 
             return user
 

@@ -4,12 +4,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from users.models import User, AuditEvents, Audit
-from enum import StrEnum
-
-
-class CacheKeys(StrEnum):
-    PW_RESET = "_cached_last_pw_reset"
+from users.models import User
 
 
 def _generate_token(user: User) -> str:
@@ -17,9 +12,6 @@ def _generate_token(user: User) -> str:
 
 
 def send_validation_email(user: User):
-    reset_event = Audit(user=user, event=AuditEvents.PASSWORD_RESET.name).save()
-    setattr(user, CacheKeys.PW_RESET, reset_event)
-
     token = _generate_token(user)
 
     c = {
@@ -43,7 +35,7 @@ def send_validation_email(user: User):
 
 
 class VerificationGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, user: User, timestamp):
+    def _make_hash_value(self, user, timestamp):
         """
         Hash the user's primary key, email (if available):
 
@@ -53,17 +45,7 @@ class VerificationGenerator(PasswordResetTokenGenerator):
 
         email_field = user.get_email_field_name()
         email = getattr(user, email_field, "") or ""
-
-        cached_pw_audit = getattr(user, CacheKeys.PW_RESET, None)
-
-        if cached_pw_audit is None:
-            last_reset = cached_pw_audit
-        else:
-            last_reset = user.last_pw_reset()
-
-        reset_timestamp = "" if last_reset is None else last_reset.created_at.replace(microsecond=0, tzinfo=None)
-
-        return f"{user.pk}{timestamp}{reset_timestamp}{email}"
+        return f"{user.pk}{timestamp}{email}"
 
 
 verification_generator = VerificationGenerator()
