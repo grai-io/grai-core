@@ -203,7 +203,6 @@ class Mutation:
 
             user.set_password(password)
             await sync_to_async(user.save)()
-            await self.logout()
             return user
 
         except UserModel.DoesNotExist:
