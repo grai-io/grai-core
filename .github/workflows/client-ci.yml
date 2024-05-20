@@ -135,12 +135,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ env.py_ver }}"
+          python-version: "${{ secrets.default_python_ver }}"
 
       - uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: "${{ env.poetry_ver }}"
+          poetry-version: "${{ secrets.poetry_ver }}"
 
       - run: poetry install
 
-      - run: poetry run pytest
+      - name: Run Client Tests
+        run: poetry run pytest

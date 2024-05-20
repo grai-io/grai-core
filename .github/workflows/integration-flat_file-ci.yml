@@ -6,6 +6,7 @@ on:
       - "grai-integrations/source-flat-file/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/integration-flat_file-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-integration-flat_file-ci
@@ -88,8 +89,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ secrets.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run Flat File Tests
+        run: poetry run pytest

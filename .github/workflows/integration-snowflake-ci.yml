@@ -6,7 +6,7 @@ on:
       - "grai-integrations/source-snowflake/**"
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-snowflake-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-snowflake-ci
@@ -79,7 +79,7 @@ jobs:
 #
 #    - uses: actions/setup-python@v5
 #      with:
-#        python-version: "${{ env.py_ver }}"
+#        python-version: "${{ secrets.poetry_ver }}"
 #
 #    - run: |
 #        pip install pytest

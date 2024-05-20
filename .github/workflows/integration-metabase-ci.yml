@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "grai-integrations/source-metabase/**"
+      - "grai-client/**"
       - "grai-server/**"
       - ".github/workflows/integration-metabase-ci.yml"
 
@@ -54,7 +55,7 @@ jobs:
 
       - uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: "${{ env.poetry_ver }}"
+          poetry-version: "${{ secrets.poetry_ver }}"
 
       - run: poetry install
 

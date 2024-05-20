@@ -6,7 +6,7 @@ on:
       - "grai-integrations/source-postgres/**"
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-postgres-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-postgres-ci
@@ -75,8 +75,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ secrets.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run Postgres Tests
+        run: poetry run pytest

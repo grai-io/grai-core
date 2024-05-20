@@ -16,7 +16,6 @@ concurrency:
 
 env:
   py_ver: "3.10"
-  poetry_ver: "1.8.0"
   project_dir: "grai-integrations/source-redshift"
   GRAI_REDSHIFT_USER: "admin"
   GRAI_REDSHIFT_PASSWORD: "${{ secrets.redshift_password }}"
@@ -58,12 +57,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ env.py_ver }}"
+          python-version: "${{ env.default_python_version }}"
 
       - uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: "${{ env.poetry_ver }}"
+          poetry-version: "${{ secrets.poetry_ver }}"
 
       - run: poetry install
 
-      - run: poetry run pytest
+      - name: Run Redshift Tets
+        run: poetry run pytest

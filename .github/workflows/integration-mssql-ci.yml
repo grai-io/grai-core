@@ -6,6 +6,7 @@ on:
       - "grai-integrations/source-mssql/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/integration-mssql-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-mssql-ci
@@ -71,8 +72,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ secrets.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run Sql Server Tests
+        run: poetry run pytest

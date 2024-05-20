@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "grai-graph/**"
+      - ".github/workflows/graph-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-graph-ci
@@ -84,10 +85,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ env.py_ver }}"
+          python-version: "${{ env.default_python_version }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ secrets.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run Redshift Tets
+        run: poetry run pytest
