@@ -6,6 +6,7 @@ on:
       - "grai-integrations/source-redshift/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/integration-redshift-ci.yml"
 
 
 concurrency:
