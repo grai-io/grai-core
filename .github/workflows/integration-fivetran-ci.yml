@@ -13,6 +13,12 @@ env:
   py_ver: "${{ vars.PY_VER }}"
   poetry_ver: "${{ vars.POETRY_VER }}"
 
+
+concurrency:
+  group: ${{ github.ref }}-integration-fivetran-ci
+  cancel-in-progress: true
+
+
 jobs:
   lint-integration-fivetran:
     runs-on: ubuntu-latest

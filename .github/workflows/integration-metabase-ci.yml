@@ -12,7 +12,6 @@ concurrency:
   group: ${{ github.ref }}-metabase-ci
   cancel-in-progress: true
 
-
 env:
   project_dir: "grai-integrations/source-metabase"
   py_ver: "${{ vars.PY_VER }}"
