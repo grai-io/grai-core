@@ -9,6 +9,8 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from api.schema import schema
 from auth.validation import verification_generator
+from auth.password_reset import password_reset_generator
+from users.models import Audit, AuditEvents
 
 
 @pytest.mark.django_db
@@ -535,8 +537,10 @@ async def test_request_password_reset_no_user():
 @pytest.mark.django_db
 async def test_reset_password(test_context):
     context, organisation, workspace, user, membership = test_context
+    audit = Audit(user_id=user.id, event=AuditEvents.PASSWORD_RESET.name)
+    await sync_to_async(audit.save)()
 
-    token = default_token_generator.make_token(user)
+    token = await sync_to_async(password_reset_generator.make_token)(user)
 
     mutation = """
         mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
@@ -560,8 +564,10 @@ async def test_reset_password(test_context):
 @pytest.mark.django_db
 async def test_reset_password_short(test_context):
     context, organisation, workspace, user, membership = test_context
+    audit = Audit(user_id=user.id, event=AuditEvents.PASSWORD_RESET.name)
+    await sync_to_async(audit.save)()
 
-    token = default_token_generator.make_token(user)
+    token = await sync_to_async(password_reset_generator.make_token)(user)
 
     mutation = """
         mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
