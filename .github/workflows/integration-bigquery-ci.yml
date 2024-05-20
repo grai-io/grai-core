@@ -37,7 +37,7 @@ jobs:
           black . --check
           isort . --profile black --check
 
-  gtests-integration-bigquery:
+  tests-integration-bigquery:
    needs: lint-integration-bigquery
    runs-on: ubuntu-latest
    defaults:
