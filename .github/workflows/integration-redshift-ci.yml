@@ -6,6 +6,7 @@ on:
       - "grai-integrations/source-redshift/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/integration-redshift-ci.yml"
 
 
 concurrency:
@@ -15,7 +16,7 @@ concurrency:
 
 env:
   py_ver: "3.10"
-  poetry_ver: "1.2.2"
+  poetry_ver: "1.8.0"
   project_dir: "grai-integrations/source-redshift"
   GRAI_REDSHIFT_USER: "admin"
   GRAI_REDSHIFT_PASSWORD: "${{ secrets.redshift_password }}"
@@ -59,8 +60,10 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - run: poetry run pytest
