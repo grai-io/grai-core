@@ -33,7 +33,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ vars.PY_VER }}"
+          python-version: "${{ env.py_ver }}"
 
       - run: pip install black isort
 

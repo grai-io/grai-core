@@ -11,6 +11,7 @@ on:
 
 env:
   py_ver: "3.11"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
           python-version: "${{ env.py_ver }}"
 
       - name: Install poetry
-        run: pip install poetry==${{ vars.POETRY_VER }}
+        run: pip install poetry==${{ env.poetry_ver }}
 
       - name: Get poetry version
         id: poetry-version
@@ -103,7 +104,7 @@ jobs:
 
       - uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: "${{ vars.POETRY_VER }}"
+          poetry-version: "${{ env.poetry_ver }}"
 
       - run: poetry install
 
