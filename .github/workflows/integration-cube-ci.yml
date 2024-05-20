@@ -6,15 +6,15 @@ on:
       - "grai-integrations/source-cube/**"
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-cube-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-integration-cube-ci
   cancel-in-progress: true
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.3.1"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   project_dir: "grai-integrations/source-cube"
 
 jobs:

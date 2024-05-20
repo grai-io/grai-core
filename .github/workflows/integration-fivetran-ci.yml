@@ -4,10 +4,20 @@ on:
   pull_request:
     paths:
       - "grai-integrations/source-fivetran/**"
+      - "grai-client/**"
+      - "grai-server/**"
+      - ".github/workflows/integration-fivetran-ci.yml"
+
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.3.2"
   project_dir: "grai-integrations/source-fivetran"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
+
+
+concurrency:
+  group: ${{ github.ref }}-integration-fivetran-ci
+  cancel-in-progress: true
+
 
 jobs:
   lint-integration-fivetran:
@@ -84,7 +94,9 @@ jobs:
           poetry-version: "${{ env.poetry_ver }}"
 
       - run: poetry install
-      - run: poetry run pytest
+
+      - name: Run Fivetran Tests
+        run: poetry run pytest
         env:
           GRAI_FIVETRAN_API_KEY: ${{ secrets.FIVETRAN_API_KEY }}
           GRAI_FIVETRAN_API_SECRET: ${{ secrets.FIVETRAN_API_SECRET }}

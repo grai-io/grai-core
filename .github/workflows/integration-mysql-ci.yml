@@ -6,7 +6,7 @@ on:
       - "grai-integrations/source-mysql/**"
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-mysql-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-mysql-ci
@@ -14,9 +14,9 @@ concurrency:
 
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
   project_dir: "grai-integrations/source-mysql"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   DB_DATABASE: grai
   DB_USER: grai
   DB_PASSWORD: grai
@@ -74,8 +74,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run MySQL Tests
+        run: poetry run pytest

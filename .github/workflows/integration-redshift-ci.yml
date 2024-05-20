@@ -15,9 +15,9 @@ concurrency:
 
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.8.0"
   project_dir: "grai-integrations/source-redshift"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   GRAI_REDSHIFT_USER: "admin"
   GRAI_REDSHIFT_PASSWORD: "${{ secrets.redshift_password }}"
   GRAI_REDSHIFT_HOST: "${{ secrets.redshift_host }}"
@@ -66,4 +66,5 @@ jobs:
 
       - run: poetry install
 
-      - run: poetry run pytest
+      - name: Run Redshift Tets
+        run: poetry run pytest

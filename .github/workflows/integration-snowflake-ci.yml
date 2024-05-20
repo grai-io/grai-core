@@ -6,7 +6,7 @@ on:
       - "grai-integrations/source-snowflake/**"
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-snowflake-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-snowflake-ci
@@ -14,9 +14,9 @@ concurrency:
 
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
   project_dir: "grai-integrations/source-snowflake"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
 
 jobs:
   lint-integration-snowflake:

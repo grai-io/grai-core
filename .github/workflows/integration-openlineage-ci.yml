@@ -6,15 +6,16 @@ on:
       - "grai-integrations/source-openlineage/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/integration-openlineage-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-openlineage-ci
   cancel-in-progress: true
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
   project_dir: "grai-integrations/source-openlineage"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
 
 jobs:
   lint-integration-openlineage:
@@ -51,8 +52,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
 
-      - run: pytest
+      - run: poetry install
+
+      - name: Run OpenLineage Tests
+        run: poetry run pytest

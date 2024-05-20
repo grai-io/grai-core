@@ -12,8 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.5.1"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   project_dir: "grai-cli"
 
 jobs:
@@ -144,12 +144,15 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
-
       - run: ls ${{ github.workspace }}/grai-cli/tests/config
 
       - run: cat ${{ github.workspace }}/grai-cli/tests/config/config.yaml
 
-      - run: pytest -s
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
+
+      - name: Run Client Tests
+        run: poetry run pytest -s

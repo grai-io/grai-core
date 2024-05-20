@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   project_dir: "grai-client"
 
 jobs:
@@ -143,4 +143,5 @@ jobs:
 
       - run: poetry install
 
-      - run: poetry run pytest
+      - name: Run Client Tests
+        run: poetry run pytest

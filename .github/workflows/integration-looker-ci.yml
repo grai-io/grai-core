@@ -4,11 +4,19 @@ on:
   pull_request:
     paths:
       - "grai-integrations/source-looker/**"
+      - "grai-client/**"
+      - "grai-server/**"
       - ".github/workflows/integration-looker-ci.yml"
+
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.3.2"
   project_dir: "grai-integrations/source-looker"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
+
+concurrency:
+  group: ${{ github.ref }}-integration-looker-ci
+  cancel-in-progress: true
+
 
 jobs:
   lint-integration-looker:
@@ -57,4 +65,5 @@ jobs:
 
       - run: poetry install
 
-      - run: poetry run pytest
+      - name: Run Looker Tests
+        run: poetry run pytest

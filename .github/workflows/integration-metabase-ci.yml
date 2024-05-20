@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "grai-integrations/source-metabase/**"
+      - "grai-client/**"
       - "grai-server/**"
       - ".github/workflows/integration-metabase-ci.yml"
 
@@ -11,11 +12,10 @@ concurrency:
   group: ${{ github.ref }}-metabase-ci
   cancel-in-progress: true
 
-
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
   project_dir: "grai-integrations/source-metabase"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
 
 jobs:
   lint-integration-metabase:
