@@ -18,6 +18,8 @@ env:
   DB_USER: sa
   DB_PASSWORD: GraiGraiGr4i
   DB_HOST: localhost
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
 
 jobs:
   lint-integration-mssql:
@@ -33,7 +35,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ vars.PY_VER }}"
+          python-version: "${{ env.py_ver }}"
 
       - run: pip install black isort
 
@@ -68,11 +70,11 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ vars.PY_VER }}"
+          python-version: "${{ env.py_ver }}"
 
       - uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: "${{ vars.POETRY_VER }}"
+          poetry-version: "${{ env.poetry_ver }}"
 
       - run: poetry install
 

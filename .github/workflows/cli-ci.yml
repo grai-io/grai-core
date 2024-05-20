@@ -12,6 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
   project_dir: "grai-cli"
 
 jobs:
@@ -28,7 +30,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ vars.PY_VER }}"
+          python-version: "${{ env.py_ver }}"
 
       - run: pip install black isort
 
@@ -140,17 +142,17 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ secrets.PY_VER }}"
-
-      - uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: "${{ secrets.POETRY_VER }}"
-
-      - run: poetry install
+          python-version: "${{ env.py_ver }}"
 
       - run: ls ${{ github.workspace }}/grai-cli/tests/config
 
       - run: cat ${{ github.workspace }}/grai-cli/tests/config/config.yaml
 
-      - name: Run CLI Tests
-        run: poetry run pytest
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
+
+      - name: Run Client Tests
+        run: poetry run pytest -s

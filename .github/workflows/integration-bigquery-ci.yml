@@ -14,6 +14,8 @@ concurrency:
 
 env:
   project_dir: "grai-integrations/source-bigquery"
+  py_ver: "${{ vars.PY_VER }}"
+  poetry_ver: "${{ vars.POETRY_VER }}"
 
 jobs:
   lint-integration-bigquery:
@@ -29,7 +31,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ vars.PY_VER }}"
+          python-version: "${{ env.py_ver }}"
 
       - run: pip install black isort
 
@@ -38,49 +40,49 @@ jobs:
           isort . --profile black --check
 
   tests-integration-bigquery:
-   needs: lint-integration-bigquery
-   runs-on: ubuntu-latest
-   defaults:
-     run:
-       working-directory: ${{ env.project_dir }}
-   services:
-     postgres:
-       image: ankane/pgvector:latest
-       env:
-         POSTGRES_USER: grai
-         POSTGRES_PASSWORD: grai
-         POSTGRES_DB: grai
-       ports:
-         - 5432:5432
+    needs: lint-integration-bigquery
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    services:
+      postgres:
+        image: ankane/pgvector:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        ports:
+        - 5432:5432
        # needed because the postgres container does not provide a healthcheck
-       options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
-     the_guide:
-       image: ghcr.io/grai-io/grai-core/grai-server:latest
-       env:
-         DB_USER: grai
-         DB_PASSWORD: grai
-         DB_NAME: grai
-         DB_PORT: "5432"
-         DB_HOST: "postgres"
-         DJANGO_SUPERUSER_USERNAME: null@grai.io
-         DJANGO_SUPERUSER_PASSWORD: super_secret
-       ports:
-         - 8000:8000
-       options: >-
-         --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
-         --health-interval 2s
-         --health-retries 10
-         --health-start-period 30s
-   steps:
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+      the_guide:
+        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        env:
+          DB_USER: grai
+          DB_PASSWORD: grai
+          DB_NAME: grai
+          DB_PORT: "5432"
+          DB_HOST: "postgres"
+          DJANGO_SUPERUSER_USERNAME: null@grai.io
+          DJANGO_SUPERUSER_PASSWORD: super_secret
+        ports:
+        - 8000:8000
+        options: >-
+          --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
+          --health-interval 2s
+          --health-retries 10
+          --health-start-period 30s
+    steps:
     - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v5
       with:
-        python-version: "${{ vars.PY_VER }}"
+        python-version: "${{ env.py_ver }}"
 
     - uses: abatilo/actions-poetry@v2
       with:
-        poetry-version: "${{ vars.POETRY_VER }}"
+        poetry-version: "${{ env.poetry_ver }}"
 
     - run: poetry install
 
