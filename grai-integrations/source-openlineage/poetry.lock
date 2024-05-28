@@ -495,13 +495,13 @@ http = ["httpx"]
 
 [[package]]
 name = "dbt-core"
-version = "1.7.14"
+version = "1.7.15"
 description = "With dbt, data analysts and engineers can build analytics the way engineers build applications."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dbt_core-1.7.14-py3-none-any.whl", hash = "sha256:e142e62d30178d598ad9463b8d162cfa8238806622fee7e63bf8b3236551feec"},
-    {file = "dbt_core-1.7.14.tar.gz", hash = "sha256:86dc6e84c356f075ae29896ef315c679d9bc49d96ae24124a105d5ecc79de43b"},
+    {file = "dbt_core-1.7.15-py3-none-any.whl", hash = "sha256:7a62a4de4a6b6d59ee65ad2225d191b45bb985eaa820d6f75a6811099544aad0"},
+    {file = "dbt_core-1.7.15.tar.gz", hash = "sha256:3c52823fbed5c31562ac468fa71cdabfdb8089ee70f59656d4d1f54f61599ffd"},
 ]
 
 [package.dependencies]
