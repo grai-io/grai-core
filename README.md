@@ -150,3 +150,9 @@ Sign up for our Newsletter `Grai Matters` [email list](https://blog.grai.io/#/po
 <a href="https://github.com/grai-io/grai-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=grai-io/grai-core" />
 </a>
+
+### Infrastructure model
+![Infrastructure main model](.infragenie/infrastructure_main_model.svg)
+- [the_guide component model](.infragenie/the_guide_component_model.svg)
+
+---
