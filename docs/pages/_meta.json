@@ -6,7 +6,10 @@
   "examples": "Examples",
   "tooling": "Tooling",
   "integrations": "Integrations",
-  "cloud": "Grai Cloud",
+  "cloud": {
+    "display": "hidden",
+    "title": "Grai Cloud"
+  },
   "server": "Server",
   "web-app": "Web App",
   "deployment": "Deployment",

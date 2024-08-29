@@ -68,13 +68,13 @@ const config: DocsThemeConfig = {
   },
 
   banner: {
-    key: "live-cloud", // key should be updated when the banner content changes
-    dismissible: true,
-    text: (
-      <a href="https://grai.io" target="_blank">
-        🎉 Grai cloud is now live. Read more →
-      </a>
-    ),
+    // key: "live-cloud", // key should be updated when the banner content changes
+    // dismissible: true,
+    // text: (
+    //   <a href="https://grai.io" target="_blank">
+    //     🎉 Grai cloud is now live. Read more →
+    //   </a>
+    // ),
   },
   editLink: {
     text: "Edit this page on GitHub",

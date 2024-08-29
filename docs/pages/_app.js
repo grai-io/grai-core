@@ -6,26 +6,6 @@ import "../styles.css";
 
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-// import { MendableFloatingButton } from '@mendable/search';
-
-// const MendableSearch = () => {
-//   return (
-//     <MendableFloatingButton
-//       // style={{darkMode:false, accentColor: "#ffffff"}}
-//       dialogPlaceholder="What are you looking for?"
-//       anon_key={"0b8c6a95-5bfe-4d8e-99ac-c8d3877d4c70"}
-//       showSimpleSearch={true}
-//       // floatingButtonStyle={{
-//       //   backgroundColor: "#6e17e8",
-//       //   color: "#ffb567",
-//       // }}
-//       // icon={""}
-//       messageSettings={{
-//           prettySources: true,
-//       }}
-//     />
-//   );
-// };
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== "undefined") {
