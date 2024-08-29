@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import algoliasearch from "algoliasearch/lite"
-import { InstantSearch } from "react-instantsearch-hooks-web"
+import algoliasearch from "algoliasearch/lite" // Updated import to use the full version
+import { InstantSearch } from "react-instantsearch-dom"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {

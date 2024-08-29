@@ -9,7 +9,7 @@ import {
   useHits,
   useSearchBox,
   useInstantSearch,
-} from "react-instantsearch-hooks-web"
+} from "react-instantsearch-hooks"
 import useWorkspace from "helpers/useWorkspace"
 import SearchHitRow, { SearchHit } from "./SearchHitRow"
 import SearchTextbox from "./SearchTextbox"
