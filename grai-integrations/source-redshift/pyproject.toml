@@ -13,7 +13,7 @@ repository = "https://github.com/grai-io/grai-core/tree/master/grai-integrations
 documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 grai-schemas = "^0.2.7-alpha1"
 multimethod = "^1.8, !=1.11"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
@@ -27,6 +27,7 @@ types-PyYAML = "^6.0.11"
 types-psycopg2 = "^2.9.18"
 pytest = "^7.2.0"
 grai-client = "^0.3.0"
+pre-commit = "^3.8.0"
 
     [tool.isort]
 profile = "black"
