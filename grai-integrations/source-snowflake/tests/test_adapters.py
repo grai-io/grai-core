@@ -1,19 +1,13 @@
+from typing import get_args
+
 import pytest
-from grai_schemas import config as core_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata, TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, TableMetadata
-from grai_schemas.v1.source import SourceV1
-from pydantic import BaseModel
 
-from grai_source_snowflake.adapters import (
-    adapt_to_client,
-    build_app_metadata,
-    build_grai_metadata,
-)
+from grai_source_snowflake.adapters import adapt_to_client, build_grai_metadata
 from grai_source_snowflake.models import Column, ColumnID, Edge, Table, TableID
-from grai_source_snowflake.package_definitions import config
 
 columns = [
     Column(
@@ -140,19 +134,19 @@ def test_edge_adapter(item, version, target, mock_source):
 def test_make_table_grai_metadata():
     """ """
     metadata = build_grai_metadata(tables[0], "v1")
-    assert isinstance(metadata, GraiNodeMetadataV1)
+    assert isinstance(metadata, get_args(GraiNodeMetadataV1))
 
 
 def test_make_column_grai_metadata():
     """ """
     metadata = build_grai_metadata(columns[0], "v1")
-    assert isinstance(metadata, GraiNodeMetadataV1)
+    assert isinstance(metadata, get_args(GraiNodeMetadataV1))
 
 
 def test_make_edge_grai_metadata():
     """ """
     metadata = build_grai_metadata(edges[0], "v1")
-    assert isinstance(metadata, GraiEdgeMetadataV1)
+    assert isinstance(metadata, get_args(GraiEdgeMetadataV1))
 
 
 def test_make_table_snowflake_metadata():
