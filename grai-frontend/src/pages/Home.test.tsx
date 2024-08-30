@@ -9,7 +9,7 @@ import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 
 window.scrollTo = jest.fn()
 
-// jest.mock("react-instantsearch-hooks-web", () => ({
+// jest.mock("react-instantsearch", () => ({
 //   InstantSearch: ({ children }: { children: ReactNode }) => children,
 //   useHits: () => ({ hits: [] }),
 //   useSearchBox: () => ({

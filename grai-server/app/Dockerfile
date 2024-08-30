@@ -51,8 +51,9 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     INSTANCE_TYPE=server \
-    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache" \
-    PGSSLCERT=/tmp/postgresql.crt
+    TIKTOKEN_CACHE_DIR=/opt/tiktoken_cache \
+    PGSSLCERT=/tmp/postgresql.crt \
+    SNOWFLAKE_HOME=/opt/snowflake
 
 
 COPY --from=builder /version.txt /version.txt
@@ -62,6 +63,8 @@ COPY --from=builder /usr/src/app/ /usr/src/app/
 
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
+# The Snowflake code handles a SnowFlake error requiring a connections.toml file to exist
+# https://github.com/snowflakedb/snowflake-connector-python/issues/2036
 RUN apt update \
     && apt install --no-install-recommends -y  \
       curl  \
@@ -76,23 +79,33 @@ RUN apt update \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir ${TIKTOKEN_CACHE_DIR} \
-    && python ai_build_script.py
+    && python ai_build_script.py \
+    && mkdir ${SNOWFLAKE_HOME} \
+    && chmod 755 ${SNOWFLAKE_HOME} \
+    && touch ${SNOWFLAKE_HOME}/connections.toml
+
+
+# RUN mkdir ${SNOWFLAKE_HOME} \
+#     && chmod 755 ${SNOWFLAKE_HOME} \
+#     && touch ${SNOWFLAKE_HOME}/connections.toml
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # --------- final images --------------- #
 
 FROM base AS grai-server
-ENV TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
+ENV TIKTOKEN_CACHE_DIR=/opt/tiktoken_cache
 CMD ["gunicorn", "the_guide.asgi:application", "-b", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
 
 
 FROM base AS grai-worker
 ENV INSTANCE_TYPE=worker \
-    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
+    TIKTOKEN_CACHE_DIR=/opt/tiktoken_cache \
+    SNOWFLAKE_HOME=/opt/snowflake
 CMD ["/usr/src/app/worker.sh"]
 
 FROM base AS grai-beat-worker
 ENV INSTANCE_TYPE=beat \
-    TIKTOKEN_CACHE_DIR="/opt/tiktoken_cache"
+    TIKTOKEN_CACHE_DIR=/opt/tiktoken_cache \
+    SNOWFLAKE_HOME=/opt/snowflake
 CMD ["/usr/src/app/beat.sh"]

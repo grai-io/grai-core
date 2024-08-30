@@ -23,36 +23,44 @@ const FiltersMenu: React.FC<FiltersMenuProps> = ({
   edit,
 }) => (
   <PopupState variant="popover">
-    {popupState => (
-      <>
-        <IconButton size="small" {...bindTrigger(popupState)}>
-          <MoreHoriz />
-        </IconButton>
+    {popupState => {
+      // Create a handler function that matches the expected type for onClose
+      const handleDeleteClose = (deleted: boolean) => {
+        // You can handle the 'deleted' boolean as needed
+        popupState.close(); // Call the original close method without arguments
+      };
 
-        <Menu
-          {...bindMenu(popupState)}
-          PaperProps={{
-            sx: {
-              width: 200,
-            },
-          }}
-        >
-          {edit && (
-            <MenuItem component={Link} to={filter.id}>
-              <ListItemIcon>
-                <Edit />
-              </ListItemIcon>
-              <ListItemText primary="Edit" />
-            </MenuItem>
-          )}
-          <FilterDelete
-            filter={filter}
-            onClose={popupState.close}
-            workspaceId={workspaceId}
-          />
-        </Menu>
-      </>
-    )}
+      return (
+        <>
+          <IconButton size="small" {...bindTrigger(popupState)}>
+            <MoreHoriz />
+          </IconButton>
+
+          <Menu
+            {...bindMenu(popupState)}
+            PaperProps={{
+              sx: {
+                width: 200,
+              },
+            }}
+          >
+            {edit && (
+              <MenuItem component={Link} to={filter.id}>
+                <ListItemIcon>
+                  <Edit />
+                </ListItemIcon>
+                <ListItemText primary="Edit" />
+              </MenuItem>
+            )}
+            <FilterDelete
+              filter={filter}
+              onClose={handleDeleteClose} // Use the new handler function
+              workspaceId={workspaceId}
+            />
+          </Menu>
+        </>
+      )
+    }}
   </PopupState>
 )
 

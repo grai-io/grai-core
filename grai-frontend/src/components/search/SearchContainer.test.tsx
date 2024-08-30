@@ -5,13 +5,13 @@ import {
   useInstantSearch,
   useHits,
   useSearchBox,
-} from "react-instantsearch-hooks-web"
+} from "react-instantsearch-hooks"
 import { act, render, screen, waitFor } from "testing"
 import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 
 const onClose = jest.fn()
 
-jest.mock("react-instantsearch-hooks-web", () => ({
+jest.mock("react-instantsearch-hooks", () => ({
   InstantSearch: ({ children }: { children: ReactNode }) => children,
   useHits: jest.fn(),
   useSearchBox: jest.fn(),

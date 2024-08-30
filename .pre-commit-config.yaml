@@ -1,7 +1,7 @@
 repos:
   # configure shared hooks that you want to run on all repositories here
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -26,7 +26,7 @@ repos:
   #         - flake8-simplify
 
   - repo: https://github.com/psf/black
-    rev: 24.2.0
+    rev: 24.8.0
     hooks:
       - id: black
         description: "Black: The uncompromising Python code formatter"
