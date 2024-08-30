@@ -1,6 +1,6 @@
+import { act } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act } from "react-dom/test-utils"
 import { render, screen } from "testing"
 import FilterControl, { GET_FILTERS } from "./FilterControl"
 

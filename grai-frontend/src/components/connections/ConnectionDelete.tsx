@@ -71,8 +71,37 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
     },
   })
 
-  const handleDelete = () => {
-    onClose()
+//   const handleDelete = () => {
+//     onClose()
+//     confirm({
+//       title: "Delete Connection",
+//       description: (
+//         <>
+//           <Typography component="span" sx={{ display: "block", mb: 2 }}>
+//             Are you sure you wish to delete the {connection.name} connection?
+//           </Typography>
+//           {connection.runs.meta.total > 0 && (
+//             <Typography component="span">
+//               Deleting this source will also delete {connection.runs.meta.total}{" "}
+//               run{connection.runs.meta.total > 1 ? "s" : ""}.
+//             </Typography>
+//           )}
+//         </>
+//       ),
+//       confirmationText: "Delete",
+//     })
+//       .then(() => deleteConnection())
+//       .then(() => enqueueSnackbar("Connection deleted", { variant: "success" }))
+//       .then(onDelete)
+//       .catch(
+//         error =>
+//           error &&
+//           enqueueSnackbar(`Failed to delete connection ${error}`, {
+//             variant: "error",
+//           }),
+//       )
+//   }
+const handleDelete = () => {
     confirm({
       title: "Delete Connection",
       description: (
@@ -90,7 +119,10 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
       ),
       confirmationText: "Delete",
     })
-      .then(() => deleteConnection())
+      .then(() => {
+        onClose() // Move onClose here
+        return deleteConnection()
+    })
       .then(() => enqueueSnackbar("Connection deleted", { variant: "success" }))
       .then(onDelete)
       .catch(
@@ -101,7 +133,6 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
           }),
       )
   }
-
   return (
     <MenuItem onClick={handleDelete}>
       <ListItemIcon>

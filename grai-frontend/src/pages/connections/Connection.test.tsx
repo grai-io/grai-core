@@ -1,6 +1,7 @@
+import { act } from 'react';
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen } from "testing"
+import { render, screen } from "testing"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
