@@ -26,7 +26,7 @@ class Demo:
     def check_for_docker_and_docker_compose():
         try:
             docker_version = subprocess.check_output(["docker", "--version"], text=True)
-            docker_compose_version = subprocess.check_output(["docker-compose", "--version"], text=True)
+            docker_compose_version = subprocess.check_output(["docker", "compose", "--version"], text=True)
         except subprocess.CalledProcessError as e:
             raise Exception(
                 "Docker and/or Docker Compose is not installed. You can find more information about installing docker "

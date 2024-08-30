@@ -16,7 +16,7 @@ class TestDemoRunner:
             temp.write(self.demo.compose_script.encode())
 
         try:
-            result = subprocess.run(["docker-compose", "-f", temp.name, "config"], capture_output=True, text=True)
+            result = subprocess.run(["docker", "compose", "-f", temp.name, "config"], capture_output=True, text=True)
         finally:
             os.unlink(temp.name)
         assert result.returncode == 0, result.stderr
