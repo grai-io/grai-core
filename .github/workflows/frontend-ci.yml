@@ -32,7 +32,7 @@ jobs:
       - name: Lint Action
         uses: wearerequired/lint-action@v2.3.0
         with:
-          auto_fix: true
+        #   auto_fix: true
           eslint: true
           eslint_dir: "./grai-frontend"
           eslint_command_prefix: npx --no-install
