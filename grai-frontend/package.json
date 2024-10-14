@@ -15,7 +15,7 @@
     "@mui/material": "^5.10.11",
     "@mui/x-date-pickers": "^6.0.2",
     "@nivo/calendar": "^0.83.0",
-    "@sentry/react": "^7.43.0",
+    "@sentry/react": "^7.119.2",
     "@sentry/tracing": "^7.43.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
