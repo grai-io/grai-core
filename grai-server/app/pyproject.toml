@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.74"
+version = "0.1.75"
 description = ""
 authors = ["Grai <dev@grai.io>"]
 license = "Elastic-2.0"
