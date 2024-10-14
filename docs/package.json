@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@feelback/react": "^0.3.4",
+    "next": "^14.2.12",
     "@sentry/nextjs": "^7.119.1",
-    "next": "^14.1.1",
     "next-seo": "^6.1.0",
     "nextra": "^2.13.1",
     "nextra-theme-docs": "^2.13.1",
