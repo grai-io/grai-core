@@ -55,6 +55,7 @@ jobs:
         env:
           ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: ${{ env.DB_PASSWORD }}
+          MSSQL_PID: Developer
         ports:
           - 1433:1433
 
