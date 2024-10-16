@@ -65,7 +65,7 @@ jobs:
       - name: Install SQL Server tools (sqlcmd)
         run: |
           sudo apt-get update
-          sudoACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
 
       - name: Set up SQL db
         working-directory: ${{ env.project_dir }}/data
