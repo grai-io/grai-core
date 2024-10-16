@@ -13,7 +13,9 @@ SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD -No"
 $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
 DBSTATUS=$?
 
+echo "TESTING FOR SQLCMD VERSION"
 if [[ $DBSTATUS == *"Client unable to establish connection."* ]]; then
+    echo "REVERTING TO DEFAULT SQLCMD"
     SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD"
     $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
     DBSTATUS=$?
