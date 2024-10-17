@@ -4799,19 +4799,19 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.7
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.220.0"
+version = "0.243.0"
 description = "A library for creating GraphQL APIs"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "strawberry_graphql-0.220.0-py3-none-any.whl", hash = "sha256:303b698bd3652f852af000085cc2ad7790a9726cdfd7e2f3f5398cbe6d3ef261"},
-    {file = "strawberry_graphql-0.220.0.tar.gz", hash = "sha256:916a019e0133c7817aae384161e9ab0e5267013bc2f491b3338b3ae10e8f08bb"},
+    {file = "strawberry_graphql-0.243.0-py3-none-any.whl", hash = "sha256:c187fa8445dd6ecba5b2e5f62ac11eb34fb561501adf609173d227bf2038ed50"},
+    {file = "strawberry_graphql-0.243.0.tar.gz", hash = "sha256:30251eff232ca049d339061f26aee864b34d32d1af0c22abb66385ddadec3404"},
 ]
 
 [package.dependencies]
 asgiref = {version = ">=3.2,<4.0", optional = true, markers = "extra == \"django\" or extra == \"channels\""}
 channels = {version = ">=3.0.5", optional = true, markers = "extra == \"channels\""}
-graphql-core = ">=3.2.0,<3.3.0"
+graphql-core = ">=3.2.0,<3.4.0"
 python-dateutil = ">=2.7.0,<3.0.0"
 python-multipart = {version = ">=0.0.7", optional = true, markers = "extra == \"asgi\" or extra == \"debug-server\" or extra == \"fastapi\""}
 starlette = {version = ">=0.18.0", optional = true, markers = "extra == \"asgi\" or extra == \"debug-server\""}
@@ -4822,7 +4822,7 @@ aiohttp = ["aiohttp (>=3.7.4.post0,<4.0.0)"]
 asgi = ["python-multipart (>=0.0.7)", "starlette (>=0.18.0)"]
 chalice = ["chalice (>=1.22,<2.0)"]
 channels = ["asgiref (>=3.2,<4.0)", "channels (>=3.0.5)"]
-cli = ["libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
+cli = ["graphlib_backport", "libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
 debug = ["libcst (>=0.4.7)", "rich (>=12.0.0)"]
 debug-server = ["libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "python-multipart (>=0.0.7)", "rich (>=12.0.0)", "starlette (>=0.18.0)", "typer (>=0.7.0)", "uvicorn (>=0.11.6)"]
 django = ["Django (>=3.2)", "asgiref (>=3.2,<4.0)"]
@@ -4834,7 +4834,6 @@ pydantic = ["pydantic (>1.6.1)"]
 pyinstrument = ["pyinstrument (>=4.0.0)"]
 quart = ["quart (>=0.19.3)"]
 sanic = ["sanic (>=20.12.2)"]
-starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
 name = "strawberry-graphql-django"
@@ -5630,4 +5629,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "360128a6b1ab79f93aef035fdf4662dfa1daec9ec1212e553dfcd761e6e48305"
+content-hash = "7b11a65d787a3b2d826b531e22ceaba0755209a2916977772ae164239c5edbdb"
