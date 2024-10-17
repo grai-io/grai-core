@@ -9,17 +9,17 @@ RETRY_LIMIT=${RETRY_LIMIT:-60}
 SQL_CMD_DIR=${SQL_CMD_DIR-"/opt/mssql-tools18/bin"}
 export PATH=$PATH:$SQL_CMD_DIR
 
-SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD -No"
+SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD"
 $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
 DBSTATUS=$?
 
-echo "TESTING FOR SQLCMD VERSION"
-if [[ $DBSTATUS == *"Client unable to establish connection."* ]]; then
-    echo "REVERTING TO DEFAULT SQLCMD"
-    SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD"
-    $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
-    DBSTATUS=$?
-fi
+# echo "TESTING FOR SQLCMD VERSION"
+# if [[ $DBSTATUS == *"Client unable to establish connection."* ]]; then
+#     echo "REVERTING TO DEFAULT SQLCMD"
+#     SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD"
+#     $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
+#     DBSTATUS=$?
+# fi
 
 if [[ $DBSTATUS -ne 0 ]]; then
   echo "Waiting for database to become ready"
