@@ -3,7 +3,7 @@ from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
 import strawberry
 from django.db.models import Model
 from django.db.models.query import QuerySet
-from strawberry.field import StrawberryField
+from strawberry.types.field import StrawberryField
 from strawberry_django.pagination import OffsetPaginationInput
 
 from .order import apply_order

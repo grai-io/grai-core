@@ -2,7 +2,7 @@ from typing import Optional
 
 import strawberry
 from django.db.models.query import QuerySet
-from strawberry.field import StrawberryField
+from strawberry.types.field import StrawberryField
 from strawberry_django.ordering import process_order
 
 
