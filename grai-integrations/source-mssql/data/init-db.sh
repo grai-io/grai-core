@@ -8,7 +8,7 @@ SERVER="tcp:$HOST,$PORT"
 RETRY_LIMIT=${RETRY_LIMIT:-60}
 SQL_CMD_DIR=${SQL_CMD_DIR-"/opt/mssql-tools18/bin"}
 export PATH=$PATH:$SQL_CMD_DIR
-AUTH_ARG=${AUTH:-"-No"}
+AUTH_ARG=${AUTH_ARG:-"-No"}
 SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD $AUTH_ARG"
 
 $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
