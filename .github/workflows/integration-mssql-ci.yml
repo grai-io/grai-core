@@ -71,7 +71,7 @@ jobs:
         working-directory: ${{ env.project_dir }}/data
         env:
           MSSQL_SA_PASSWORD: ${{env.DB_PASSWORD}}
-          AUTH_ARG: "" # I can't get it to install sqlcmd>18. This is a hack
+          AUTH_ARG: "N" # I can't get it to install sqlcmd>18. This is a hack
         run: |
           bash init-db.sh
 

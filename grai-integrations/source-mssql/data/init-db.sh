@@ -8,10 +8,16 @@ SERVER="tcp:$HOST,$PORT"
 RETRY_LIMIT=${RETRY_LIMIT:-60}
 SQL_CMD_DIR=${SQL_CMD_DIR-"/opt/mssql-tools18/bin"}
 export PATH=$PATH:$SQL_CMD_DIR
-AUTH_ARG=${AUTH_ARG:-"-No"}
+
+AUTH_ARG=${AUTH_ARG:-"Y"}
+if [ "$AUTH_ARG" == "Y" ]; then
+  AUTH_ARG="-No"
+else
+  AUTH_ARG=""
+fi
+
 SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD $AUTH_ARG"
-echo $SQL_CMD
-SQL_CMD="sqlcmd -S $SERVER -U sa -P $MSSQL_SA_PASSWORD"
+
 $SQL_CMD -Q 'SELECT 1' -b -o /dev/null
 DBSTATUS=$?
 if [[ $DBSTATUS -ne 0 ]]; then
