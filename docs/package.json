@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@feelback/react": "^0.3.4",
-    "next": "^14.2.22",
+    "next": "^14.2.30",
     "@sentry/nextjs": "^7.119.1",
     "next-seo": "^6.1.0",
     "nextra": "^2.13.1",
